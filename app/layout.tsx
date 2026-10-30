@@ -19,13 +19,6 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" data-theme="mono" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=JSON.parse(localStorage.getItem('zhipin-qianxun-theme')||'null');if(p&&p.mode){document.documentElement.dataset.theme=p.mode;if(p.mode==='custom'&&p.customColor){document.documentElement.style.setProperty('--custom-color',p.customColor)}}}catch(e){}})();`,
-          }}
-        />
-      </head>
       <body>
         <ThemeProvider>
           <AppProvider>{children}</AppProvider>
