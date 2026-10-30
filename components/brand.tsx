@@ -38,7 +38,7 @@ export function BrandLockup({
           <div className={cn("text-[15px] font-semibold tracking-[-0.03em]", light ? "text-[#f2f4ef]" : "text-ink")}>
             智聘千寻
           </div>
-          <div className={cn("mt-1 text-[8.5px] font-medium tracking-[0.16em]", light ? "text-[#8fae9f]" : "text-muted")}>
+          <div className={cn("mt-1 text-[11.5px] font-medium tracking-[0.16em]", light ? "text-[#8fae9f]" : "text-muted")}>
             ZHIPIN QIANXUN
           </div>
         </div>

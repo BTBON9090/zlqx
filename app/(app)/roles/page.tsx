@@ -84,15 +84,15 @@ function PermissionDialog({
         <DialogHeader title={`${readOnly ? "查看" : "设置"}「${role.name}」权限`} description={readOnly ? "系统内置角色，权限不可修改。你可以复制它来创建自定义角色。" : "按模块配置权限，保存后立即对角色成员生效。"} icon={<ShieldCheck />} />
         <DialogBody className="space-y-4">
           {readOnly ? (
-            <div className="flex items-start gap-2 rounded-xl bg-amber-soft/60 p-3 text-[10px] leading-5 text-[#7a5412]"><Lock className="mt-0.5 size-3.5 shrink-0" /> 系统内置角色用于保障平台基础能力，不可编辑或删除。如需调整，请复制为新角色。</div>
+            <div className="flex items-start gap-2 rounded-xl bg-amber-soft/60 p-3 text-[12.5px] leading-5 text-[#7a5412]"><Lock className="mt-0.5 size-3.5 shrink-0" /> 系统内置角色用于保障平台基础能力，不可编辑或删除。如需调整，请复制为新角色。</div>
           ) : (
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[10.5px] text-muted">已选择 <span className="num font-semibold text-ink">{total}</span> / {allTotal} 项权限</span>
-              <button onClick={() => { if (readOnly) return; const all = Object.fromEntries(permissionModules.map((m) => [m.key, [...m.actions]])); setDraft(all); }} className="text-[10px] font-medium text-pine hover:underline disabled:opacity-40" disabled={readOnly}>全选所有权限</button>
+              <span className="text-[12.5px] text-muted">已选择 <span className="num font-semibold text-ink">{total}</span> / {allTotal} 项权限</span>
+              <button onClick={() => { if (readOnly) return; const all = Object.fromEntries(permissionModules.map((m) => [m.key, [...m.actions]])); setDraft(all); }} className="text-[12.5px] font-medium text-pine hover:underline disabled:opacity-40" disabled={readOnly}>全选所有权限</button>
             </div>
           )}
           <div className="overflow-hidden rounded-xl border border-line">
-            <div className="hidden grid-cols-[180px_1fr] border-b border-line bg-[#fafbf8] px-4 py-2.5 text-[9.5px] font-medium text-muted sm:grid">
+            <div className="hidden grid-cols-[180px_1fr] border-b border-line bg-[#fafbf8] px-4 py-2.5 text-[12px] font-medium text-muted sm:grid">
               <span>功能模块</span><span>可用操作</span>
             </div>
             {permissionModules.map((m) => {
@@ -100,7 +100,7 @@ function PermissionDialog({
               const all = actions.length === m.actions.length;
               return (
                 <div key={m.key} className="grid grid-cols-1 gap-2 border-b border-line/70 px-4 py-3 last:border-0 sm:grid-cols-[180px_1fr] sm:items-center">
-                  <button onClick={() => toggleAll(m.key, m.actions)} className={cn("flex items-center gap-2 text-left text-[11px] font-medium", readOnly ? "cursor-default" : "hover:text-pine")}>
+                  <button onClick={() => toggleAll(m.key, m.actions)} className={cn("flex items-center gap-2 text-left text-[13px] font-medium", readOnly ? "cursor-default" : "hover:text-pine")}>
                     <span className={cn("flex size-4 items-center justify-center rounded border", all ? "border-pine bg-pine text-white" : "border-[#c7d0c6] bg-white")}>{all ? <Check className="size-2.5" /> : null}</span>
                     {m.label}
                   </button>
@@ -113,7 +113,7 @@ function PermissionDialog({
                           onClick={() => toggle(m.key, a)}
                           disabled={readOnly}
                           className={cn(
-                            "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[9.5px] transition-colors",
+                            "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[12px] transition-colors",
                             checked ? "border-pine/30 bg-pine-soft/60 text-pine" : "border-line bg-white text-muted hover:border-line-strong",
                             readOnly && "cursor-default"
                           )}
@@ -158,13 +158,13 @@ function AddMemberDialog({ role, open, onOpenChange }: { role: Role | null; open
                 <label key={e.id} className={cn("flex cursor-pointer items-center gap-2.5 border-b border-line/70 px-3 py-2.5 last:border-0", checked ? "bg-pine-soft/30" : "hover:bg-[#fafbf8]")}>
                   <Checkbox checked={checked} onCheckedChange={(v) => setMemberIds((prev) => v ? [...prev, e.id] : prev.filter((id) => id !== e.id))} />
                   <Avatar name={e.name} size={26} />
-                  <div className="min-w-0 flex-1"><div className="text-[10.5px] font-medium text-ink">{e.name}</div><div className="mt-0.5 text-[9px] text-muted">{e.email}</div></div>
-                  <span className="text-[9px] text-muted">{departments.find((d) => d.id === e.departmentId)?.name}</span>
+                  <div className="min-w-0 flex-1"><div className="text-[12.5px] font-medium text-ink">{e.name}</div><div className="mt-0.5 text-[12px] text-muted">{e.email}</div></div>
+                  <span className="text-[12px] text-muted">{departments.find((d) => d.id === e.departmentId)?.name}</span>
                 </label>
               );
             })}
           </div>
-          <div className="text-[9.5px] text-muted">已选择 {memberIds.length} 位成员</div>
+          <div className="text-[12px] text-muted">已选择 {memberIds.length} 位成员</div>
         </DialogBody>
         <DialogFooter><Button variant="secondary" onClick={() => onOpenChange(false)}>取消</Button><Button onClick={() => { updateRoleMembers(role.id, memberIds); toast.success("角色成员已更新"); onOpenChange(false); }}><Check /> 保存成员</Button></DialogFooter>
       </DialogContent>
@@ -221,7 +221,7 @@ export default function RolesPage() {
           ["权限项", permissionModules.reduce((sum, m) => sum + m.actions.length, 0), "项", "可组合授权"],
           ["待分配角色", employees.filter((e) => e.roleIds.length === 0).length, "人", "需要管理员处理"],
         ].map(([label, value, suffix, note]) => (
-          <div key={String(label)} className="surface p-4"><div className="text-[10.5px] text-muted">{label}</div><div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[10px] text-muted">{suffix}</span></div><div className="mt-1 text-[9px] text-muted">{note}</div></div>
+          <div key={String(label)} className="surface p-4"><div className="text-[12.5px] text-muted">{label}</div><div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div><div className="mt-1 text-[12px] text-muted">{note}</div></div>
         ))}
       </div>
 
@@ -229,18 +229,18 @@ export default function RolesPage() {
         <div className="surface col-span-12 self-start overflow-hidden xl:col-span-3">
           <div className="border-b border-line p-3.5">
             <div className="flex items-center justify-between"><SectionTitle title="角色" /><button onClick={() => setCreateOpen(true)} className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="新建角色"><Plus className="size-3.5" /></button></div>
-            <div className="relative mt-3"><Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索角色" className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[10.5px] outline-none focus:border-pine/50" /></div>
+            <div className="relative mt-3"><Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索角色" className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12.5px] outline-none focus:border-pine/50" /></div>
           </div>
           <div className="max-h-[520px] overflow-y-auto p-2">
             {filteredRoles.map((r) => (
               <button key={r.id} onClick={() => setSelectedId(r.id)} className={cn("mb-0.5 flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left transition-colors", selectedId === r.id ? "bg-pine-soft/70" : "hover:bg-[#f5f7f2]")}>
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-lg" style={{ background: `${r.color}18`, color: r.color }}><ShieldCheck className="size-3.5" /></span>
-                <span className="min-w-0 flex-1"><span className={cn("block truncate text-[11px]", selectedId === r.id ? "font-semibold text-pine" : "font-medium text-ink")}>{r.name}</span><span className="mt-0.5 block text-[8.5px] text-muted">{r.memberIds.length} 位成员</span></span>
+                <span className="min-w-0 flex-1"><span className={cn("block truncate text-[13px]", selectedId === r.id ? "font-semibold text-pine" : "font-medium text-ink")}>{r.name}</span><span className="mt-0.5 block text-[11.5px] text-muted">{r.memberIds.length} 位成员</span></span>
                 {r.system ? <Lock className="size-3 text-muted" /> : null}
               </button>
             ))}
           </div>
-          <div className="border-t border-line p-2.5"><button onClick={() => setCreateOpen(true)} className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-line py-2 text-[10px] text-muted hover:border-pine/30 hover:text-pine"><Plus className="size-3" /> 新建角色</button></div>
+          <div className="border-t border-line p-2.5"><button onClick={() => setCreateOpen(true)} className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-line py-2 text-[12.5px] text-muted hover:border-pine/30 hover:text-pine"><Plus className="size-3" /> 新建角色</button></div>
         </div>
 
         <div className="col-span-12 space-y-4 xl:col-span-9">
@@ -250,8 +250,8 @@ export default function RolesPage() {
                 <div className="flex size-11 items-center justify-center rounded-xl" style={{ background: `${role.color}16`, color: role.color }}>{role.system ? <Crown className="size-5" /> : <ShieldCheck className="size-5" />}</div>
                 <div>
                   <div className="flex flex-wrap items-center gap-2"><h2 className="text-[17px] font-semibold tracking-[-0.02em] text-ink">{role.name}</h2>{role.system ? <Badge tone="amber" dot>系统角色</Badge> : <Badge tone="pine" dot>自定义角色</Badge>}</div>
-                  <p className="mt-1.5 max-w-[520px] text-[10.5px] leading-5 text-muted">{role.description}</p>
-                  <div className="mt-2 flex items-center gap-3 text-[9.5px] text-muted"><span>{members.length} 位成员</span><span className="size-0.5 rounded-full bg-muted" /><span>{totalPermissions} 项权限</span><span className="size-0.5 rounded-full bg-muted" /><span>数据范围：{scopeLabels[role.id] ?? "自定义"}</span></div>
+                  <p className="mt-1.5 max-w-[520px] text-[12.5px] leading-5 text-muted">{role.description}</p>
+                  <div className="mt-2 flex items-center gap-3 text-[12px] text-muted"><span>{members.length} 位成员</span><span className="size-0.5 rounded-full bg-muted" /><span>{totalPermissions} 项权限</span><span className="size-0.5 rounded-full bg-muted" /><span>数据范围：{scopeLabels[role.id] ?? "自定义"}</span></div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -266,8 +266,8 @@ export default function RolesPage() {
                 const count = (role.permissions[m.key] ?? []).length;
                 return (
                   <button key={m.key} onClick={() => setPermOpen(true)} className="group bg-surface p-3.5 text-left transition-colors hover:bg-[#fafbf8]">
-                    <div className="flex items-center justify-between gap-2"><span className="text-[9.5px] text-muted">{m.label}</span><ChevronRight className="size-3 text-[#c2ccc4] transition-transform group-hover:translate-x-0.5" /></div>
-                    <div className="mt-1.5 flex items-baseline gap-1"><span className="num text-[16px] font-semibold text-ink">{count}</span><span className="text-[8.5px] text-muted">/ {m.actions.length} 项</span></div>
+                    <div className="flex items-center justify-between gap-2"><span className="text-[12px] text-muted">{m.label}</span><ChevronRight className="size-3 text-[#c2ccc4] transition-transform group-hover:translate-x-0.5" /></div>
+                    <div className="mt-1.5 flex items-baseline gap-1"><span className="num text-[16px] font-semibold text-ink">{count}</span><span className="text-[11.5px] text-muted">/ {m.actions.length} 项</span></div>
                     <div className="mt-2 flex gap-0.5">{m.actions.map((a) => <span key={a} className={cn("h-1 flex-1 rounded-full", (role.permissions[m.key] ?? []).includes(a) ? "bg-pine" : "bg-[#e9ede7]")} />)}</div>
                   </button>
                 );
@@ -275,11 +275,11 @@ export default function RolesPage() {
               <div className="col-span-2 bg-surface p-3.5 sm:col-span-3 lg:col-span-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <div className="text-[9.5px] text-muted">数据范围</div>
-                    <div className="mt-1.5 text-[12px] font-semibold text-ink">{scopeLabels[role.id] ?? "自定义"}</div>
+                    <div className="text-[12px] text-muted">数据范围</div>
+                    <div className="mt-1.5 text-[13.5px] font-semibold text-ink">{scopeLabels[role.id] ?? "自定义"}</div>
                   </div>
-                  <div className="text-[8.5px] leading-4 text-muted">由角色与部门共同决定 · 数据范围变更需管理员审批</div>
-                  <Link href="/organization" className="flex items-center gap-1 text-[9.5px] font-medium text-pine hover:underline">查看组织架构 <ChevronRight className="size-3" /></Link>
+                  <div className="text-[11.5px] leading-4 text-muted">由角色与部门共同决定 · 数据范围变更需管理员审批</div>
+                  <Link href="/organization" className="flex items-center gap-1 text-[12px] font-medium text-pine hover:underline">查看组织架构 <ChevronRight className="size-3" /></Link>
                 </div>
               </div>
             </div>
@@ -292,7 +292,7 @@ export default function RolesPage() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] border-collapse text-left">
-                <thead><tr className="border-y border-line bg-[#fafbf8] text-[10px] text-muted">
+                <thead><tr className="border-y border-line bg-[#fafbf8] text-[12.5px] text-muted">
                   <th className="min-w-[180px] py-2.5 pl-5 font-medium">姓名</th>
                   <th className="min-w-[170px] py-2.5 pr-4 font-medium">工作邮箱</th>
                   <th className="min-w-[130px] py-2.5 pr-4 font-medium">所属部门</th>
@@ -303,19 +303,19 @@ export default function RolesPage() {
                 <tbody>
                   {members.map((e) => (
                     <tr key={e.id} className="border-b border-line/70 last:border-0 hover:bg-[#fafbf8]">
-                      <td className="py-3 pl-5 pr-4"><div className="flex items-center gap-2.5"><Avatar name={e.name} size={28} /><div><div className="text-[10.5px] font-medium text-ink">{e.name}</div><div className="mt-0.5 text-[8.5px] text-muted">{e.title}</div></div></div></td>
-                      <td className="py-3 pr-4 text-[9.5px] text-ink-soft">{e.email}</td>
-                      <td className="py-3 pr-4 text-[9.5px] text-ink-soft">{departments.find((d) => d.id === e.departmentId)?.name}</td>
-                      <td className="py-3 pr-4 text-[9.5px] text-muted">{scopeLabels[role.id] ?? "自定义"}</td>
-                      <td className="py-3 pr-4"><span className={cn("rounded px-1.5 py-0.5 text-[8.5px]", e.status === "active" ? "bg-pine-soft text-pine" : e.status === "invited" ? "bg-amber-soft text-[#7a5412]" : "bg-[#eef1ec] text-muted")}>{e.status === "active" ? "正常" : e.status === "invited" ? "待激活" : "已停用"}</span></td>
-                      <td className="px-4 py-3 text-right"><div className="flex justify-end gap-1"><Button size="sm" variant="ghost" className="h-7 px-2 text-[9.5px]" onClick={() => toast.info("成员详情可在员工与部门中查看")}>详情</Button><button onClick={() => { updateRoleMembers(role.id, role.memberIds.filter((id) => id !== e.id)); toast.success("成员已移出角色"); }} className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-signal" aria-label="移除角色"><UserMinus className="size-3.5" /></button></div></td>
+                      <td className="py-3 pl-5 pr-4"><div className="flex items-center gap-2.5"><Avatar name={e.name} size={28} /><div><div className="text-[12.5px] font-medium text-ink">{e.name}</div><div className="mt-0.5 text-[11.5px] text-muted">{e.title}</div></div></div></td>
+                      <td className="py-3 pr-4 text-[12px] text-ink-soft">{e.email}</td>
+                      <td className="py-3 pr-4 text-[12px] text-ink-soft">{departments.find((d) => d.id === e.departmentId)?.name}</td>
+                      <td className="py-3 pr-4 text-[12px] text-muted">{scopeLabels[role.id] ?? "自定义"}</td>
+                      <td className="py-3 pr-4"><span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", e.status === "active" ? "bg-pine-soft text-pine" : e.status === "invited" ? "bg-amber-soft text-[#7a5412]" : "bg-[#eef1ec] text-muted")}>{e.status === "active" ? "正常" : e.status === "invited" ? "待激活" : "已停用"}</span></td>
+                      <td className="px-4 py-3 text-right"><div className="flex justify-end gap-1"><Button size="sm" variant="ghost" className="h-7 px-2 text-[12px]" onClick={() => toast.info("成员详情可在员工与部门中查看")}>详情</Button><button onClick={() => { updateRoleMembers(role.id, role.memberIds.filter((id) => id !== e.id)); toast.success("成员已移出角色"); }} className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-signal" aria-label="移除角色"><UserMinus className="size-3.5" /></button></div></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
             {members.length === 0 ? <EmptyState icon={<Users />} title="这个角色还没有成员" description="添加成员后，他们将获得该角色的权限。" action={<Button size="sm" onClick={() => setAddMemberOpen(true)}><UserPlus /> 添加成员</Button>} /> : null}
-            <div className="flex items-center justify-between border-t border-line px-5 py-3 text-[10px] text-muted"><span>权限变更将在成员下次刷新时生效</span><button onClick={() => setPermOpen(true)} className="flex items-center gap-1 font-medium text-pine hover:underline">查看权限详情 <ChevronRight className="size-3" /></button></div>
+            <div className="flex items-center justify-between border-t border-line px-5 py-3 text-[12.5px] text-muted"><span>权限变更将在成员下次刷新时生效</span><button onClick={() => setPermOpen(true)} className="flex items-center gap-1 font-medium text-pine hover:underline">查看权限详情 <ChevronRight className="size-3" /></button></div>
           </div>
         </div>
       </div>

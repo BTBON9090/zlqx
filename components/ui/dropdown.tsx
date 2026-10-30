@@ -46,7 +46,7 @@ export function DropdownMenuItem({
   return (
     <DropdownPrimitive.Item
       className={cn(
-        "relative flex cursor-pointer select-none items-center gap-2.5 rounded-lg px-2.5 py-2 text-[12.5px] text-ink-soft outline-none transition-colors focus:bg-[#eef1ec] data-[disabled]:pointer-events-none data-[disabled]:opacity-40 [&_svg]:size-3.5 [&_svg]:text-muted",
+        "relative flex cursor-pointer select-none items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13.5px] text-ink-soft outline-none transition-colors focus:bg-[#eef1ec] data-[disabled]:pointer-events-none data-[disabled]:opacity-40 [&_svg]:size-3.5 [&_svg]:text-muted",
         inset && "pl-8",
         danger && "text-danger focus:bg-signal-soft [&_svg]:text-danger",
         className
@@ -67,7 +67,7 @@ export function DropdownMenuCheckboxItem({
   return (
     <DropdownPrimitive.CheckboxItem
       className={cn(
-        "relative flex cursor-pointer select-none items-center gap-2 rounded-lg py-2 pl-8 pr-2.5 text-[12.5px] text-ink-soft outline-none transition-colors focus:bg-[#eef1ec]",
+        "relative flex cursor-pointer select-none items-center gap-2 rounded-lg py-2 pl-8 pr-2.5 text-[13.5px] text-ink-soft outline-none transition-colors focus:bg-[#eef1ec]",
         className
       )}
       checked={checked}
@@ -89,7 +89,7 @@ export function DropdownMenuLabel({
 }: React.ComponentPropsWithoutRef<typeof DropdownPrimitive.Label>) {
   return (
     <DropdownPrimitive.Label
-      className={cn("px-2.5 pb-1 pt-2 text-[10.5px] font-medium uppercase tracking-[0.08em] text-muted", className)}
+      className={cn("px-2.5 pb-1 pt-2 text-[12.5px] font-medium uppercase tracking-[0.08em] text-muted", className)}
       {...props}
     />
   );

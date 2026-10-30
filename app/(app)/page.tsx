@@ -50,10 +50,10 @@ function SignalOrb() {
         <circle cx="242" cy="188" r="3" fill="#f2f4ef" fillOpacity=".8" />
         <circle cx="92" cy="92" r="2.5" fill="#f2f4ef" fillOpacity=".5" />
       </svg>
-      <div className="absolute right-[38px] top-[48px] rounded-md border border-white/10 bg-white/6 px-2 py-1 text-[9px] tracking-wide text-white/70 backdrop-blur-sm">
+      <div className="absolute right-[38px] top-[48px] rounded-md border border-white/10 bg-white/6 px-2 py-1 text-[12px] tracking-wide text-white/70 backdrop-blur-sm">
         决策窗口 · 2
       </div>
-      <div className="absolute bottom-[54px] left-[42px] rounded-md border border-white/10 bg-white/6 px-2 py-1 text-[9px] tracking-wide text-white/70 backdrop-blur-sm">
+      <div className="absolute bottom-[54px] left-[42px] rounded-md border border-white/10 bg-white/6 px-2 py-1 text-[12px] tracking-wide text-white/70 backdrop-blur-sm">
         审批阻塞 · 1
       </div>
     </div>
@@ -104,8 +104,8 @@ export default function DashboardPage() {
                 <span className="flex size-6 items-center justify-center rounded-md border border-white/15 bg-white/8">
                   <Sparkles className="size-3 text-[#f2b3a1]" />
                 </span>
-                <span className="text-[11px] font-medium tracking-[0.02em] text-[#cfe0d5]">AI 今日招聘简报</span>
-                <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/6 px-2 py-0.5 text-[9px] text-[#a9c3b5]">
+                <span className="text-[13px] font-medium tracking-[0.02em] text-[#cfe0d5]">AI 今日招聘简报</span>
+                <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/6 px-2 py-0.5 text-[12px] text-[#a9c3b5]">
                   <span className="pulse-dot inline-block size-1 rounded-full bg-[#7fd2a8]" />
                   08:12 更新
                 </span>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                 <br />
                 <span className="text-white/72">把注意力放在两个决策窗口。</span>
               </h2>
-              <p className="mt-3 max-w-[510px] text-[12px] leading-6 text-[#b7cbbf]">
+              <p className="mt-3 max-w-[510px] text-[13.5px] leading-6 text-[#b7cbbf]">
                 高级产品经理岗位的简历质量高于近 30 天均值，但裴然的 Offer 已在财务审批停留 1 天；周予安将在 10:00 进入二面，这是本周最值得关注的一场面试。
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -140,7 +140,7 @@ export default function DashboardPage() {
                 ].map(([label, value, note]) => (
                   <div key={label} className="flex items-baseline gap-2">
                     <span className="num text-[20px] font-semibold leading-none">{value}</span>
-                    <span className="text-[10px] text-[#a9c3b5]">
+                    <span className="text-[12.5px] text-[#a9c3b5]">
                       {label} <span className="text-[#7d9a8c]">· {note}</span>
                     </span>
                   </div>
@@ -155,7 +155,7 @@ export default function DashboardPage() {
             title="招聘漏斗"
             description="近 30 天 · 全公司"
             action={
-              <Link href="/candidates" className="flex items-center gap-1 text-[11px] font-medium text-pine hover:underline">
+              <Link href="/candidates" className="flex items-center gap-1 text-[13px] font-medium text-pine hover:underline">
                 查看候选人 <ArrowUpRight className="size-3" />
               </Link>
             }
@@ -163,11 +163,11 @@ export default function DashboardPage() {
           <div className="mt-5 flex-1 space-y-3">
             {funnel.map((f, i) => (
               <div key={f.label} className="group">
-                <div className="mb-1.5 flex items-center justify-between text-[11px]">
+                <div className="mb-1.5 flex items-center justify-between text-[13px]">
                   <span className="text-muted">{f.label}</span>
                   <span className="num font-medium text-ink">
                     {f.value}
-                    <span className="ml-1.5 text-[9.5px] font-normal text-muted">{f.note}</span>
+                    <span className="ml-1.5 text-[12px] font-normal text-muted">{f.note}</span>
                   </span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-[#f0f2ed]">
@@ -181,12 +181,12 @@ export default function DashboardPage() {
           </div>
           <div className="mt-5 flex items-center justify-between rounded-xl bg-[#f7f8f4] px-3.5 py-3">
             <div>
-              <div className="text-[10px] text-muted">整体转化率</div>
+              <div className="text-[12.5px] text-muted">整体转化率</div>
               <div className="mt-0.5 num text-[17px] font-semibold text-pine">2.0%</div>
             </div>
             <div className="text-right">
-              <div className="text-[10px] text-muted">较上月</div>
-              <div className="mt-0.5 text-[11px] font-medium text-pine">+0.4 pt</div>
+              <div className="text-[12.5px] text-muted">较上月</div>
+              <div className="mt-0.5 text-[13px] font-medium text-pine">+0.4 pt</div>
             </div>
             <Sparkline data={[3, 4, 3, 5, 4, 6, 7, 6, 8]} width={76} height={26} />
           </div>
@@ -208,7 +208,7 @@ export default function DashboardPage() {
               description={`${todayInterviews.length} 场 · 下一场 ${todayInterviews[0]?.start ?? "—"} 开始`}
               icon={<CalendarClock />}
             />
-            <Link href="/interviews" className="flex items-center gap-1 text-[11px] font-medium text-pine hover:underline">
+            <Link href="/interviews" className="flex items-center gap-1 text-[13px] font-medium text-pine hover:underline">
               全部安排 <ArrowUpRight className="size-3" />
             </Link>
           </div>
@@ -229,27 +229,27 @@ export default function DashboardPage() {
                   )}
                 >
                   <div className="w-[62px] shrink-0">
-                    <div className="num text-[12.5px] font-semibold text-ink">{iv.start}</div>
-                    <div className="mt-0.5 text-[9.5px] text-muted">{iv.end} 结束</div>
+                    <div className="num text-[13.5px] font-semibold text-ink">{iv.start}</div>
+                    <div className="mt-0.5 text-[12px] text-muted">{iv.end} 结束</div>
                   </div>
                   <span className={cn("h-8 w-px shrink-0", isNext ? "bg-signal" : "bg-line")} />
                   <Avatar name={candidate?.name ?? "候选人"} size={32} />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <span className="truncate text-[12.5px] font-medium text-ink">{candidate?.name}</span>
-                      <span className={cn("rounded px-1.5 py-0.5 text-[9px] font-medium", type.tone)}>{type.label}</span>
+                      <span className="truncate text-[13.5px] font-medium text-ink">{candidate?.name}</span>
+                      <span className={cn("rounded px-1.5 py-0.5 text-[12px] font-medium", type.tone)}>{type.label}</span>
                     </div>
-                    <div className="mt-1 truncate text-[10.5px] text-muted">
+                    <div className="mt-1 truncate text-[12.5px] text-muted">
                       {job?.title} · {iv.round}
                     </div>
                   </div>
                   <div className="hidden items-center gap-2 sm:flex">
                     <AvatarGroup names={interviewerNames} size={22} max={2} />
-                    <span className="text-[9.5px] text-muted">{interviewerNames[0]}</span>
+                    <span className="text-[12px] text-muted">{interviewerNames[0]}</span>
                   </div>
                   <span
                     className={cn(
-                      "ml-1 hidden h-[22px] items-center rounded-md px-2 text-[10px] font-medium md:inline-flex",
+                      "ml-1 hidden h-[22px] items-center rounded-md px-2 text-[12.5px] font-medium md:inline-flex",
                       iv.status === "confirmed" ? "bg-pine-soft text-pine" : "bg-amber-soft text-[#7a5412]"
                     )}
                   >
@@ -261,10 +261,10 @@ export default function DashboardPage() {
             })}
           </div>
           <div className="flex items-center justify-between border-t border-line px-5 py-3">
-            <span className="flex items-center gap-1.5 text-[10.5px] text-muted">
+            <span className="flex items-center gap-1.5 text-[12.5px] text-muted">
               <Clock3 className="size-3" /> 下一场 10:00 · 周予安 · 二面
             </span>
-            <Link href="/interviews" className="text-[10.5px] font-medium text-pine hover:underline">
+            <Link href="/interviews" className="text-[12.5px] font-medium text-pine hover:underline">
               查看全部
             </Link>
           </div>
@@ -282,26 +282,26 @@ export default function DashboardPage() {
               <label key={task.id} className="group flex cursor-pointer items-start gap-3 py-3">
                 <Checkbox checked={task.done} onCheckedChange={() => toggleTask(task.id)} className="mt-0.5" />
                 <span className="min-w-0 flex-1">
-                  <span className={cn("block text-[12px] leading-5 transition-colors", task.done ? "text-muted line-through" : "text-ink group-hover:text-pine")}>
+                  <span className={cn("block text-[13.5px] leading-5 transition-colors", task.done ? "text-muted line-through" : "text-ink group-hover:text-pine")}>
                     {task.title}
                   </span>
-                  <span className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted">
+                  <span className="mt-0.5 flex items-center gap-1.5 text-[12.5px] text-muted">
                     <span className={cn("size-1.5 rounded-full", task.tone === "signal" ? "bg-signal" : task.tone === "amber" ? "bg-amber" : "bg-pine")} />
                     {task.due}
                   </span>
                 </span>
-                {task.id === "task-2" ? <span className="rounded bg-amber-soft px-1.5 py-0.5 text-[9px] font-medium text-[#7a5412]">审批</span> : null}
+                {task.id === "task-2" ? <span className="rounded bg-amber-soft px-1.5 py-0.5 text-[12px] font-medium text-[#7a5412]">审批</span> : null}
               </label>
             ))}
           </div>
           <div className="mt-auto flex items-center justify-between border-t border-line pt-3.5">
             <button
               onClick={() => toast.success("已将剩余待办整理为今日清单")}
-              className="text-[11px] font-medium text-pine hover:underline"
+              className="text-[13px] font-medium text-pine hover:underline"
             >
               生成今日清单
             </button>
-            <Link href="/interviews" className="flex items-center gap-1 text-[10.5px] text-muted hover:text-ink">
+            <Link href="/interviews" className="flex items-center gap-1 text-[12.5px] text-muted hover:text-ink">
               查看全部 <ArrowRight className="size-3" />
             </Link>
           </div>
@@ -312,14 +312,14 @@ export default function DashboardPage() {
         <section className="surface col-span-12 overflow-hidden xl:col-span-7">
           <div className="flex items-start justify-between gap-4 px-5 pb-3 pt-5">
             <SectionTitle title="最新候选人" description="AI 已完成结构化解析与岗位匹配" icon={<Users />} />
-            <Link href="/candidates" className="flex items-center gap-1 text-[11px] font-medium text-pine hover:underline">
+            <Link href="/candidates" className="flex items-center gap-1 text-[13px] font-medium text-pine hover:underline">
               查看全部 <ArrowUpRight className="size-3" />
             </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[560px] border-collapse text-left">
               <thead>
-                <tr className="border-y border-line bg-[#fafbf8] text-[10px] font-medium text-muted">
+                <tr className="border-y border-line bg-[#fafbf8] text-[12.5px] font-medium text-muted">
                   <th className="px-5 py-2 font-medium">候选人</th>
                   <th className="py-2 font-medium">应聘职位</th>
                   <th className="py-2 font-medium">阶段</th>
@@ -337,22 +337,22 @@ export default function DashboardPage() {
                         <Link href={`/candidates?candidate=${c.id}`} className="flex items-center gap-2.5">
                           <Avatar name={c.name} size={30} />
                           <span className="min-w-0">
-                            <span className="block truncate text-[12px] font-medium text-ink group-hover:text-pine">{c.name}</span>
-                            <span className="mt-0.5 block truncate text-[9.5px] text-muted">{c.currentCompany} · {c.years} 年</span>
+                            <span className="block truncate text-[13.5px] font-medium text-ink group-hover:text-pine">{c.name}</span>
+                            <span className="mt-0.5 block truncate text-[12px] text-muted">{c.currentCompany} · {c.years} 年</span>
                           </span>
                         </Link>
                       </td>
-                      <td className="py-3 text-[11px] text-ink-soft">{job?.title}</td>
+                      <td className="py-3 text-[13px] text-ink-soft">{job?.title}</td>
                       <td className="py-3">
-                        <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px]", stage.tone)}>
+                        <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12.5px]", stage.tone)}>
                           <span className={cn("size-1.5 rounded-full", stage.dot)} />
                           {stage.label}
                         </span>
                       </td>
                       <td className="py-3 text-right">
-                        <span className={cn("num text-[13px] font-semibold", scoreTone(c.score).text)}>{c.score}</span>
+                        <span className={cn("num text-[14px] font-semibold", scoreTone(c.score).text)}>{c.score}</span>
                       </td>
-                      <td className="px-5 py-3 text-right text-[10px] text-muted">{c.appliedAt.slice(5)}</td>
+                      <td className="px-5 py-3 text-right text-[12.5px] text-muted">{c.appliedAt.slice(5)}</td>
                     </tr>
                   );
                 })}
@@ -366,7 +366,7 @@ export default function DashboardPage() {
             title="职位健康度"
             description="结合简历流速、面试转化与招聘周期"
             action={
-              <Link href="/jobs" className="flex items-center gap-1 text-[11px] font-medium text-pine hover:underline">
+              <Link href="/jobs" className="flex items-center gap-1 text-[13px] font-medium text-pine hover:underline">
                 全部职位 <ArrowUpRight className="size-3" />
               </Link>
             }
@@ -378,19 +378,19 @@ export default function DashboardPage() {
                 <Link key={job.id} href={`/jobs/${job.id}`} className="block rounded-xl border border-line bg-[#fcfcf9] p-3.5 transition-colors hover:border-line-strong hover:bg-white">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="truncate text-[12px] font-medium text-ink">{job.title}</div>
-                      <div className="mt-1 flex items-center gap-2 text-[9.5px] text-muted">
+                      <div className="truncate text-[13.5px] font-medium text-ink">{job.title}</div>
+                      <div className="mt-1 flex items-center gap-2 text-[12px] text-muted">
                         <span>{job.location}</span>
                         <span className="size-0.5 rounded-full bg-muted" />
                         <span>本周 +{job.newThisWeek}</span>
                       </div>
                     </div>
-                    <span className={cn("num text-[13px] font-semibold", health >= 85 ? "text-pine" : "text-[#8a6a24]")}>{health}</span>
+                    <span className={cn("num text-[14px] font-semibold", health >= 85 ? "text-pine" : "text-[#8a6a24]")}>{health}</span>
                   </div>
                   <div className="mt-3 flex items-center gap-3">
                     <Progress value={job.hired} max={job.headcount} className="h-1 flex-1" barClassName={health >= 85 ? "bg-pine" : "bg-amber"} />
-                    <span className="shrink-0 text-[9.5px] text-muted">已入职 {job.hired}/{job.headcount}</span>
-                    <span className="shrink-0 text-[9.5px] text-muted">· {job.candidateCount} 份</span>
+                    <span className="shrink-0 text-[12px] text-muted">已入职 {job.hired}/{job.headcount}</span>
+                    <span className="shrink-0 text-[12px] text-muted">· {job.candidateCount} 份</span>
                   </div>
                 </Link>
               );
@@ -398,14 +398,14 @@ export default function DashboardPage() {
           </div>
           <div className="mt-4 flex items-start gap-2.5 rounded-xl bg-signal-soft/55 px-3.5 py-3">
             <Sparkles className="mt-0.5 size-3.5 shrink-0 text-signal" />
-            <p className="text-[10.5px] leading-5 text-[#8a4a35]">
+            <p className="text-[12.5px] leading-5 text-[#8a4a35]">
               解决方案顾问的面试转化低于同类岗位 12%，建议让 AI 重新校准岗位画像。
             </p>
           </div>
         </section>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 px-1 pb-2 text-[10px] text-muted">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-1 pb-2 text-[12.5px] text-muted">
         <span>数据更新于 2026-10-30 08:12 · 仅展示你有权限查看的招聘数据</span>
         <span className="flex items-center gap-2">
           <span className="size-1.5 rounded-full bg-[#6fae8c]" /> 所有服务运行正常

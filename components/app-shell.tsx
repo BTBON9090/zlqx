@@ -117,8 +117,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div className="mx-3 flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.045] px-2.5 py-2">
         <CompanyMark name="澄明科技" size={28} />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[12px] font-medium text-[#eef4ee]">澄明科技</div>
-          <div className="mt-0.5 truncate text-[10px] text-[#a4beb0]">企业版 · 华东区</div>
+          <div className="truncate text-[13.5px] font-medium text-[#eef4ee]">澄明科技</div>
+          <div className="mt-0.5 truncate text-[12.5px] text-[#a4beb0]">企业版 · 华东区</div>
         </div>
         <ChevronDown className="size-3.5 text-[#a4beb0]" />
       </div>
@@ -127,7 +127,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         {navGroups.map((group, gi) => (
           <div key={group.label ?? "main"} className={cn(gi > 0 && "mt-5")}>
             {group.label ? (
-              <div className="mb-1.5 px-2.5 text-[10px] font-medium tracking-[0.06em] text-[#92af9f]">{group.label}</div>
+              <div className="mb-1.5 px-2.5 text-[12.5px] font-medium tracking-[0.06em] text-[#92af9f]">{group.label}</div>
             ) : null}
             <div className="space-y-0.5">
               {group.items.map((item) => {
@@ -139,7 +139,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     href={item.href}
                     onClick={onNavigate}
                     className={cn(
-                      "group relative flex h-[36px] items-center gap-2.5 rounded-[9px] px-2.5 text-[12.5px] font-medium transition-colors",
+                      "group relative flex h-[36px] items-center gap-2.5 rounded-[9px] px-2.5 text-[13.5px] font-medium transition-colors",
                       active ? "bg-white/[0.09] text-white" : "text-[#b7ccc1] hover:bg-white/[0.05] hover:text-[#e5eee7]"
                     )}
                   >
@@ -147,10 +147,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     <Icon className={cn("size-[15px] shrink-0", active ? "text-[#f1c4b6]" : "text-[#97b2a5] group-hover:text-[#d0dfd6]")} strokeWidth={1.8} />
                     <span className="flex-1">{item.label}</span>
                     {item.ai ? (
-                      <span className="rounded bg-signal/18 px-1.5 py-0.5 text-[9px] font-semibold tracking-[0.04em] text-[#ffb9a6]">AI</span>
+                      <span className="rounded bg-signal/18 px-1.5 py-0.5 text-[12px] font-semibold tracking-[0.04em] text-[#ffb9a6]">AI</span>
                     ) : null}
                     {item.live && todayCount > 0 ? (
-                      <span className="rounded-md bg-white/10 px-1.5 py-0.5 text-[9.5px] num text-[#d7e6dc]">{todayCount}</span>
+                      <span className="rounded-md bg-white/10 px-1.5 py-0.5 text-[12px] num text-[#d7e6dc]">{todayCount}</span>
                     ) : null}
                   </Link>
                 );
@@ -161,14 +161,14 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       <div className="mx-3 mb-3 rounded-xl border border-white/8 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(223,79,44,.2),transparent_55%)] p-3">
-        <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#e8f0e9]">
+        <div className="flex items-center gap-1.5 text-[13px] font-medium text-[#e8f0e9]">
           <Sparkles className="size-3.5 text-[#f0a48f]" />
           小聘 · AI 助手
         </div>
-        <p className="mt-1.5 text-[10.5px] leading-[1.6] text-[#a4beb0]">今天的 3 个招聘信号，已经整理好了。</p>
+        <p className="mt-1.5 text-[12.5px] leading-[1.6] text-[#a4beb0]">今天的 3 个招聘信号，已经整理好了。</p>
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("open-copilot"))}
-          className="mt-2.5 inline-flex items-center gap-1 text-[10.5px] font-medium text-[#f0b09d] transition-colors hover:text-white"
+          className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-medium text-[#f0b09d] transition-colors hover:text-white"
         >
           查看简报 <ArrowRight className="size-3" />
         </button>
@@ -178,8 +178,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <Link href="/profile" onClick={onNavigate} className="flex min-w-0 items-center gap-2">
           <Avatar name="林岚" size={28} />
           <div className="min-w-0">
-            <div className="truncate text-[11.5px] font-medium text-[#e8f0e9]">林岚</div>
-            <div className="truncate text-[9.5px] text-[#a4beb0]">招聘负责人</div>
+            <div className="truncate text-[13px] font-medium text-[#e8f0e9]">林岚</div>
+            <div className="truncate text-[12px] text-[#a4beb0]">招聘负责人</div>
           </div>
         </Link>
         <Link href="/settings" onClick={onNavigate} aria-label="企业设置" className="flex size-7 items-center justify-center rounded-lg text-[#a4beb0] transition-colors hover:bg-white/8 hover:text-white">
@@ -267,15 +267,15 @@ function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenChange: (
             placeholder="搜索职位、候选人、面试，或输入页面名称…"
             className="h-6 flex-1 bg-transparent text-[14px] text-ink outline-none placeholder:text-[#9ba69f]"
           />
-          <kbd className="rounded border border-line bg-[#f5f6f2] px-1.5 py-0.5 text-[9.5px] text-muted">ESC</kbd>
+          <kbd className="rounded border border-line bg-[#f5f6f2] px-1.5 py-0.5 text-[12px] text-muted">ESC</kbd>
         </div>
         <div className="max-h-[440px] overflow-y-auto p-2">
           {grouped.length === 0 ? (
-            <div className="px-4 py-10 text-center text-[12.5px] text-muted">没有找到匹配结果</div>
+            <div className="px-4 py-10 text-center text-[13.5px] text-muted">没有找到匹配结果</div>
           ) : (
             grouped.map(([label, groupItems]) => (
               <div key={label} className="mb-1.5">
-                <div className="px-2.5 pb-1 pt-2 text-[10.5px] font-medium text-muted">{label}</div>
+                <div className="px-2.5 pb-1 pt-2 text-[12.5px] font-medium text-muted">{label}</div>
                 {groupItems.map((item) => {
                   const Icon = item.icon;
                   const index = flat.findIndex((f) => f.id === item.id);
@@ -293,10 +293,10 @@ function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenChange: (
                         <Icon className="size-3.5" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[12.5px] font-medium text-ink">{item.label}</span>
-                        <span className="block truncate text-[10.5px] text-muted">{item.meta}</span>
+                        <span className="block truncate text-[13.5px] font-medium text-ink">{item.label}</span>
+                        <span className="block truncate text-[12.5px] text-muted">{item.meta}</span>
                       </span>
-                      {activeIndex === index ? <span className="text-[10px] text-muted">↵ 打开</span> : null}
+                      {activeIndex === index ? <span className="text-[12.5px] text-muted">↵ 打开</span> : null}
                     </button>
                   );
                 })}
@@ -304,7 +304,7 @@ function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenChange: (
             ))
           )}
         </div>
-        <div className="flex items-center justify-between border-t border-line bg-[#fafbf8] px-4 py-2.5 text-[10.5px] text-muted">
+        <div className="flex items-center justify-between border-t border-line bg-[#fafbf8] px-4 py-2.5 text-[12.5px] text-muted">
           <span>↑↓ 选择 · ↵ 打开</span>
           <span>智聘千寻 搜索</span>
         </div>
@@ -363,8 +363,8 @@ function CopilotPanel({ open, onClose }: { open: boolean; onClose: () => void })
             <span className="absolute -bottom-0.5 -right-0.5 size-2 rounded-full border border-pine-deep bg-[#7fd2a8]" />
           </div>
           <div className="flex-1">
-            <div className="text-[13px] font-medium">小聘 · AI 招聘助手</div>
-            <div className="mt-0.5 text-[10px] text-[#9cb8a9]">在线 · 可以读取当前招聘数据</div>
+            <div className="text-[14px] font-medium">小聘 · AI 招聘助手</div>
+            <div className="mt-0.5 text-[12.5px] text-[#9cb8a9]">在线 · 可以读取当前招聘数据</div>
           </div>
           <button onClick={onClose} aria-label="关闭 AI 助手" className="flex size-7 items-center justify-center rounded-lg text-[#b7ccc1] transition-colors hover:bg-white/10 hover:text-white">
             <X className="size-4" />
@@ -380,7 +380,7 @@ function CopilotPanel({ open, onClose }: { open: boolean; onClose: () => void })
               ) : null}
               <div
                 className={cn(
-                  "max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[12px] leading-[1.75]",
+                  "max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[13.5px] leading-[1.75]",
                   m.role === "assistant" ? "rounded-tl-md border border-line bg-white text-ink-soft" : "rounded-tr-md bg-pine text-white"
                 )}
               >
@@ -405,7 +405,7 @@ function CopilotPanel({ open, onClose }: { open: boolean; onClose: () => void })
         <div className="border-t border-line bg-white px-3 pb-3 pt-2.5">
           <div className="mb-2 flex gap-1.5 overflow-x-auto scroll-none">
             {["今天先做什么？", "周予安的匹配点", "提醒审批 Offer"].map((q) => (
-              <button key={q} onClick={() => send(q)} className="shrink-0 rounded-full border border-line px-2.5 py-1 text-[10px] text-muted transition-colors hover:border-pine/30 hover:text-pine">
+              <button key={q} onClick={() => send(q)} className="shrink-0 rounded-full border border-line px-2.5 py-1 text-[12.5px] text-muted transition-colors hover:border-pine/30 hover:text-pine">
                 {q}
               </button>
             ))}
@@ -421,7 +421,7 @@ function CopilotPanel({ open, onClose }: { open: boolean; onClose: () => void })
                 }
               }}
               placeholder="让小聘帮你处理招聘工作…"
-              className="h-9 flex-1 rounded-[10px] border border-line bg-[#fafbf8] px-3 text-[12px] outline-none placeholder:text-[#9ba69f] focus:border-pine/50"
+              className="h-9 flex-1 rounded-[10px] border border-line bg-[#fafbf8] px-3 text-[13.5px] outline-none placeholder:text-[#9ba69f] focus:border-pine/50"
             />
             <button onClick={() => send()} className="flex size-9 items-center justify-center rounded-[10px] bg-pine text-white transition-colors hover:bg-pine-deep" aria-label="发送">
               <Send className="size-3.5" />
@@ -491,7 +491,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button className="flex size-9 items-center justify-center rounded-lg text-ink-soft hover:bg-[#eef0ec] lg:hidden" onClick={() => setMobileOpen(true)} aria-label="打开菜单">
               <Menu className="size-4.5" />
             </button>
-            <div className="flex min-w-0 items-center gap-2 text-[12px]">
+            <div className="flex min-w-0 items-center gap-2 text-[13.5px]">
               <span className="hidden text-muted sm:block">{meta.group}</span>
               <ChevronRight className="hidden size-3 text-[#aeb8b0] sm:block" />
               <span className="truncate font-medium text-ink">{meta.title}</span>
@@ -500,11 +500,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="ml-auto flex items-center gap-1">
               <button
                 onClick={() => setCommandOpen(true)}
-                className="hidden h-9 items-center gap-2 rounded-[10px] border border-line bg-[#f7f8f4] pl-2.5 pr-1.5 text-[11.5px] text-muted transition-colors hover:border-line-strong hover:text-ink md:flex"
+                className="hidden h-9 items-center gap-2 rounded-[10px] border border-line bg-[#f7f8f4] pl-2.5 pr-1.5 text-[13px] text-muted transition-colors hover:border-line-strong hover:text-ink md:flex"
               >
                 <Search className="size-3.5" />
                 <span className="w-[124px] text-left xl:w-[160px]">搜索职位、候选人…</span>
-                <kbd className="flex items-center gap-0.5 rounded border border-line bg-white px-1.5 py-0.5 text-[9px] text-muted">
+                <kbd className="flex items-center gap-0.5 rounded border border-line bg-white px-1.5 py-0.5 text-[12px] text-muted">
                   <Command className="size-2.5" />K
                 </kbd>
               </button>
@@ -524,22 +524,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </PopoverTrigger>
                 <PopoverContent className="w-[340px] p-0">
                   <div className="flex items-center justify-between border-b border-line px-4 py-3">
-                    <span className="text-[12.5px] font-semibold">今日待办</span>
-                    <span className="text-[10.5px] text-muted">{openTasks} 项未完成</span>
+                    <span className="text-[13.5px] font-semibold">今日待办</span>
+                    <span className="text-[12.5px] text-muted">{openTasks} 项未完成</span>
                   </div>
                   <div className="p-2">
                     {tasks.map((task) => (
                       <label key={task.id} className="flex cursor-pointer items-start gap-2.5 rounded-lg px-2 py-2 hover:bg-[#f5f7f2]">
                         <Checkbox checked={task.done} onCheckedChange={() => toggleTask(task.id)} className="mt-0.5" />
                         <span className="min-w-0 flex-1">
-                          <span className={cn("block text-[11.5px] leading-5", task.done ? "text-muted line-through" : "text-ink")}>{task.title}</span>
-                          <span className="mt-0.5 block text-[10px] text-muted">{task.due}</span>
+                          <span className={cn("block text-[13px] leading-5", task.done ? "text-muted line-through" : "text-ink")}>{task.title}</span>
+                          <span className="mt-0.5 block text-[12.5px] text-muted">{task.due}</span>
                         </span>
                       </label>
                     ))}
                   </div>
                   <div className="border-t border-line px-4 py-2.5">
-                    <Link href="/interviews" className="flex items-center justify-between text-[11px] font-medium text-pine hover:underline">
+                    <Link href="/interviews" className="flex items-center justify-between text-[13px] font-medium text-pine hover:underline">
                       查看面试安排 <ArrowUpRight className="size-3" />
                     </Link>
                   </div>
@@ -555,24 +555,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </PopoverTrigger>
                 <PopoverContent className="w-[360px] p-0">
                   <div className="flex items-center justify-between border-b border-line px-4 py-3">
-                    <span className="text-[12.5px] font-semibold">通知</span>
-                    <span className="rounded-full bg-signal-soft px-2 py-0.5 text-[10px] font-medium text-signal">{unread} 条新通知</span>
+                    <span className="text-[13.5px] font-semibold">通知</span>
+                    <span className="rounded-full bg-signal-soft px-2 py-0.5 text-[12.5px] font-medium text-signal">{unread} 条新通知</span>
                   </div>
                   <div className="max-h-[300px] overflow-y-auto p-1.5">
                     {notifications.slice(0, 5).map((n) => (
                       <Link key={n.id} href="/messages" className="flex items-start gap-2.5 rounded-lg px-2.5 py-2.5 hover:bg-[#f5f7f2]">
                         <span className={cn("mt-1.5 size-1.5 shrink-0 rounded-full", n.status === "failed" ? "bg-signal" : n.status === "read" ? "bg-[#9aa69e]" : "bg-pine")} />
                         <span className="min-w-0 flex-1">
-                          <span className="block text-[11.5px] leading-5 text-ink">
+                          <span className="block text-[13px] leading-5 text-ink">
                             {n.recipient} · {n.scenario}
                           </span>
-                          <span className="mt-0.5 block text-[10px] text-muted">{n.sentAt} · {n.status === "failed" ? "发送失败" : n.status === "read" ? "已读" : "已送达"}</span>
+                          <span className="mt-0.5 block text-[12.5px] text-muted">{n.sentAt} · {n.status === "failed" ? "发送失败" : n.status === "read" ? "已读" : "已送达"}</span>
                         </span>
                       </Link>
                     ))}
                   </div>
                   <div className="border-t border-line px-4 py-2.5">
-                    <Link href="/messages" className="flex items-center justify-between text-[11px] font-medium text-pine hover:underline">
+                    <Link href="/messages" className="flex items-center justify-between text-[13px] font-medium text-pine hover:underline">
                       查看全部通知记录 <ArrowUpRight className="size-3" />
                     </Link>
                   </div>
@@ -594,19 +594,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <DropdownMenuTrigger asChild>
                   <button className="hidden items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition-colors hover:bg-[#eef0ec] sm:flex">
                     <CompanyMark size={26} />
-                    <span className="hidden text-[11.5px] font-medium text-ink xl:block">澄明科技</span>
+                    <span className="hidden text-[13px] font-medium text-ink xl:block">澄明科技</span>
                     <ChevronDown className="size-3 text-muted" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuLabel>当前企业</DropdownMenuLabel>
                   <DropdownMenuItem>
-                    <span className="flex size-5 items-center justify-center rounded bg-pine-soft text-[9px] font-semibold text-pine">澄</span>
+                    <span className="flex size-5 items-center justify-center rounded bg-pine-soft text-[12px] font-semibold text-pine">澄</span>
                     <span className="flex-1">澄明科技</span>
                     <Check className="size-3.5 text-pine" />
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <span className="flex size-5 items-center justify-center rounded bg-[#e8eef5] text-[9px] font-semibold text-[#2f5c80]">上</span>
+                    <span className="flex size-5 items-center justify-center rounded bg-[#e8eef5] text-[12px] font-semibold text-[#2f5c80]">上</span>
                     <span className="flex-1">澄明科技 · 上海</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -624,9 +624,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-[230px]">
                   <div className="px-2.5 py-2">
-                    <div className="text-[12.5px] font-semibold">林岚</div>
-                    <div className="mt-0.5 text-[10.5px] text-muted">lin.lan@chengming.ai</div>
-                    <div className="mt-2 inline-flex rounded bg-pine-soft px-1.5 py-0.5 text-[9.5px] font-medium text-pine">超级管理员</div>
+                    <div className="text-[13.5px] font-semibold">林岚</div>
+                    <div className="mt-0.5 text-[12.5px] text-muted">lin.lan@chengming.ai</div>
+                    <div className="mt-2 inline-flex rounded bg-pine-soft px-1.5 py-0.5 text-[12px] font-medium text-pine">超级管理员</div>
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => router.push("/profile")}>
@@ -671,7 +671,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Sparkles className="size-3.5 text-[#f4b6a4]" />
               <span className="absolute inset-0 rounded-full border border-white/20 animate-ping opacity-20" />
             </span>
-            <span className="hidden text-[11.5px] font-medium sm:block">问小聘</span>
+            <span className="hidden text-[13px] font-medium sm:block">问小聘</span>
           </button>
         ) : null}
 
@@ -680,7 +680,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <DialogHeader title="帮助与快捷键" description="快速了解智聘千寻的操作方式。" icon={<HelpCircle />} />
             <DialogBody className="space-y-5">
               <div>
-                <div className="mb-2 text-[11px] font-medium text-muted">全局快捷键</div>
+                <div className="mb-2 text-[13px] font-medium text-muted">全局快捷键</div>
                 <div className="space-y-2">
                   {[
                     ["打开全局搜索", "⌘ K"],
@@ -688,18 +688,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     ["在搜索中移动", "↑ ↓"],
                     ["打开搜索结果", "↵"],
                   ].map(([label, key]) => (
-                    <div key={label} className="flex items-center justify-between text-[12px]">
+                    <div key={label} className="flex items-center justify-between text-[13.5px]">
                       <span className="text-ink-soft">{label}</span>
-                      <kbd className="rounded border border-line bg-[#f6f7f3] px-2 py-0.5 text-[10px] text-muted">{key}</kbd>
+                      <kbd className="rounded border border-line bg-[#f6f7f3] px-2 py-0.5 text-[12.5px] text-muted">{key}</kbd>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="rounded-xl border border-line bg-[#fafbf8] p-3.5">
-                <div className="flex items-center gap-2 text-[12px] font-medium text-ink">
+                <div className="flex items-center gap-2 text-[13.5px] font-medium text-ink">
                   <Sparkles className="size-3.5 text-signal" /> 需要更多帮助？
                 </div>
-                <p className="mt-1.5 text-[11.5px] leading-5 text-muted">联系企业管理员林岚，或直接向小聘描述你遇到的问题。</p>
+                <p className="mt-1.5 text-[13px] leading-5 text-muted">联系企业管理员林岚，或直接向小聘描述你遇到的问题。</p>
                 <Button variant="secondary" size="sm" className="mt-3" onClick={() => { setHelpOpen(false); setCopilotOpen(true); }}>
                   问问小聘 <ArrowUpRight />
                 </Button>

@@ -108,14 +108,14 @@ export function UploadResumeDialog({ open, onOpenChange }: { open: boolean; onOp
           >
             <input ref={inputRef} type="file" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className="hidden" onChange={(e) => addFiles(e.target.files)} />
             <div className="flex size-11 items-center justify-center rounded-xl border border-line bg-white text-pine shadow-sm"><Upload className="size-5" /></div>
-            <p className="mt-3 text-[12px] font-medium text-ink">拖拽简历到这里，或 <button onClick={() => inputRef.current?.click()} className="text-pine underline underline-offset-2">选择文件</button></p>
-            <p className="mt-1 text-[10px] text-muted">最多 8 份 · PDF / DOCX / JPG / PNG · 单个文件 ≤ 20MB</p>
-            <button onClick={() => { setFiles(samples); setPhase("idle"); setProgress(0); }} className="mt-3 inline-flex items-center gap-1 text-[10px] font-medium text-[#8a6a24] hover:underline"><Sparkles className="size-3" /> 使用示例简历体验</button>
+            <p className="mt-3 text-[13.5px] font-medium text-ink">拖拽简历到这里，或 <button onClick={() => inputRef.current?.click()} className="text-pine underline underline-offset-2">选择文件</button></p>
+            <p className="mt-1 text-[12.5px] text-muted">最多 8 份 · PDF / DOCX / JPG / PNG · 单个文件 ≤ 20MB</p>
+            <button onClick={() => { setFiles(samples); setPhase("idle"); setProgress(0); }} className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-medium text-[#8a6a24] hover:underline"><Sparkles className="size-3" /> 使用示例简历体验</button>
           </div>
 
           {files.length > 0 ? (
             <div className="overflow-hidden rounded-xl border border-line">
-              <div className="flex items-center justify-between border-b border-line bg-[#fafbf8] px-3 py-2 text-[10px] text-muted">
+              <div className="flex items-center justify-between border-b border-line bg-[#fafbf8] px-3 py-2 text-[12.5px] text-muted">
                 <span>已选择 {files.length} 份简历</span>
                 <button onClick={() => { setFiles([]); setPhase("idle"); }} className="hover:text-ink">清空</button>
               </div>
@@ -124,23 +124,23 @@ export function UploadResumeDialog({ open, onOpenChange }: { open: boolean; onOp
                   <div key={f.id} className="flex items-center gap-2.5 border-b border-line/70 px-3 py-2.5 last:border-0">
                     <span className="flex size-7 items-center justify-center rounded-lg bg-signal-soft text-signal"><FileText className="size-3.5" /></span>
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-[10.5px] font-medium text-ink">{f.name}</div>
-                      <div className="mt-0.5 text-[9px] text-muted">{formatSize(f.size)}</div>
+                      <div className="truncate text-[12.5px] font-medium text-ink">{f.name}</div>
+                      <div className="mt-0.5 text-[12px] text-muted">{formatSize(f.size)}</div>
                     </div>
                     {phase === "parsing" ? (
-                      <span className="flex items-center gap-1 text-[9px] text-pine"><Loader2 className="size-3 animate-spin" /> 解析中</span>
+                      <span className="flex items-center gap-1 text-[12px] text-pine"><Loader2 className="size-3 animate-spin" /> 解析中</span>
                     ) : phase === "done" ? (
-                      <span className="flex items-center gap-1 text-[9px] text-pine"><Check className="size-3" /> 已解析</span>
+                      <span className="flex items-center gap-1 text-[12px] text-pine"><Check className="size-3" /> 已解析</span>
                     ) : (
                       <button onClick={() => setFiles((prev) => prev.filter((x) => x.id !== f.id))} aria-label="移除" className="text-muted hover:text-ink"><X className="size-3.5" /></button>
                     )}
-                    {phase === "done" ? <span className="num text-[10px] font-semibold text-pine">{[86, 82, 77][i % 3]}</span> : null}
+                    {phase === "done" ? <span className="num text-[12.5px] font-semibold text-pine">{[86, 82, 77][i % 3]}</span> : null}
                   </div>
                 ))}
               </div>
               {phase === "parsing" ? (
                 <div className="border-t border-line px-3 py-2.5">
-                  <div className="mb-1.5 flex justify-between text-[9px] text-muted"><span>AI 正在解析简历结构…</span><span>{progress}%</span></div>
+                  <div className="mb-1.5 flex justify-between text-[12px] text-muted"><span>AI 正在解析简历结构…</span><span>{progress}%</span></div>
                   <Progress value={progress} className="h-1" />
                 </div>
               ) : null}
@@ -149,8 +149,8 @@ export function UploadResumeDialog({ open, onOpenChange }: { open: boolean; onOp
 
           {phase === "done" ? (
             <div className="rounded-xl bg-pine-soft/50 p-3.5">
-              <div className="flex items-center gap-1.5 text-[10.5px] font-medium text-pine"><Check className="size-3.5" /> 解析完成</div>
-              <p className="mt-1 text-[9.5px] leading-5 text-ink-soft">已提取姓名、联系方式、教育背景、工作经历与技能标签。系统检测到 1 份重复简历，将自动跳过。</p>
+              <div className="flex items-center gap-1.5 text-[12.5px] font-medium text-pine"><Check className="size-3.5" /> 解析完成</div>
+              <p className="mt-1 text-[12px] leading-5 text-ink-soft">已提取姓名、联系方式、教育背景、工作经历与技能标签。系统检测到 1 份重复简历，将自动跳过。</p>
             </div>
           ) : null}
         </DialogBody>

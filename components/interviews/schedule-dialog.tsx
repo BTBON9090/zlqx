@@ -108,7 +108,7 @@ export function ScheduleInterviewDialog({
         <DialogHeader title="安排面试" description="选择面试形式与时间，系统会自动发送邀约并同步给面试官。" icon={<CalendarClock />} />
         <DialogBody className="space-y-4">
           <div className="rounded-xl border border-line bg-[#fafbf8] p-3">
-            <div className="flex items-center gap-2 text-[10.5px] text-muted">
+            <div className="flex items-center gap-2 text-[12.5px] text-muted">
               <span className={cn("size-1.5 rounded-full", selectedCandidate ? "bg-pine" : "bg-[#c2cbc3]")} />
               {selectedCandidate ? `${selectedCandidate.name} · ${selectedCandidate.currentTitle}` : "尚未选择候选人"}
             </div>
@@ -154,10 +154,10 @@ export function ScheduleInterviewDialog({
                     type === t.value ? "border-pine bg-pine-soft/60" : "border-line bg-white hover:border-line-strong"
                   )}
                 >
-                  <div className={cn("flex items-center gap-1.5 text-[11px] font-medium", type === t.value ? "text-pine" : "text-ink-soft")}>
+                  <div className={cn("flex items-center gap-1.5 text-[13px] font-medium", type === t.value ? "text-pine" : "text-ink-soft")}>
                     <span className="[&_svg]:size-3.5">{t.icon}</span> {t.label}
                   </div>
-                  <div className="mt-1 text-[8.5px] leading-4 text-muted">{t.desc}</div>
+                  <div className="mt-1 text-[11.5px] leading-4 text-muted">{t.desc}</div>
                 </button>
               ))}
             </div>
@@ -174,7 +174,7 @@ export function ScheduleInterviewDialog({
               </Select>
             </Field>
             <Field label="会议 / 地点">
-              <div className="flex h-10 items-center gap-1.5 rounded-[10px] border border-line bg-[#f7f8f4] px-3 text-[10px] text-muted">
+              <div className="flex h-10 items-center gap-1.5 rounded-[10px] border border-line bg-[#f7f8f4] px-3 text-[12.5px] text-muted">
                 {type === "onsite" ? <><MapPin className="size-3" /> 望京 SOHO T3 18F</> : type === "phone" ? <><Phone className="size-3" /> 使用候选人手机号</> : <><Link2 className="size-3" /> 自动生成会议链接</>}
               </div>
             </Field>
@@ -188,8 +188,8 @@ export function ScheduleInterviewDialog({
                   <label key={e.id} className={cn("flex cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-2 transition-colors", checked ? "border-pine/40 bg-pine-soft/40" : "border-line hover:bg-[#fafbf8]")}>
                     <Checkbox checked={checked} onCheckedChange={(v) => setInterviewerIds((prev) => v ? [...prev, e.id] : prev.filter((id) => id !== e.id))} />
                     <Avatar name={e.name} size={22} />
-                    <span className="min-w-0 flex-1 truncate text-[10.5px] text-ink">{e.name}</span>
-                    <span className="text-[8.5px] text-muted">{e.title.slice(0, 4)}</span>
+                    <span className="min-w-0 flex-1 truncate text-[12.5px] text-ink">{e.name}</span>
+                    <span className="text-[11.5px] text-muted">{e.title.slice(0, 4)}</span>
                   </label>
                 );
               })}
@@ -203,8 +203,8 @@ export function ScheduleInterviewDialog({
           <label className="flex cursor-pointer items-start gap-2.5 rounded-xl bg-[#f7f8f4] p-3">
             <Checkbox checked={sendInvite} onCheckedChange={(v) => setSendInvite(!!v)} className="mt-0.5" />
             <span>
-              <span className="block text-[11px] font-medium text-ink">自动发送面试邀约</span>
-              <span className="mt-0.5 block text-[9.5px] leading-4 text-muted">使用「面试邀约」模板，通过邮件与短信通知候选人。</span>
+              <span className="block text-[13px] font-medium text-ink">自动发送面试邀约</span>
+              <span className="mt-0.5 block text-[12px] leading-4 text-muted">使用「面试邀约」模板，通过邮件与短信通知候选人。</span>
             </span>
           </label>
         </DialogBody>

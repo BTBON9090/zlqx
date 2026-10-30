@@ -58,7 +58,7 @@ export function RadarChart({
             return (
               <span
                 key={d.label}
-                className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[9.5px] text-muted"
+                className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[12px] text-muted"
                 style={{ left: x, top: y }}
               >
                 {d.label}
@@ -96,7 +96,7 @@ export function Donut({
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="num text-[20px] font-semibold tracking-[-0.04em] text-ink">{label ?? `${value}%`}</span>
-        {sublabel ? <span className="mt-0.5 text-[9px] text-muted">{sublabel}</span> : null}
+        {sublabel ? <span className="mt-0.5 text-[12px] text-muted">{sublabel}</span> : null}
       </div>
     </div>
   );

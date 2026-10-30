@@ -109,14 +109,14 @@ function OfferCreateDialog({
       <DialogContent size="md" className="p-0">
         <DialogHeader title="创建 Offer" description={`${candidate.name} · ${job?.title ?? "应聘职位"}`} icon={<FileText />} />
         <DialogBody className="space-y-4">
-          <div className="flex items-center gap-2 rounded-xl bg-[#f7f8f4] px-3 py-2.5 text-[10.5px] text-muted">
-            <span className="flex size-5 items-center justify-center rounded-full bg-white text-[9px] text-pine">1</span>
+          <div className="flex items-center gap-2 rounded-xl bg-[#f7f8f4] px-3 py-2.5 text-[12.5px] text-muted">
+            <span className="flex size-5 items-center justify-center rounded-full bg-white text-[12px] text-pine">1</span>
             招聘负责人
             <ArrowRight className="size-3" />
-            <span className="flex size-5 items-center justify-center rounded-full bg-white text-[9px] text-pine">2</span>
+            <span className="flex size-5 items-center justify-center rounded-full bg-white text-[12px] text-pine">2</span>
             部门负责人
             <ArrowRight className="size-3" />
-            <span className="flex size-5 items-center justify-center rounded-full bg-white text-[9px] text-pine">3</span>
+            <span className="flex size-5 items-center justify-center rounded-full bg-white text-[12px] text-pine">3</span>
             财务审批
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -144,7 +144,7 @@ function OfferCreateDialog({
               <Textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="例如：候选人已口头接受，希望 11 月 23 日入职。" className="min-h-[64px]" />
             </Field>
           </div>
-          <div className="rounded-xl border border-line bg-[#fcfdf9] p-3 text-[9.5px] leading-5 text-muted">
+          <div className="rounded-xl border border-line bg-[#fcfdf9] p-3 text-[12px] leading-5 text-muted">
             Offer 创建后将进入审批流。审批通过后可发送给候选人，并自动同步至候选人流程与消息记录。
           </div>
         </DialogBody>
@@ -183,8 +183,8 @@ function MessageDialog({
             </Select>
           </Field>
           <div className="rounded-xl border border-line bg-[#fafbf8] p-4">
-            <div className="text-[11px] font-medium text-ink">{template?.subject}</div>
-            <p className="mt-2 whitespace-pre-wrap text-[10.5px] leading-5 text-muted">
+            <div className="text-[13px] font-medium text-ink">{template?.subject}</div>
+            <p className="mt-2 whitespace-pre-wrap text-[12.5px] leading-5 text-muted">
               {template?.emailBody.replace(/\{\{candidate_name\}\}/g, candidate.name).replace(/\{\{job_title\}\}/g, job?.title ?? "").replace(/\{\{company\}\}/g, "澄明科技")}
             </p>
           </div>
@@ -266,25 +266,25 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-[20px] font-semibold tracking-[-0.03em] text-ink">{candidate.name}</h2>
-                    <span className="text-[10.5px] text-muted">{candidate.gender} · {candidate.age} 岁 · {candidate.years} 年经验</span>
-                    <span className={cn("inline-flex h-[21px] items-center gap-1.5 rounded-md px-2 text-[9.5px] font-medium", stage.tone)}>
+                    <span className="text-[12.5px] text-muted">{candidate.gender} · {candidate.age} 岁 · {candidate.years} 年经验</span>
+                    <span className={cn("inline-flex h-[21px] items-center gap-1.5 rounded-md px-2 text-[12px] font-medium", stage.tone)}>
                       <span className={cn("size-1.5 rounded-full", stage.dot)} /> {stage.label}
                     </span>
                   </div>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10.5px] text-muted">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-muted">
                     <span>{candidate.currentCompany} · {candidate.currentTitle}</span>
                     <span className="flex items-center gap-1"><MapPin className="size-3" /> {candidate.location}</span>
                     <span className="flex items-center gap-1"><BriefcaseBusiness className="size-3" /> {candidate.degree} · {candidate.school}</span>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-1">
-                    {candidate.tags.map((t) => <span key={t} className="rounded bg-[#eef1ec] px-1.5 py-0.5 text-[9px] text-ink-soft">{t}</span>)}
+                    {candidate.tags.map((t) => <span key={t} className="rounded bg-[#eef1ec] px-1.5 py-0.5 text-[12px] text-ink-soft">{t}</span>)}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <div className="text-[9px] text-muted">岗位匹配度</div>
-                  <div className={cn("num mt-0.5 text-[24px] font-semibold leading-none", tone.text)}>{candidate.score}<span className="text-[11px] text-muted">/100</span></div>
+                  <div className="text-[12px] text-muted">岗位匹配度</div>
+                  <div className={cn("num mt-0.5 text-[24px] font-semibold leading-none", tone.text)}>{candidate.score}<span className="text-[13px] text-muted">/100</span></div>
                 </div>
                 <div className="flex gap-1">
                   <a href={`tel:${candidate.phone.replace(/\s/g, "")}`} aria-label="拨打电话" className="flex size-8 items-center justify-center rounded-lg border border-line text-muted transition-colors hover:border-pine/30 hover:text-pine"><Phone className="size-3.5" /></a>
@@ -326,7 +326,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                 <TabsList className="border-b-0">
                   <TabsTrigger value="resume">简历</TabsTrigger>
                   <TabsTrigger value="ai">AI 评估</TabsTrigger>
-                  <TabsTrigger value="interviews">面试 <span className="rounded bg-[#eef1ec] px-1.5 py-0.5 text-[9px] text-muted">{candidateInterviews.length}</span></TabsTrigger>
+                  <TabsTrigger value="interviews">面试 <span className="rounded bg-[#eef1ec] px-1.5 py-0.5 text-[12px] text-muted">{candidateInterviews.length}</span></TabsTrigger>
                   <TabsTrigger value="messages">沟通记录</TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -338,7 +338,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
               <div className="grid gap-4 p-5 md:p-6 lg:grid-cols-[1fr_248px]">
                 <div className="space-y-4">
                   <section className="surface p-5">
-                    <div className="mb-4 flex items-center gap-2"><FileText className="size-3.5 text-pine" /><h3 className="text-[12px] font-semibold text-ink">基本信息</h3></div>
+                    <div className="mb-4 flex items-center gap-2"><FileText className="size-3.5 text-pine" /><h3 className="text-[13.5px] font-semibold text-ink">基本信息</h3></div>
                     <div className="grid grid-cols-2 gap-x-5 gap-y-3 sm:grid-cols-3">
                       {[
                         ["姓名", candidate.name], ["性别", candidate.gender], ["年龄", `${candidate.age} 岁`],
@@ -346,18 +346,18 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                         ["工作年限", `${candidate.years} 年`], ["所在城市", candidate.location], ["期望薪资", candidate.expectedSalary],
                         ["到岗时间", candidate.availability], ["来源", candidate.source], ["投递时间", candidate.appliedAt],
                       ].map(([k, v]) => (
-                        <div key={k}><div className="text-[9.5px] text-muted">{k}</div><div className="mt-1 text-[11px] font-medium leading-5 text-ink">{v}</div></div>
+                        <div key={k}><div className="text-[12px] text-muted">{k}</div><div className="mt-1 text-[13px] font-medium leading-5 text-ink">{v}</div></div>
                       ))}
                     </div>
                   </section>
 
                   <section className="surface p-5">
-                    <div className="mb-3 flex items-center gap-2"><Target className="size-3.5 text-pine" /><h3 className="text-[12px] font-semibold text-ink">个人优势</h3></div>
-                    <p className="text-[11.5px] leading-6 text-ink-soft">{candidate.summary}</p>
+                    <div className="mb-3 flex items-center gap-2"><Target className="size-3.5 text-pine" /><h3 className="text-[13.5px] font-semibold text-ink">个人优势</h3></div>
+                    <p className="text-[13px] leading-6 text-ink-soft">{candidate.summary}</p>
                   </section>
 
                   <section className="surface p-5">
-                    <div className="mb-4 flex items-center gap-2"><BriefcaseBusiness className="size-3.5 text-pine" /><h3 className="text-[12px] font-semibold text-ink">工作经历</h3></div>
+                    <div className="mb-4 flex items-center gap-2"><BriefcaseBusiness className="size-3.5 text-pine" /><h3 className="text-[13.5px] font-semibold text-ink">工作经历</h3></div>
                     <div className="space-y-0">
                       {candidate.experience.map((e, i) => (
                         <div key={`${e.company}-${i}`} className="relative flex gap-3 pb-5 last:pb-0">
@@ -367,41 +367,41 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-baseline justify-between gap-2">
-                              <div className="text-[11.5px] font-medium text-ink">{e.company} · {e.title}</div>
-                              <div className="text-[9.5px] text-muted">{e.period}</div>
+                              <div className="text-[13px] font-medium text-ink">{e.company} · {e.title}</div>
+                              <div className="text-[12px] text-muted">{e.period}</div>
                             </div>
-                            {e.summary ? <p className="mt-1 text-[10.5px] leading-5 text-muted">{e.summary}</p> : null}
+                            {e.summary ? <p className="mt-1 text-[12.5px] leading-5 text-muted">{e.summary}</p> : null}
                           </div>
                         </div>
                       ))}
-                      {candidate.experience.length === 0 ? <div className="text-[10.5px] text-muted">暂无工作经历</div> : null}
+                      {candidate.experience.length === 0 ? <div className="text-[12.5px] text-muted">暂无工作经历</div> : null}
                     </div>
                   </section>
 
                   <section className="surface p-5">
-                    <div className="mb-4 flex items-center gap-2"><Calendar className="size-3.5 text-pine" /><h3 className="text-[12px] font-semibold text-ink">教育经历</h3></div>
+                    <div className="mb-4 flex items-center gap-2"><Calendar className="size-3.5 text-pine" /><h3 className="text-[13.5px] font-semibold text-ink">教育经历</h3></div>
                     {candidate.education.map((e) => (
                       <div key={e.school} className="flex flex-wrap items-baseline justify-between gap-2">
-                        <div className="text-[11.5px] font-medium text-ink">{e.school} · {e.major}</div>
-                        <div className="text-[9.5px] text-muted">{e.degree} · {e.period}</div>
+                        <div className="text-[13px] font-medium text-ink">{e.school} · {e.major}</div>
+                        <div className="text-[12px] text-muted">{e.degree} · {e.period}</div>
                       </div>
                     ))}
                   </section>
 
                   <section className="surface p-5">
-                    <div className="mb-3 flex items-center gap-2"><Sparkles className="size-3.5 text-pine" /><h3 className="text-[12px] font-semibold text-ink">技能标签</h3></div>
+                    <div className="mb-3 flex items-center gap-2"><Sparkles className="size-3.5 text-pine" /><h3 className="text-[13.5px] font-semibold text-ink">技能标签</h3></div>
                     <div className="flex flex-wrap gap-1.5">
-                      {candidate.skills.map((s) => <span key={s} className="rounded-md border border-line bg-[#fafbf8] px-2 py-1 text-[10px] text-ink-soft">{s}</span>)}
+                      {candidate.skills.map((s) => <span key={s} className="rounded-md border border-line bg-[#fafbf8] px-2 py-1 text-[12.5px] text-ink-soft">{s}</span>)}
                     </div>
                   </section>
 
                   <section className="surface p-5">
-                    <div className="mb-3 flex items-center gap-2"><FileText className="size-3.5 text-pine" /><h3 className="text-[12px] font-semibold text-ink">附件简历</h3></div>
+                    <div className="mb-3 flex items-center gap-2"><FileText className="size-3.5 text-pine" /><h3 className="text-[13.5px] font-semibold text-ink">附件简历</h3></div>
                     <div className="space-y-2">
                       {[["简历_原始版本.pdf", "PDF · 284 KB"], ["作品集_2026.pdf", "PDF · 4.2 MB"]].map(([name, meta]) => (
                         <div key={name} className="flex items-center gap-2.5 rounded-lg border border-line px-3 py-2.5">
                           <span className="flex size-8 items-center justify-center rounded-lg bg-signal-soft text-signal"><FileText className="size-3.5" /></span>
-                          <div className="min-w-0 flex-1"><div className="truncate text-[10.5px] font-medium text-ink">{name}</div><div className="mt-0.5 text-[9px] text-muted">{meta}</div></div>
+                          <div className="min-w-0 flex-1"><div className="truncate text-[12.5px] font-medium text-ink">{name}</div><div className="mt-0.5 text-[12px] text-muted">{meta}</div></div>
                           <button onClick={() => toast.success("开始下载附件")} aria-label="下载" className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-[#eef1ec] hover:text-ink"><Download className="size-3.5" /></button>
                         </div>
                       ))}
@@ -411,14 +411,14 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
 
                 <aside className="space-y-4">
                   <div className="surface p-4">
-                    <div className="text-[9.5px] text-muted">应聘职位</div>
-                    <Link href={`/jobs/${job?.id}`} className="mt-1.5 block text-[12px] font-semibold leading-5 text-ink hover:text-pine">{job?.title}</Link>
-                    <div className="mt-1 text-[9.5px] text-muted">{dept?.name} · {job?.location}</div>
+                    <div className="text-[12px] text-muted">应聘职位</div>
+                    <Link href={`/jobs/${job?.id}`} className="mt-1.5 block text-[13.5px] font-semibold leading-5 text-ink hover:text-pine">{job?.title}</Link>
+                    <div className="mt-1 text-[12px] text-muted">{dept?.name} · {job?.location}</div>
                     <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#f7f8f4] px-2.5 py-2">
-                      <div className="flex-1 text-[9.5px] text-muted">匹配度</div>
+                      <div className="flex-1 text-[12px] text-muted">匹配度</div>
                       <div className={cn("num text-[14px] font-semibold", tone.text)}>{candidate.score}</div>
                     </div>
-                    <div className="mt-3 space-y-1.5 text-[9.5px]">
+                    <div className="mt-3 space-y-1.5 text-[12px]">
                       <div className="flex justify-between gap-2"><span className="text-muted">负责人</span><span className="font-medium text-ink">{owner?.name}</span></div>
                       <div className="flex justify-between gap-2"><span className="text-muted">招聘来源</span><span className="font-medium text-ink">{candidate.source}</span></div>
                       <div className="flex justify-between gap-2"><span className="text-muted">投递时间</span><span className="font-medium text-ink">{candidate.appliedAt}</span></div>
@@ -426,7 +426,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                   </div>
 
                   <div className="surface p-4">
-                    <div className="text-[9.5px] text-muted">当前流程</div>
+                    <div className="text-[12px] text-muted">当前流程</div>
                     <div className="mt-3 space-y-0">
                       {job?.stages.map((s, i) => {
                         const active = (candidate.stage === "screening" && i === 0) || (candidate.stage === "interview" && i >= 1 && i <= 3) || (candidate.stage === "offer" && i === 4) || candidate.stage === "hired";
@@ -437,8 +437,8 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                               {i < job.stages.length - 1 ? <span className="mt-1 w-px flex-1 bg-line" /> : null}
                             </div>
                             <div className="-mt-0.5 flex-1">
-                              <div className={cn("text-[10px] font-medium", active ? "text-ink" : "text-muted")}>{s.name}</div>
-                              {s.type === "interview" && s.aiEnabled ? <div className="mt-0.5 text-[8px] text-muted">含数字人初试</div> : null}
+                              <div className={cn("text-[12.5px] font-medium", active ? "text-ink" : "text-muted")}>{s.name}</div>
+                              {s.type === "interview" && s.aiEnabled ? <div className="mt-0.5 text-[11.5px] text-muted">含数字人初试</div> : null}
                             </div>
                           </div>
                         );
@@ -447,18 +447,18 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                   </div>
 
                   <div className="rounded-[16px] bg-pine-deep p-4 text-white">
-                    <div className="flex items-center gap-1.5 text-[10px] font-medium"><Sparkles className="size-3 text-[#f2b3a1]" /> 小聘建议</div>
-                    <p className="mt-2 text-[9.5px] leading-5 text-[#a9c3b5]">{candidate.ai.fit.slice(0, 110)}…</p>
-                    <button onClick={() => setTab("ai")} className="mt-2.5 flex items-center gap-1 text-[9.5px] font-medium text-[#f0b09d] hover:text-white">查看完整评估 <ArrowRight className="size-3" /></button>
+                    <div className="flex items-center gap-1.5 text-[12.5px] font-medium"><Sparkles className="size-3 text-[#f2b3a1]" /> 小聘建议</div>
+                    <p className="mt-2 text-[12px] leading-5 text-[#a9c3b5]">{candidate.ai.fit.slice(0, 110)}…</p>
+                    <button onClick={() => setTab("ai")} className="mt-2.5 flex items-center gap-1 text-[12px] font-medium text-[#f0b09d] hover:text-white">查看完整评估 <ArrowRight className="size-3" /></button>
                   </div>
 
                   <div className="surface p-4">
-                    <div className="text-[9.5px] text-muted">最近动态</div>
+                    <div className="text-[12px] text-muted">最近动态</div>
                     <div className="mt-2.5 space-y-2.5">
                       {candidate.timeline.slice(-3).reverse().map((t) => (
                         <div key={t.id} className="flex gap-2">
                           <span className={cn("mt-1.5 size-1.5 shrink-0 rounded-full", t.tone === "success" ? "bg-pine" : t.tone === "warning" ? "bg-amber" : "bg-[#b8c3ba]")} />
-                          <div className="min-w-0"><div className="text-[9.5px] leading-4 text-ink-soft">{t.title}</div><div className="mt-0.5 text-[8.5px] text-muted">{t.at}</div></div>
+                          <div className="min-w-0"><div className="text-[12px] leading-4 text-ink-soft">{t.title}</div><div className="mt-0.5 text-[11.5px] text-muted">{t.at}</div></div>
                         </div>
                       ))}
                     </div>
@@ -473,9 +473,9 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                   <div className="signal-grid absolute inset-0 opacity-40" />
                   <div className="relative flex flex-wrap items-start justify-between gap-4">
                     <div>
-                      <div className="flex items-center gap-1.5 text-[10px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> AI 推荐报告 · {candidate.score}% 匹配</div>
+                      <div className="flex items-center gap-1.5 text-[12.5px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> AI 推荐报告 · {candidate.score}% 匹配</div>
                       <h3 className="mt-2 max-w-[420px] text-[17px] font-semibold leading-6 tracking-[-0.02em]">{candidate.ai.headline}</h3>
-                      <p className="mt-2 max-w-[480px] text-[10.5px] leading-5 text-[#b7cbbf]">{candidate.ai.fit}</p>
+                      <p className="mt-2 max-w-[480px] text-[12.5px] leading-5 text-[#b7cbbf]">{candidate.ai.fit}</p>
                     </div>
                     <div className="flex gap-1.5">
                       <Button size="sm" variant="ghost" className="text-[#d5e4da] hover:bg-white/10 hover:text-white" onClick={regenerate} disabled={regenerating}>
@@ -490,48 +490,48 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <section className="surface p-5">
-                    <div className="flex items-center gap-2 text-[11px] font-semibold text-pine"><Check className="size-3.5" /> 匹配亮点</div>
+                    <div className="flex items-center gap-2 text-[13px] font-semibold text-pine"><Check className="size-3.5" /> 匹配亮点</div>
                     <ul className="mt-3 space-y-2.5">
-                      {candidate.ai.highlights.map((h) => <li key={h} className="flex gap-2 text-[10.5px] leading-5 text-ink-soft"><Check className="mt-0.5 size-3 shrink-0 text-pine" />{h}</li>)}
+                      {candidate.ai.highlights.map((h) => <li key={h} className="flex gap-2 text-[12.5px] leading-5 text-ink-soft"><Check className="mt-0.5 size-3 shrink-0 text-pine" />{h}</li>)}
                     </ul>
                   </section>
                   <section className="surface p-5">
-                    <div className="flex items-center gap-2 text-[11px] font-semibold text-signal"><CircleAlert className="size-3.5" /> 待验证风险</div>
+                    <div className="flex items-center gap-2 text-[13px] font-semibold text-signal"><CircleAlert className="size-3.5" /> 待验证风险</div>
                     <ul className="mt-3 space-y-2.5">
-                      {candidate.ai.risks.map((h) => <li key={h} className="flex gap-2 text-[10.5px] leading-5 text-ink-soft"><span className="mt-1.5 size-1 shrink-0 rounded-full bg-signal" />{h}</li>)}
-                      {candidate.ai.risks.length === 0 ? <li className="text-[10.5px] text-muted">暂无显著风险</li> : null}
+                      {candidate.ai.risks.map((h) => <li key={h} className="flex gap-2 text-[12.5px] leading-5 text-ink-soft"><span className="mt-1.5 size-1 shrink-0 rounded-full bg-signal" />{h}</li>)}
+                      {candidate.ai.risks.length === 0 ? <li className="text-[12.5px] text-muted">暂无显著风险</li> : null}
                     </ul>
                   </section>
                 </div>
 
                 <section className="surface p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <div className="text-[11px] font-semibold text-ink">岗位维度匹配</div>
-                    <span className="text-[9px] text-muted">基于 {job?.title} 的画像</span>
+                    <div className="text-[13px] font-semibold text-ink">岗位维度匹配</div>
+                    <span className="text-[12px] text-muted">基于 {job?.title} 的画像</span>
                   </div>
                   <div className="mt-4 space-y-3">
                     {aiDimensions.map((d) => (
                       <div key={d.label} className="flex items-center gap-3">
-                        <span className="w-[64px] shrink-0 text-[10px] text-muted">{d.label}</span>
+                        <span className="w-[64px] shrink-0 text-[12.5px] text-muted">{d.label}</span>
                         <Progress value={d.value} className="h-1.5 flex-1" barClassName={d.value >= 85 ? "bg-pine" : d.value >= 75 ? "bg-[#6b9b82]" : "bg-amber"} />
-                        <span className="num w-6 text-right text-[10px] font-medium text-ink">{d.value}</span>
+                        <span className="num w-6 text-right text-[12.5px] font-medium text-ink">{d.value}</span>
                       </div>
                     ))}
                   </div>
                 </section>
 
                 <section className="surface p-5">
-                  <div className="flex items-center gap-2 text-[11px] font-semibold text-ink"><MessageSquare className="size-3.5 text-pine" /> 建议面试问题</div>
+                  <div className="flex items-center gap-2 text-[13px] font-semibold text-ink"><MessageSquare className="size-3.5 text-pine" /> 建议面试问题</div>
                   <div className="mt-3 space-y-2">
                     {candidate.ai.questions.map((q, i) => (
-                      <div key={q} className="flex gap-3 rounded-lg bg-[#fafbf8] px-3 py-2.5 text-[10.5px] leading-5 text-ink-soft">
-                        <span className="num shrink-0 text-[9px] font-medium text-pine">{String(i + 1).padStart(2, "0")}</span>{q}
+                      <div key={q} className="flex gap-3 rounded-lg bg-[#fafbf8] px-3 py-2.5 text-[12.5px] leading-5 text-ink-soft">
+                        <span className="num shrink-0 text-[12px] font-medium text-pine">{String(i + 1).padStart(2, "0")}</span>{q}
                       </div>
                     ))}
                   </div>
                 </section>
 
-                <div className="flex items-start gap-2 rounded-xl bg-[#fafbf8] p-3.5 text-[9px] leading-5 text-muted">
+                <div className="flex items-start gap-2 rounded-xl bg-[#fafbf8] p-3.5 text-[12px] leading-5 text-muted">
                   <CircleAlert className="mt-0.5 size-3 shrink-0" />
                   AI 评估基于简历、面试记录与岗位画像生成，仅供辅助判断，最终录用决定由招聘团队做出。
                 </div>
@@ -541,7 +541,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
             {tab === "interviews" ? (
               <div className="space-y-4 p-5 md:p-6">
                 <div className="flex items-center justify-between gap-3">
-                  <div><div className="text-[12px] font-semibold text-ink">面试记录</div><div className="mt-1 text-[10px] text-muted">共 {candidateInterviews.length} 场面试</div></div>
+                  <div><div className="text-[13.5px] font-semibold text-ink">面试记录</div><div className="mt-1 text-[12.5px] text-muted">共 {candidateInterviews.length} 场面试</div></div>
                   <Button size="sm" onClick={() => setScheduleOpen(true)}><Plus /> 安排面试</Button>
                 </div>
                 {candidateInterviews.map((iv) => {
@@ -551,18 +551,18 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                     <div key={iv.id} className="surface overflow-hidden">
                       <div className="flex flex-wrap items-center gap-3 p-4">
                         <div className="flex w-[58px] shrink-0 flex-col items-center rounded-lg bg-[#f7f8f4] py-2">
-                          <span className="num text-[13px] font-semibold text-ink">{iv.start}</span>
-                          <span className="mt-0.5 text-[8.5px] text-muted">{iv.date.slice(5)}</span>
+                          <span className="num text-[14px] font-semibold text-ink">{iv.start}</span>
+                          <span className="mt-0.5 text-[11.5px] text-muted">{iv.date.slice(5)}</span>
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="text-[11.5px] font-medium text-ink">{iv.round}</span>
-                            <span className={cn("rounded px-1.5 py-0.5 text-[8.5px]", type.tone)}>{type.label}</span>
-                            <span className={cn("rounded px-1.5 py-0.5 text-[8.5px]", iv.status === "done" ? "bg-pine-soft text-pine" : iv.status === "cancelled" ? "bg-signal-soft text-signal" : "bg-amber-soft text-[#7a5412]")}>
+                            <span className="text-[13px] font-medium text-ink">{iv.round}</span>
+                            <span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", type.tone)}>{type.label}</span>
+                            <span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", iv.status === "done" ? "bg-pine-soft text-pine" : iv.status === "cancelled" ? "bg-signal-soft text-signal" : "bg-amber-soft text-[#7a5412]")}>
                               {iv.status === "done" ? "已完成" : iv.status === "cancelled" ? "已取消" : iv.status === "confirmed" ? "已确认" : "待确认"}
                             </span>
                           </div>
-                          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[9.5px] text-muted">
+                          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted">
                             <span className="flex items-center gap-1"><CalendarClock className="size-3" /> {formatDateWithWeek(iv.date)} · {iv.start}–{iv.end}</span>
                             <span>{names.join("、")}</span>
                           </div>
@@ -571,18 +571,18 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                       </div>
                       {iv.feedback ? (
                         <div className="border-t border-line bg-[#fafbf8] px-4 py-3">
-                          <div className="flex items-center gap-2 text-[9.5px]">
+                          <div className="flex items-center gap-2 text-[12px]">
                             <span className="flex items-center gap-0.5 text-amber">{Array.from({ length: iv.feedback.rating }).map((_, i) => <Star key={i} className="size-2.5 fill-current" />)}</span>
                             <span className="font-medium text-ink">{recommendationLabels[iv.feedback.recommendation]}</span>
                             <span className="text-muted">· {employees.find((e) => e.id === iv.feedback?.submittedBy)?.name} · {iv.feedback.submittedAt}</span>
                           </div>
-                          <p className="mt-1.5 text-[10px] leading-5 text-ink-soft">{iv.feedback.note}</p>
+                          <p className="mt-1.5 text-[12.5px] leading-5 text-ink-soft">{iv.feedback.note}</p>
                         </div>
                       ) : null}
                       {iv.aiSummary ? (
                         <div className="flex items-start gap-2 border-t border-line bg-pine-soft/30 px-4 py-3">
                           <Sparkles className="mt-0.5 size-3 text-pine" />
-                          <p className="text-[9.5px] leading-5 text-ink-soft">{iv.aiSummary}</p>
+                          <p className="text-[12px] leading-5 text-ink-soft">{iv.aiSummary}</p>
                         </div>
                       ) : null}
                     </div>
@@ -591,8 +591,8 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                 {candidateInterviews.length === 0 ? (
                   <div className="surface py-14 text-center">
                     <CalendarClock className="mx-auto size-6 text-muted" />
-                    <div className="mt-3 text-[11.5px] font-medium text-ink">还没有面试安排</div>
-                    <p className="mt-1 text-[10px] text-muted">为这位候选人安排一场面试，开始推进流程。</p>
+                    <div className="mt-3 text-[13px] font-medium text-ink">还没有面试安排</div>
+                    <p className="mt-1 text-[12.5px] text-muted">为这位候选人安排一场面试，开始推进流程。</p>
                     <Button size="sm" className="mt-4" onClick={() => setScheduleOpen(true)}><Plus /> 安排面试</Button>
                   </div>
                 ) : null}
@@ -602,29 +602,29 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
             {tab === "messages" ? (
               <div className="space-y-4 p-5 md:p-6">
                 <div className="flex items-center justify-between gap-3">
-                  <div><div className="text-[12px] font-semibold text-ink">沟通记录</div><div className="mt-1 text-[10px] text-muted">消息与流程动态</div></div>
+                  <div><div className="text-[13.5px] font-semibold text-ink">沟通记录</div><div className="mt-1 text-[12.5px] text-muted">消息与流程动态</div></div>
                   <Button size="sm" onClick={() => setMessageOpen(true)}><Send /> 发送消息</Button>
                 </div>
                 <div className="surface overflow-hidden">
-                  <div className="border-b border-line px-4 py-3 text-[10px] font-medium text-muted">消息记录</div>
+                  <div className="border-b border-line px-4 py-3 text-[12.5px] font-medium text-muted">消息记录</div>
                   {candidateNotifications.map((n) => (
                     <div key={n.id} className="flex items-center gap-3 border-b border-line/70 px-4 py-3 last:border-0">
                       <span className={cn("flex size-7 items-center justify-center rounded-lg", n.channel === "email" ? "bg-[#e8eef5] text-[#2f5c80]" : "bg-amber-soft text-[#8a6a24]")}>
                         {n.channel === "email" ? <Mail className="size-3.5" /> : <MessageSquare className="size-3.5" />}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className="text-[10.5px] text-ink">{n.scenario} · {n.channel === "email" ? "邮件" : "短信"}</div>
-                        <div className="mt-0.5 text-[9px] text-muted">{n.sentAt} · {n.operator}</div>
+                        <div className="text-[12.5px] text-ink">{n.scenario} · {n.channel === "email" ? "邮件" : "短信"}</div>
+                        <div className="mt-0.5 text-[12px] text-muted">{n.sentAt} · {n.operator}</div>
                       </div>
-                      <span className={cn("rounded px-1.5 py-0.5 text-[8.5px]", n.status === "failed" ? "bg-signal-soft text-signal" : n.status === "read" ? "bg-pine-soft text-pine" : "bg-[#eef1ec] text-muted")}>
+                      <span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", n.status === "failed" ? "bg-signal-soft text-signal" : n.status === "read" ? "bg-pine-soft text-pine" : "bg-[#eef1ec] text-muted")}>
                         {n.status === "failed" ? "失败" : n.status === "read" ? "已读" : "已送达"}
                       </span>
                     </div>
                   ))}
-                  {candidateNotifications.length === 0 ? <div className="px-4 py-8 text-center text-[10px] text-muted">暂无消息记录</div> : null}
+                  {candidateNotifications.length === 0 ? <div className="px-4 py-8 text-center text-[12.5px] text-muted">暂无消息记录</div> : null}
                 </div>
                 <div className="surface overflow-hidden">
-                  <div className="border-b border-line px-4 py-3 text-[10px] font-medium text-muted">流程动态</div>
+                  <div className="border-b border-line px-4 py-3 text-[12.5px] font-medium text-muted">流程动态</div>
                   <div className="p-4">
                     {candidate.timeline.slice().reverse().map((t) => (
                       <div key={t.id} className="flex gap-3 pb-4 last:pb-0">
@@ -633,8 +633,8 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                           <span className="mt-1 w-px flex-1 bg-line" />
                         </div>
                         <div className="-mt-0.5 flex-1 pb-1">
-                          <div className="text-[10.5px] font-medium text-ink">{t.title}</div>
-                          <div className="mt-0.5 text-[9px] text-muted">{t.at}{t.note ? ` · ${t.note}` : ""}</div>
+                          <div className="text-[12.5px] font-medium text-ink">{t.title}</div>
+                          <div className="mt-0.5 text-[12px] text-muted">{t.at}{t.note ? ` · ${t.note}` : ""}</div>
                         </div>
                       </div>
                     ))}

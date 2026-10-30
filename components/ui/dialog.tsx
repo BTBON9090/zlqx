@@ -77,7 +77,7 @@ export function DialogHeader({
       ) : null}
       <div className="min-w-0 flex-1">
         <h2 className="text-[16px] font-semibold tracking-[-0.01em] text-ink">{title}</h2>
-        {description ? <p className="mt-1 text-[12.5px] leading-5 text-muted">{description}</p> : null}
+        {description ? <p className="mt-1 text-[13.5px] leading-5 text-muted">{description}</p> : null}
       </div>
       {children}
     </div>

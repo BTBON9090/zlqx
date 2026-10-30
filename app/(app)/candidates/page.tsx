@@ -118,9 +118,9 @@ function CandidatesContent() {
           >
             <span className="flex items-baseline gap-1.5">
               <span className={cn("num text-[22px] font-semibold leading-none tracking-[-0.04em]", stage === t.key ? "text-pine" : "text-ink")}>{counts[t.key]}</span>
-              {t.key === "screening" && counts[t.key] > 0 ? <span className="rounded bg-amber-soft px-1 py-0.5 text-[8px] font-medium text-[#7a5412]">待处理</span> : null}
+              {t.key === "screening" && counts[t.key] > 0 ? <span className="rounded bg-amber-soft px-1 py-0.5 text-[11.5px] font-medium text-[#7a5412]">待处理</span> : null}
             </span>
-            <span className={cn("text-[10.5px]", stage === t.key ? "font-medium text-pine" : "text-muted")}>{t.label}</span>
+            <span className={cn("text-[12.5px]", stage === t.key ? "font-medium text-pine" : "text-muted")}>{t.label}</span>
             {stage === t.key ? <span className="absolute inset-x-0 bottom-0 h-[2px] bg-pine" /> : null}
           </button>
         ))}
@@ -154,13 +154,13 @@ function CandidatesContent() {
             <Filter /> 重置
           </Button>
           <div className="ml-auto flex items-center gap-2">
-            <span className="hidden items-center gap-1 text-[10px] text-muted lg:flex"><Sparkles className="size-3 text-signal" /> AI 已解析全部简历</span>
-            <span className="text-[10px] text-muted">共 <span className="num font-medium text-ink">{filtered.length}</span> 人</span>
+            <span className="hidden items-center gap-1 text-[12.5px] text-muted lg:flex"><Sparkles className="size-3 text-signal" /> AI 已解析全部简历</span>
+            <span className="text-[12.5px] text-muted">共 <span className="num font-medium text-ink">{filtered.length}</span> 人</span>
           </div>
         </div>
 
         {selected.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-3 border-b border-line bg-pine-soft/60 px-4 py-2.5 text-[11px]">
+          <div className="flex flex-wrap items-center gap-3 border-b border-line bg-pine-soft/60 px-4 py-2.5 text-[13px]">
             <span className="font-medium text-pine">已选择 {selected.length} 位候选人</span>
             <button className="text-pine hover:underline" onClick={() => toast.success("已批量发送面试邀约")}>发送面试邀约</button>
             <button className="text-pine hover:underline" onClick={() => toast.success("已批量发送消息")}>发送消息</button>
@@ -181,7 +181,7 @@ function CandidatesContent() {
         <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[1040px] border-collapse text-left">
             <thead>
-              <tr className="border-b border-line bg-[#fafbf8] text-[10px] text-muted">
+              <tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="w-[40px] px-4 py-2.5">
                   <Checkbox checked={allSelected} onCheckedChange={(v) => setSelected(v ? filtered.map((c) => c.id) : [])} aria-label="全选" />
                 </th>
@@ -213,25 +213,25 @@ function CandidatesContent() {
                         <Avatar name={c.name} size={34} />
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
-                            <span className="truncate text-[12px] font-medium text-ink group-hover:text-pine">{c.name}</span>
-                            <span className="text-[9px] text-muted">{c.gender} · {c.age} 岁 · {c.years} 年</span>
-                            {c.appliedAt === "2026-10-30" ? <span className="rounded bg-signal-soft px-1 py-0.5 text-[8px] font-medium text-signal">新</span> : null}
+                            <span className="truncate text-[13.5px] font-medium text-ink group-hover:text-pine">{c.name}</span>
+                            <span className="text-[12px] text-muted">{c.gender} · {c.age} 岁 · {c.years} 年</span>
+                            {c.appliedAt === "2026-10-30" ? <span className="rounded bg-signal-soft px-1 py-0.5 text-[11.5px] font-medium text-signal">新</span> : null}
                           </div>
-                          <div className="mt-0.5 flex items-center gap-1.5 text-[9px] text-muted">
+                          <div className="mt-0.5 flex items-center gap-1.5 text-[12px] text-muted">
                             <span className="truncate">{c.currentCompany} · {c.currentTitle}</span>
                           </div>
                           <div className="mt-1 flex flex-wrap gap-1">
-                            {c.tags.slice(0, 2).map((t) => <span key={t} className="rounded bg-[#f0f3ee] px-1.5 py-0.5 text-[8px] text-muted">{t}</span>)}
+                            {c.tags.slice(0, 2).map((t) => <span key={t} className="rounded bg-[#f0f3ee] px-1.5 py-0.5 text-[11.5px] text-muted">{t}</span>)}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="py-3.5 pr-4">
-                      <div className="text-[10.5px] text-ink-soft">{job?.title}</div>
-                      <div className="mt-0.5 text-[9px] text-muted">{job ? departments.find((d) => d.id === job.departmentId)?.name : ""}</div>
+                      <div className="text-[12.5px] text-ink-soft">{job?.title}</div>
+                      <div className="mt-0.5 text-[12px] text-muted">{job ? departments.find((d) => d.id === job.departmentId)?.name : ""}</div>
                     </td>
                     <td className="py-3.5 pr-4">
-                      <span className={cn("inline-flex h-[22px] items-center gap-1.5 rounded-md px-2 text-[9.5px] font-medium", stageMeta.tone)}>
+                      <span className={cn("inline-flex h-[22px] items-center gap-1.5 rounded-md px-2 text-[12px] font-medium", stageMeta.tone)}>
                         <span className={cn("size-1.5 rounded-full", stageMeta.dot)} /> {stageMeta.label}
                       </span>
                     </td>
@@ -239,27 +239,27 @@ function CandidatesContent() {
                     <td className="py-3.5 pr-4">
                       {nextInterview ? (
                         <div>
-                          <div className="flex items-center gap-1.5 text-[10px] text-ink-soft">
+                          <div className="flex items-center gap-1.5 text-[12.5px] text-ink-soft">
                             <span>{formatRelativeDate(nextInterview.date)} {nextInterview.start}</span>
                           </div>
-                          <div className="mt-0.5 flex items-center gap-1 text-[8.5px] text-muted">
+                          <div className="mt-0.5 flex items-center gap-1 text-[11.5px] text-muted">
                             <span className={cn("rounded px-1 py-0.5", interviewTypeMeta[nextInterview.type].tone)}>{interviewTypeMeta[nextInterview.type].label}</span>
                             {nextInterview.round}
                           </div>
                         </div>
                       ) : (
-                        <span className="text-[9.5px] text-muted">暂无安排</span>
+                        <span className="text-[12px] text-muted">暂无安排</span>
                       )}
                     </td>
                     <td className="py-3.5 pr-4">
-                      <div className="flex items-center gap-1.5"><Avatar name={owner?.name ?? "负责人"} size={20} /><span className="text-[9.5px] text-ink-soft">{owner?.name}</span></div>
+                      <div className="flex items-center gap-1.5"><Avatar name={owner?.name ?? "负责人"} size={20} /><span className="text-[12px] text-ink-soft">{owner?.name}</span></div>
                     </td>
-                    <td className="py-3.5 pr-4 text-[9.5px] text-muted">{c.appliedAt.slice(5)}</td>
+                    <td className="py-3.5 pr-4 text-[12px] text-muted">{c.appliedAt.slice(5)}</td>
                     <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="soft" size="sm" className="h-7 gap-1 px-2 text-[10px]">推进 <ChevronDown className="size-3" /></Button>
+                            <Button variant="soft" size="sm" className="h-7 gap-1 px-2 text-[12.5px]">推进 <ChevronDown className="size-3" /></Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             <DropdownMenuLabel>推进到</DropdownMenuLabel>
@@ -304,15 +304,15 @@ function CandidatesContent() {
                 <div className="flex items-start gap-3">
                   <Avatar name={c.name} size={38} />
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5"><span className="truncate text-[13px] font-semibold text-ink">{c.name}</span><span className="text-[9px] text-muted">{c.gender} · {c.age} 岁 · {c.years} 年</span></div>
-                    <div className="mt-0.5 truncate text-[9.5px] text-muted">{c.currentCompany} · {c.currentTitle}</div>
-                    <div className="mt-1.5 flex flex-wrap gap-1">{c.tags.slice(0, 2).map((t) => <span key={t} className="rounded bg-[#f0f3ee] px-1.5 py-0.5 text-[8px] text-muted">{t}</span>)}</div>
+                    <div className="flex items-center gap-1.5"><span className="truncate text-[14px] font-semibold text-ink">{c.name}</span><span className="text-[12px] text-muted">{c.gender} · {c.age} 岁 · {c.years} 年</span></div>
+                    <div className="mt-0.5 truncate text-[12px] text-muted">{c.currentCompany} · {c.currentTitle}</div>
+                    <div className="mt-1.5 flex flex-wrap gap-1">{c.tags.slice(0, 2).map((t) => <span key={t} className="rounded bg-[#f0f3ee] px-1.5 py-0.5 text-[11.5px] text-muted">{t}</span>)}</div>
                   </div>
                   <ScoreRing score={c.score} size={36} stroke={2.5} />
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-2 border-t border-line/70 pt-2.5">
-                  <div className="min-w-0"><div className="truncate text-[10px] text-ink-soft">{job?.title}</div><div className="mt-0.5 text-[8.5px] text-muted">{nextInterview ? `${formatRelativeDate(nextInterview.date)} ${nextInterview.start} · ${interviewTypeMeta[nextInterview.type].label}` : "暂无面试安排"}</div></div>
-                  <span className={cn("inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-1 text-[8.5px] font-medium", stageMeta.tone)}><span className={cn("size-1.5 rounded-full", stageMeta.dot)} />{stageMeta.label}</span>
+                  <div className="min-w-0"><div className="truncate text-[12.5px] text-ink-soft">{job?.title}</div><div className="mt-0.5 text-[11.5px] text-muted">{nextInterview ? `${formatRelativeDate(nextInterview.date)} ${nextInterview.start} · ${interviewTypeMeta[nextInterview.type].label}` : "暂无面试安排"}</div></div>
+                  <span className={cn("inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-1 text-[11.5px] font-medium", stageMeta.tone)}><span className={cn("size-1.5 rounded-full", stageMeta.dot)} />{stageMeta.label}</span>
                 </div>
               </button>
             );
@@ -324,8 +324,8 @@ function CandidatesContent() {
         ) : null}
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-4 py-3">
-          <span className="text-[10px] text-muted">显示 {filtered.length} / {candidates.length} 位候选人</span>
-          <div className="flex items-center gap-1 text-[10px] text-muted">
+          <span className="text-[12.5px] text-muted">显示 {filtered.length} / {candidates.length} 位候选人</span>
+          <div className="flex items-center gap-1 text-[12.5px] text-muted">
             <button className="flex size-7 items-center justify-center rounded-md hover:bg-[#eef1ec] disabled:opacity-30" disabled>‹</button>
             <span className="flex size-7 items-center justify-center rounded-md bg-pine text-white">1</span>
             <button className="flex size-7 items-center justify-center rounded-md hover:bg-[#eef1ec]">2</button>

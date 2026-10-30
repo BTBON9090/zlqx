@@ -179,7 +179,7 @@ export default function NewJobPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center gap-2 text-[11px] text-muted">
+      <div className="flex items-center gap-2 text-[13px] text-muted">
         <Link href="/jobs" className="flex items-center gap-1 transition-colors hover:text-pine"><ArrowLeft className="size-3" /> 职位管理</Link>
         <ChevronRight className="size-3" />
         <span className="text-ink">新建职位</span>
@@ -204,12 +204,12 @@ export default function NewJobPage() {
                 step === s.n ? "bg-pine text-white" : step > s.n ? "text-pine hover:bg-pine-soft/50" : "text-muted"
               )}
             >
-              <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold", step === s.n ? "bg-white/15 text-white" : step > s.n ? "bg-pine text-white" : "bg-[#eef0ec] text-muted")}>
+              <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full text-[12.5px] font-semibold", step === s.n ? "bg-white/15 text-white" : step > s.n ? "bg-pine text-white" : "bg-[#eef0ec] text-muted")}>
                 {step > s.n ? <Check className="size-3" /> : s.n}
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-[11.5px] font-medium">{s.title}</span>
-                <span className={cn("mt-0.5 hidden truncate text-[9.5px] sm:block", step === s.n ? "text-white/65" : "text-muted")}>{s.desc}</span>
+                <span className="block truncate text-[13px] font-medium">{s.title}</span>
+                <span className={cn("mt-0.5 hidden truncate text-[12px] sm:block", step === s.n ? "text-white/65" : "text-muted")}>{s.desc}</span>
               </span>
             </button>
             {i < stepDefs.length - 1 ? <ChevronRight className="mx-1 hidden size-3.5 shrink-0 text-[#c3ccc4] sm:block" /> : null}
@@ -243,7 +243,7 @@ export default function NewJobPage() {
                 <Field label="办公方式">
                   <div className="flex rounded-[10px] border border-line bg-[#f7f8f4] p-1">
                     {([["onsite", "坐班"], ["hybrid", "混合"], ["remote", "远程"]] as const).map(([k, label]) => (
-                      <button key={k} onClick={() => setWorkMode(k)} className={cn("flex-1 rounded-md py-1.5 text-[11px] font-medium transition-colors", workMode === k ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{label}</button>
+                      <button key={k} onClick={() => setWorkMode(k)} className={cn("flex-1 rounded-md py-1.5 text-[13px] font-medium transition-colors", workMode === k ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{label}</button>
                     ))}
                   </div>
                 </Field>
@@ -288,7 +288,7 @@ export default function NewJobPage() {
                 <Field label="优先级">
                   <div className="flex rounded-[10px] border border-line bg-[#f7f8f4] p-1">
                     {([["normal", "常规"], ["high", "急招"]] as const).map(([k, label]) => (
-                      <button key={k} onClick={() => setPriority(k)} className={cn("flex-1 rounded-md py-1.5 text-[11px] font-medium transition-colors", priority === k ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{label}</button>
+                      <button key={k} onClick={() => setPriority(k)} className={cn("flex-1 rounded-md py-1.5 text-[13px] font-medium transition-colors", priority === k ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{label}</button>
                     ))}
                   </div>
                 </Field>
@@ -297,7 +297,7 @@ export default function NewJobPage() {
                 </Field>
               </div>
               <div className="mt-6 flex items-center justify-between border-t border-line pt-5">
-                <span className="flex items-center gap-1.5 text-[10px] text-muted"><CircleAlert className="size-3" /> 带 * 为必填项</span>
+                <span className="flex items-center gap-1.5 text-[12.5px] text-muted"><CircleAlert className="size-3" /> 带 * 为必填项</span>
                 <Button onClick={next}>下一步 <ArrowRight /></Button>
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function NewJobPage() {
                 <Field label="关键技能标签" hint="按 Enter 添加">
                   <div className="flex flex-wrap gap-1.5 rounded-[10px] border border-line bg-surface p-2">
                     {skills.map((s) => (
-                      <span key={s} className="inline-flex items-center gap-1 rounded-md bg-pine-soft px-2 py-1 text-[10.5px] text-pine">
+                      <span key={s} className="inline-flex items-center gap-1 rounded-md bg-pine-soft px-2 py-1 text-[12.5px] text-pine">
                         {s}
                         <button onClick={() => setSkills((prev) => prev.filter((x) => x !== s))} aria-label={`移除${s}`} className="text-pine/60 hover:text-pine"><X className="size-3" /></button>
                       </span>
@@ -331,13 +331,13 @@ export default function NewJobPage() {
                       onChange={(e) => setSkillDraft(e.target.value)}
                       onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSkill(); } }}
                       placeholder={skills.length ? "添加技能…" : "例如：B 端产品、AI 产品…"}
-                      className="min-w-[140px] flex-1 bg-transparent px-1 py-1 text-[12px] outline-none placeholder:text-[#9ba69f]"
+                      className="min-w-[140px] flex-1 bg-transparent px-1 py-1 text-[13.5px] outline-none placeholder:text-[#9ba69f]"
                     />
                   </div>
                 </Field>
                 <div className="rounded-xl border border-line bg-[#fafbf8] p-4">
-                  <div className="flex items-center gap-2 text-[11px] font-medium text-ink"><Sparkles className="size-3.5 text-signal" /> AI 校准建议</div>
-                  <p className="mt-1.5 text-[10.5px] leading-5 text-muted">
+                  <div className="flex items-center gap-2 text-[13px] font-medium text-ink"><Sparkles className="size-3.5 text-signal" /> AI 校准建议</div>
+                  <p className="mt-1.5 text-[12.5px] leading-5 text-muted">
                     建议补充「跨团队推动」的具体场景，并明确是否接受管理岗转一线。你的要求越具体，后续筛选与面试越省时间。
                   </p>
                 </div>
@@ -356,8 +356,8 @@ export default function NewJobPage() {
                 <div className="mt-5 flex flex-wrap items-center gap-1.5">
                   {["简历筛选", "初试", "复试", "终面", "Offer"].map((s, i) => (
                     <div key={s} className="flex items-center gap-1.5">
-                      <div className={cn("rounded-lg border px-3 py-2 text-[10.5px] font-medium", i === 0 ? "border-pine bg-pine-soft text-pine" : "border-line bg-[#fafbf8] text-ink-soft")}>
-                        <span className="mr-1.5 num text-[9px] text-muted">{String(i + 1).padStart(2, "0")}</span>
+                      <div className={cn("rounded-lg border px-3 py-2 text-[12.5px] font-medium", i === 0 ? "border-pine bg-pine-soft text-pine" : "border-line bg-[#fafbf8] text-ink-soft")}>
+                        <span className="mr-1.5 num text-[12px] text-muted">{String(i + 1).padStart(2, "0")}</span>
                         {s}
                       </div>
                       {i < 4 ? <ChevronRight className="size-3 text-[#b9c3ba]" /> : null}
@@ -372,8 +372,8 @@ export default function NewJobPage() {
                   ].map((item) => (
                     <div key={item.title} className="flex items-start justify-between gap-4 rounded-xl border border-line p-3.5">
                       <div>
-                        <div className="text-[11.5px] font-medium text-ink">{item.title}</div>
-                        <div className="mt-0.5 text-[10px] leading-5 text-muted">{item.desc}</div>
+                        <div className="text-[13px] font-medium text-ink">{item.title}</div>
+                        <div className="mt-0.5 text-[12.5px] leading-5 text-muted">{item.desc}</div>
                       </div>
                       <Switch checked={item.checked} onCheckedChange={item.set} />
                     </div>
@@ -385,16 +385,16 @@ export default function NewJobPage() {
                 <div className="mt-5 grid gap-4 sm:grid-cols-2">
                   <div className="space-y-0.5 divide-y divide-line">
                     {[["职位名称", title || "未填写"], ["所属部门", dept?.name ?? "—"], ["工作地点", location], ["用工类型", employment === "fulltime" ? "全职" : employment === "intern" ? "实习" : "合同制"]].map(([k, v]) => (
-                      <div key={k} className="flex items-center justify-between gap-4 py-2.5 text-[11px]"><span className="text-muted">{k}</span><span className="font-medium text-ink">{v}</span></div>
+                      <div key={k} className="flex items-center justify-between gap-4 py-2.5 text-[13px]"><span className="text-muted">{k}</span><span className="font-medium text-ink">{v}</span></div>
                     ))}
                   </div>
                   <div className="space-y-0.5 divide-y divide-line">
                     {[["薪资范围", salary], ["经验要求", experience], ["招聘人数", `${headcount} 人`], ["负责人", owner?.name ?? "—"]].map(([k, v]) => (
-                      <div key={k} className="flex items-center justify-between gap-4 py-2.5 text-[11px]"><span className="text-muted">{k}</span><span className="font-medium text-ink">{v}</span></div>
+                      <div key={k} className="flex items-center justify-between gap-4 py-2.5 text-[13px]"><span className="text-muted">{k}</span><span className="font-medium text-ink">{v}</span></div>
                     ))}
                   </div>
                 </div>
-                {summary ? <p className="mt-4 rounded-xl bg-[#fafbf8] p-3.5 text-[10.5px] leading-5 text-muted">{summary}</p> : null}
+                {summary ? <p className="mt-4 rounded-xl bg-[#fafbf8] p-3.5 text-[12.5px] leading-5 text-muted">{summary}</p> : null}
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
                   <Button variant="ghost" onClick={() => setStep(2)}><ArrowLeft /> 上一步</Button>
                   <div className="flex items-center gap-2">
@@ -415,43 +415,43 @@ export default function NewJobPage() {
             <div className="surface overflow-hidden">
               <div className="border-b border-line bg-[#fafbf8] px-4 py-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium text-ink">职位预览</span>
-                  <span className={cn("rounded px-1.5 py-0.5 text-[9px] font-medium", priority === "high" ? "bg-signal-soft text-signal" : "bg-pine-soft text-pine")}>{priority === "high" ? "急招" : "常规"}</span>
+                  <span className="text-[13px] font-medium text-ink">职位预览</span>
+                  <span className={cn("rounded px-1.5 py-0.5 text-[12px] font-medium", priority === "high" ? "bg-signal-soft text-signal" : "bg-pine-soft text-pine")}>{priority === "high" ? "急招" : "常规"}</span>
                 </div>
               </div>
               <div className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine"><BriefcaseBusiness className="size-4" /></div>
                   <div className="min-w-0">
-                    <div className="truncate text-[13px] font-semibold text-ink">{title || "未命名职位"}</div>
-                    <div className="mt-1 text-[9.5px] text-muted">{dept?.name ?? "选择部门"} · {location || "工作地点"}</div>
+                    <div className="truncate text-[14px] font-semibold text-ink">{title || "未命名职位"}</div>
+                    <div className="mt-1 text-[12px] text-muted">{dept?.name ?? "选择部门"} · {location || "工作地点"}</div>
                   </div>
                 </div>
-                <div className="mt-4 grid grid-cols-2 gap-2 text-[10px]">
+                <div className="mt-4 grid grid-cols-2 gap-2 text-[12.5px]">
                   <div className="rounded-lg bg-[#f7f8f4] p-2.5"><div className="text-muted">薪资</div><div className="mt-1 font-medium text-ink">{salary || "—"}</div></div>
                   <div className="rounded-lg bg-[#f7f8f4] p-2.5"><div className="text-muted">招聘人数</div><div className="mt-1 font-medium text-ink">{headcount} 人</div></div>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-1">
-                  {skills.slice(0, 4).map((s) => <span key={s} className="rounded bg-[#eef1ec] px-1.5 py-1 text-[9px] text-ink-soft">{s}</span>)}
+                  {skills.slice(0, 4).map((s) => <span key={s} className="rounded bg-[#eef1ec] px-1.5 py-1 text-[12px] text-ink-soft">{s}</span>)}
                 </div>
                 <div className="mt-4">
-                  <div className="mb-1.5 flex items-center justify-between text-[9.5px] text-muted"><span>信息完整度</span><span className="num font-medium text-pine">{completeness}%</span></div>
+                  <div className="mb-1.5 flex items-center justify-between text-[12px] text-muted"><span>信息完整度</span><span className="num font-medium text-pine">{completeness}%</span></div>
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#eef1ec]"><div className="h-full rounded-full bg-pine transition-all duration-500" style={{ width: `${completeness}%` }} /></div>
                 </div>
               </div>
             </div>
 
             <div className="rounded-[18px] bg-pine-deep p-4 text-white">
-              <div className="flex items-center gap-2 text-[11px] font-medium"><Sparkles className="size-3.5 text-[#f2b3a1]" /> 小聘建议</div>
-              <p className="mt-2 text-[10.5px] leading-5 text-[#a9c3b5]">
+              <div className="flex items-center gap-2 text-[13px] font-medium"><Sparkles className="size-3.5 text-[#f2b3a1]" /> 小聘建议</div>
+              <p className="mt-2 text-[12.5px] leading-5 text-[#a9c3b5]">
                 这个职位发布后，预计每周可收到 12–18 份简历。AI 会优先推送匹配度 80 分以上的候选人。
               </p>
-              <button onClick={generateJd} className="mt-3 flex items-center gap-1 text-[10px] font-medium text-[#f0b09d] hover:text-white">
+              <button onClick={generateJd} className="mt-3 flex items-center gap-1 text-[12.5px] font-medium text-[#f0b09d] hover:text-white">
                 让 AI 补齐 JD <ArrowRight className="size-3" />
               </button>
             </div>
 
-            <div className="flex items-start gap-2 px-1 text-[9.5px] leading-5 text-muted">
+            <div className="flex items-start gap-2 px-1 text-[12px] leading-5 text-muted">
               <CircleAlert className="mt-0.5 size-3 shrink-0" />
               发布即表示你确认职位信息真实有效，并同意遵守平台招聘规范。
             </div>

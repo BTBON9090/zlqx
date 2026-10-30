@@ -21,8 +21,8 @@ const buttonVariants = cva(
         link: "h-auto p-0 text-pine underline-offset-4 hover:underline",
       },
       size: {
-        sm: "h-8 rounded-lg px-3 text-[12.5px] [&_svg]:size-3.5",
-        md: "h-10 rounded-[10px] px-4 text-[13.5px] [&_svg]:size-4",
+        sm: "h-8 rounded-lg px-3 text-[13.5px] [&_svg]:size-3.5",
+        md: "h-10 rounded-[10px] px-4 text-[14px] [&_svg]:size-4",
         lg: "h-11 rounded-xl px-5 text-sm [&_svg]:size-[18px]",
         icon: "size-9 rounded-[10px] [&_svg]:size-4",
         iconSm: "size-7 rounded-lg [&_svg]:size-3.5",

@@ -92,18 +92,18 @@ export default function JobsPage() {
                   key={t.key}
                   onClick={() => setTab(t.key)}
                   className={cn(
-                    "relative flex items-baseline gap-2 px-3 pb-3 pt-2 text-[12px] font-medium transition-colors",
+                    "relative flex items-baseline gap-2 px-3 pb-3 pt-2 text-[13.5px] font-medium transition-colors",
                     tab === t.key ? "text-pine" : "text-muted hover:text-ink"
                   )}
                 >
                   {t.label}
-                  <span className={cn("num text-[13px] font-semibold", tab === t.key ? "text-pine" : "text-[#a6b1a8]")}>{count}</span>
+                  <span className={cn("num text-[14px] font-semibold", tab === t.key ? "text-pine" : "text-[#a6b1a8]")}>{count}</span>
                   {tab === t.key ? <span className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-pine" /> : null}
                 </button>
               );
             })}
           </div>
-          <div className="hidden items-center gap-1.5 pb-2 text-[10px] text-muted md:flex">
+          <div className="hidden items-center gap-1.5 pb-2 text-[12.5px] text-muted md:flex">
             <Sparkles className="size-3 text-signal" />
             2 个职位超过 21 天未更新，建议重新校准画像
           </div>
@@ -128,13 +128,13 @@ export default function JobsPage() {
           <Button variant="ghost" size="sm" className="text-muted" onClick={() => { setDept("all"); setOwner("all"); setQuery(""); setTab("all"); }}>
             <Filter /> 重置
           </Button>
-          <div className="ml-auto hidden items-center gap-1.5 text-[10px] text-muted lg:flex">
+          <div className="ml-auto hidden items-center gap-1.5 text-[12.5px] text-muted lg:flex">
             共 <span className="num font-medium text-ink">{filtered.length}</span> 个职位
           </div>
         </div>
 
         {selected.length > 0 ? (
-          <div className="flex items-center gap-3 border-b border-line bg-pine-soft/60 px-5 py-2.5 text-[11px]">
+          <div className="flex items-center gap-3 border-b border-line bg-pine-soft/60 px-5 py-2.5 text-[13px]">
             <span className="font-medium text-pine">已选择 {selected.length} 个职位</span>
             <button className="text-pine hover:underline" onClick={() => toast.success("已批量刷新职位状态")}>刷新状态</button>
             <button className="text-pine hover:underline" onClick={() => toast.success("已导出职位清单")}>导出</button>
@@ -145,7 +145,7 @@ export default function JobsPage() {
         <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[1000px] border-collapse text-left">
             <thead>
-              <tr className="border-b border-line bg-[#fafbf8] text-[10px] text-muted">
+              <tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="w-[42px] px-4 py-2.5">
                   <Checkbox
                     checked={allSelected}
@@ -184,44 +184,44 @@ export default function JobsPage() {
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
-                            <span className="truncate text-[12.5px] font-medium text-ink group-hover:text-pine">{job.title}</span>
-                            {job.priority === "high" ? <span className="rounded bg-signal-soft px-1.5 py-0.5 text-[8.5px] font-medium text-signal">急招</span> : null}
+                            <span className="truncate text-[13.5px] font-medium text-ink group-hover:text-pine">{job.title}</span>
+                            {job.priority === "high" ? <span className="rounded bg-signal-soft px-1.5 py-0.5 text-[11.5px] font-medium text-signal">急招</span> : null}
                           </div>
-                          <div className="mt-0.5 text-[9.5px] text-muted">{job.code} · {job.experience} · {job.education}</div>
+                          <div className="mt-0.5 text-[12px] text-muted">{job.code} · {job.experience} · {job.education}</div>
                         </div>
                       </div>
                     </td>
                     <td className="py-3.5 pr-4">
-                      <div className="text-[11px] text-ink-soft">{deptObj?.name}</div>
-                      <div className="mt-0.5 text-[9.5px] text-muted">{job.location}</div>
+                      <div className="text-[13px] text-ink-soft">{deptObj?.name}</div>
+                      <div className="mt-0.5 text-[12px] text-muted">{job.location}</div>
                     </td>
                     <td className="py-3.5 pr-4">
-                      <span className={cn("inline-flex h-[22px] items-center gap-1.5 rounded-md px-2 text-[10px] font-medium", status.tone)}>
+                      <span className={cn("inline-flex h-[22px] items-center gap-1.5 rounded-md px-2 text-[12.5px] font-medium", status.tone)}>
                         <span className={cn("size-1.5 rounded-full", status.dot)} /> {status.label}
                       </span>
                     </td>
                     <td className="py-3.5 pr-4">
                       <div className="flex items-center gap-1.5">
                         <Avatar name={ownerObj?.name ?? "负责人"} size={22} />
-                        <span className="text-[10.5px] text-ink-soft">{ownerObj?.name}</span>
+                        <span className="text-[12.5px] text-ink-soft">{ownerObj?.name}</span>
                       </div>
                     </td>
                     <td className="py-3.5 pr-4">
-                      <div className="flex items-center gap-1 text-[11px]">
+                      <div className="flex items-center gap-1 text-[13px]">
                         <Users className="size-3 text-muted" />
                         <span className="num font-medium text-ink">{job.candidateCount}</span>
-                        <span className="text-[9.5px] text-muted">份</span>
+                        <span className="text-[12px] text-muted">份</span>
                       </div>
-                      <div className="mt-0.5 text-[9px] text-muted">本周 +{job.newThisWeek}</div>
+                      <div className="mt-0.5 text-[12px] text-muted">本周 +{job.newThisWeek}</div>
                     </td>
                     <td className="py-3.5 pr-4">
                       <div className="flex items-center gap-2">
                         <Progress value={job.hired} max={job.headcount} className="h-1 w-[92px]" />
-                        <span className="num text-[10px] text-muted">{job.hired}/{job.headcount}</span>
+                        <span className="num text-[12.5px] text-muted">{job.hired}/{job.headcount}</span>
                       </div>
-                      <div className="mt-1 text-[9px] text-muted">已入职 {job.hired} 人</div>
+                      <div className="mt-1 text-[12px] text-muted">已入职 {job.hired} 人</div>
                     </td>
-                    <td className="py-3.5 pr-4 text-[10px] text-muted">{job.updatedAt.slice(5)}</td>
+                    <td className="py-3.5 pr-4 text-[12.5px] text-muted">{job.updatedAt.slice(5)}</td>
                     <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
                         <Button variant="ghost" size="sm" onClick={() => router.push(`/jobs/${job.id}`)}>查看</Button>
@@ -272,20 +272,20 @@ export default function JobsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <span className="truncate text-[13px] font-semibold text-ink">{job.title}</span>
-                      {job.priority === "high" ? <span className="shrink-0 rounded bg-signal-soft px-1.5 py-0.5 text-[8px] font-medium text-signal">急招</span> : null}
+                      <span className="truncate text-[14px] font-semibold text-ink">{job.title}</span>
+                      {job.priority === "high" ? <span className="shrink-0 rounded bg-signal-soft px-1.5 py-0.5 text-[11.5px] font-medium text-signal">急招</span> : null}
                     </div>
-                    <div className="mt-1 text-[9.5px] text-muted">{job.code} · {deptObj?.name} · {job.location}</div>
+                    <div className="mt-1 text-[12px] text-muted">{job.code} · {deptObj?.name} · {job.location}</div>
                   </div>
-                  <span className={cn("inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-[9.5px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
+                  <span className={cn("inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
-                  <div className="flex items-center gap-1.5"><Avatar name={ownerObj?.name ?? "负责人"} size={20} /><span className="text-[9.5px] text-muted">{ownerObj?.name}</span></div>
-                  <span className="text-[9.5px] text-muted">·</span>
-                  <span className="text-[9.5px] text-muted">{job.candidateCount} 份简历</span>
+                  <div className="flex items-center gap-1.5"><Avatar name={ownerObj?.name ?? "负责人"} size={20} /><span className="text-[12px] text-muted">{ownerObj?.name}</span></div>
+                  <span className="text-[12px] text-muted">·</span>
+                  <span className="text-[12px] text-muted">{job.candidateCount} 份简历</span>
                   <div className="ml-auto flex items-center gap-2">
                     <Progress value={job.hired} max={job.headcount} className="h-1 w-14" />
-                    <span className="num text-[9.5px] text-muted">{job.hired}/{job.headcount}</span>
+                    <span className="num text-[12px] text-muted">{job.hired}/{job.headcount}</span>
                   </div>
                 </div>
               </Link>
@@ -303,8 +303,8 @@ export default function JobsPage() {
         ) : null}
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-3">
-          <span className="text-[10px] text-muted">显示 {filtered.length} / {jobs.length} 个职位</span>
-          <div className="flex items-center gap-1 text-[10px] text-muted">
+          <span className="text-[12.5px] text-muted">显示 {filtered.length} / {jobs.length} 个职位</span>
+          <div className="flex items-center gap-1 text-[12.5px] text-muted">
             <button className="flex size-7 items-center justify-center rounded-md hover:bg-[#eef1ec] disabled:opacity-30" disabled>‹</button>
             <span className="flex size-7 items-center justify-center rounded-md bg-pine text-white">1</span>
             <button className="flex size-7 items-center justify-center rounded-md hover:bg-[#eef1ec]">2</button>
@@ -314,7 +314,7 @@ export default function JobsPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[10px] text-muted">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[12.5px] text-muted">
         <span>职位状态变更会同步到候选人流程与消息模板。</span>
         <Link href="/pipeline" className="flex items-center gap-1 font-medium text-pine hover:underline">
           管理招聘流程 <ArrowUpRight className="size-3" />

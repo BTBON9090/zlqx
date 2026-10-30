@@ -181,9 +181,9 @@ export default function PipelinePage() {
           ["Offer 待审批", 1, "个", "平均 1.2 天完成", "signal"],
         ].map(([label, value, suffix, note, tone]) => (
           <div key={String(label)} className="surface p-4">
-            <div className="text-[10.5px] text-muted">{label}</div>
-            <div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[10px] text-muted">{suffix}</span></div>
-            <div className="mt-1 flex items-center gap-1.5 text-[9px] text-muted"><span className={cn("size-1.5 rounded-full", tone === "pine" ? "bg-pine" : tone === "blue" ? "bg-[#4d7ea8]" : tone === "amber" ? "bg-amber" : "bg-signal")} />{note}</div>
+            <div className="text-[12.5px] text-muted">{label}</div>
+            <div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div>
+            <div className="mt-1 flex items-center gap-1.5 text-[12px] text-muted"><span className={cn("size-1.5 rounded-full", tone === "pine" ? "bg-pine" : tone === "blue" ? "bg-[#4d7ea8]" : tone === "amber" ? "bg-amber" : "bg-signal")} />{note}</div>
           </div>
         ))}
       </div>
@@ -197,8 +197,8 @@ export default function PipelinePage() {
 
         <TabsContent value="interview" className="mt-4 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-            <p className="text-[10.5px] text-muted">共 {flows.length} 个流程模板 · 默认流程会自动应用到新职位</p>
-            <button onClick={() => setCreateOpen(true)} className="flex items-center gap-1 text-[10.5px] font-medium text-pine hover:underline"><Plus className="size-3" /> 新建模板</button>
+            <p className="text-[12.5px] text-muted">共 {flows.length} 个流程模板 · 默认流程会自动应用到新职位</p>
+            <button onClick={() => setCreateOpen(true)} className="flex items-center gap-1 text-[12.5px] font-medium text-pine hover:underline"><Plus className="size-3" /> 新建模板</button>
           </div>
           {flows.map((flow) => (
             <div key={flow.id} className="surface overflow-hidden">
@@ -207,17 +207,17 @@ export default function PipelinePage() {
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine"><Workflow className="size-4.5" /></div>
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-[13.5px] font-semibold text-ink">{flow.name}</h3>
+                      <h3 className="text-[14px] font-semibold text-ink">{flow.name}</h3>
                       {flow.default ? <Badge tone="pine" dot>默认流程</Badge> : null}
                       {flow.aiEnabled ? <Badge tone="blue"><Sparkles className="size-2.5" /> 数字人初试</Badge> : null}
                     </div>
-                    <p className="mt-1.5 max-w-[520px] text-[10.5px] leading-5 text-muted">{flow.description}</p>
+                    <p className="mt-1.5 max-w-[520px] text-[12.5px] leading-5 text-muted">{flow.description}</p>
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {flow.steps.map((s, i) => (
                         <div key={`${flow.id}-${s.name}`} className="flex items-center gap-1.5">
-                          <span className={cn("rounded-md border px-2 py-1 text-[9px] font-medium", s.type === "screen" ? "border-line bg-[#fafbf8] text-muted" : s.type === "offer" ? "border-amber/20 bg-amber-soft/60 text-[#8a6a24]" : "border-pine/15 bg-pine-soft/50 text-pine")}>
+                          <span className={cn("rounded-md border px-2 py-1 text-[12px] font-medium", s.type === "screen" ? "border-line bg-[#fafbf8] text-muted" : s.type === "offer" ? "border-amber/20 bg-amber-soft/60 text-[#8a6a24]" : "border-pine/15 bg-pine-soft/50 text-pine")}>
                             {s.name}
-                            {s.ai ? <span className="ml-1 text-[7.5px] text-pine/70">AI</span> : null}
+                            {s.ai ? <span className="ml-1 text-[11.5px] text-pine/70">AI</span> : null}
                           </span>
                           {i < flow.steps.length - 1 ? <ChevronRight className="size-2.5 text-[#b9c3ba]" /> : null}
                         </div>
@@ -226,11 +226,11 @@ export default function PipelinePage() {
                   </div>
                 </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-4 lg:flex-col lg:items-end">
-                  <div className="flex items-center gap-2 text-[10px] text-muted">
+                  <div className="flex items-center gap-2 text-[12.5px] text-muted">
                     <span>{flow.rounds} 轮面试</span><span className="size-0.5 rounded-full bg-muted" /><span>{flow.linkedJobs} 个职位</span><span className="size-0.5 rounded-full bg-muted" /><span>更新 {flow.updatedAt.slice(5)}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-1.5 text-[9.5px] text-muted">数字人初试 <Switch checked={flow.aiEnabled} onCheckedChange={() => toggleFlow(flow.id)} /></label>
+                    <label className="flex items-center gap-1.5 text-[12px] text-muted">数字人初试 <Switch checked={flow.aiEnabled} onCheckedChange={() => toggleFlow(flow.id)} /></label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><button className="flex size-7 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-3.5" /></button></DropdownMenuTrigger>
                       <DropdownMenuContent>
@@ -250,8 +250,8 @@ export default function PipelinePage() {
 
         <TabsContent value="offer" className="mt-4 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-            <p className="text-[10.5px] text-muted">Offer 审批流程与候选人 Offer 状态实时联动</p>
-            <Link href="/offers" className="flex items-center gap-1 text-[10.5px] font-medium text-pine hover:underline">查看 Offer 管理 <ArrowUpRight className="size-3" /></Link>
+            <p className="text-[12.5px] text-muted">Offer 审批流程与候选人 Offer 状态实时联动</p>
+            <Link href="/offers" className="flex items-center gap-1 text-[12.5px] font-medium text-pine hover:underline">查看 Offer 管理 <ArrowUpRight className="size-3" /></Link>
           </div>
           {offerFlows.map((flow) => (
             <div key={flow.id} className="surface p-5">
@@ -259,11 +259,11 @@ export default function PipelinePage() {
                 <div className="flex items-start gap-3">
                   <div className="flex size-10 items-center justify-center rounded-xl bg-amber-soft text-[#8a6a24]"><Rocket className="size-4.5" /></div>
                   <div>
-                    <div className="flex items-center gap-2"><h3 className="text-[13.5px] font-semibold text-ink">{flow.name}</h3><Badge tone="pine" dot>启用中</Badge></div>
-                    <p className="mt-1 text-[10.5px] text-muted">{flow.description}</p>
+                    <div className="flex items-center gap-2"><h3 className="text-[14px] font-semibold text-ink">{flow.name}</h3><Badge tone="pine" dot>启用中</Badge></div>
+                    <p className="mt-1 text-[12.5px] text-muted">{flow.description}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-5 text-[10px] text-muted">
+                <div className="flex items-center gap-5 text-[12.5px] text-muted">
                   <span className="flex items-center gap-1"><Timer className="size-3" /> 平均 {flow.avg}</span>
                   <span className="flex items-center gap-1"><CircleDot className="size-3" /> {flow.pending} 个待审批</span>
                   <Button variant="ghost" size="sm" onClick={() => toast.info("审批流编辑即将开放")}><Settings2 /> 配置</Button>
@@ -273,8 +273,8 @@ export default function PipelinePage() {
                 {flow.steps.map((s, i) => (
                   <div key={`${flow.id}-${s}`} className="flex flex-1 items-center">
                     <div className="flex items-center gap-2 rounded-lg border border-line bg-[#fcfcf9] px-2.5 py-2">
-                      <span className="flex size-5 items-center justify-center rounded-full bg-pine-soft text-[8.5px] font-semibold text-pine">{i + 1}</span>
-                      <span className="text-[9.5px] font-medium text-ink-soft">{s}</span>
+                      <span className="flex size-5 items-center justify-center rounded-full bg-pine-soft text-[11.5px] font-semibold text-pine">{i + 1}</span>
+                      <span className="text-[12px] font-medium text-ink-soft">{s}</span>
                     </div>
                     {i < flow.steps.length - 1 ? <ArrowRight className="mx-1 size-3 text-[#b9c3ba]" /> : null}
                   </div>
@@ -283,7 +283,7 @@ export default function PipelinePage() {
             </div>
           ))}
           <div className="rounded-xl border border-dashed border-line bg-[#fafbf8] p-5 text-center">
-            <p className="text-[10.5px] text-muted">需要不同的审批链？可以按岗位、部门或薪资区间配置条件审批。</p>
+            <p className="text-[12.5px] text-muted">需要不同的审批链？可以按岗位、部门或薪资区间配置条件审批。</p>
             <Button variant="secondary" size="sm" className="mt-3" onClick={() => toast.info("条件审批配置即将开放")}><Plus /> 新建审批流程</Button>
           </div>
         </TabsContent>
@@ -294,16 +294,16 @@ export default function PipelinePage() {
               <div key={t.title} className="surface group p-5 transition-all hover:-translate-y-0.5 hover:shadow-lift">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-[10px] text-muted">{t.dept}</div>
+                    <div className="text-[12.5px] text-muted">{t.dept}</div>
                     <h3 className="mt-1 text-[14px] font-semibold text-ink">{t.title}</h3>
                   </div>
-                  <span className="rounded bg-[#f0f3ee] px-1.5 py-0.5 text-[9px] text-muted">已用 {t.use} 次</span>
+                  <span className="rounded bg-[#f0f3ee] px-1.5 py-0.5 text-[12px] text-muted">已用 {t.use} 次</span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  {t.skills.map((s) => <span key={s} className="rounded-md border border-line bg-[#fafbf8] px-2 py-1 text-[9.5px] text-ink-soft">{s}</span>)}
+                  {t.skills.map((s) => <span key={s} className="rounded-md border border-line bg-[#fafbf8] px-2 py-1 text-[12px] text-ink-soft">{s}</span>)}
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
-                  <span className="text-[9.5px] text-muted">包含职位描述与筛选标准</span>
+                  <span className="text-[12px] text-muted">包含职位描述与筛选标准</span>
                   <Button variant="ghost" size="sm" asChild><Link href={`/jobs/new?template=${encodeURIComponent(t.title)}`}>使用模板 <ArrowUpRight /></Link></Button>
                 </div>
               </div>
@@ -326,10 +326,10 @@ export default function PipelinePage() {
                 </Select>
               </Field>
               <Field label="数字人初试">
-                <div className="flex h-10 items-center justify-between rounded-[10px] border border-line px-3"><span className="text-[10.5px] text-muted">首轮使用数字人</span><Switch checked={digital} onCheckedChange={setDigital} /></div>
+                <div className="flex h-10 items-center justify-between rounded-[10px] border border-line px-3"><span className="text-[12.5px] text-muted">首轮使用数字人</span><Switch checked={digital} onCheckedChange={setDigital} /></div>
               </Field>
             </div>
-            <div className="rounded-xl bg-[#fafbf8] p-3.5 text-[9.5px] leading-5 text-muted">新建流程后，可将其设为默认流程，或在发布职位时选择。数字人初试可随时在流程中开启或关闭。</div>
+            <div className="rounded-xl bg-[#fafbf8] p-3.5 text-[12px] leading-5 text-muted">新建流程后，可将其设为默认流程，或在发布职位时选择。数字人初试可随时在流程中开启或关闭。</div>
           </DialogBody>
           <DialogFooter><Button variant="secondary" onClick={() => setCreateOpen(false)}>取消</Button><Button onClick={createFlow}><Check /> 创建流程</Button></DialogFooter>
         </DialogContent>
@@ -339,5 +339,5 @@ export default function PipelinePage() {
 }
 
 function XIcon() {
-  return <span className="text-[11px]">✕</span>;
+  return <span className="text-[13px]">✕</span>;
 }

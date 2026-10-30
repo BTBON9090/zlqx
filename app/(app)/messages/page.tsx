@@ -93,7 +93,7 @@ function TemplateEditorDialog({
             <Field label="发送渠道" className="sm:col-span-2">
               <div className="flex h-10 items-center gap-4 rounded-[10px] border border-line px-3">
                 {(["email", "sms", "inapp"] as const).map((ch) => (
-                  <label key={ch} className="flex items-center gap-1.5 text-[10.5px] text-ink-soft">
+                  <label key={ch} className="flex items-center gap-1.5 text-[12.5px] text-ink-soft">
                     <Checkbox checked={channels.includes(ch)} onCheckedChange={(v) => setChannels((prev) => v ? [...prev, ch] : prev.filter((x) => x !== ch))} />
                     {channelLabel[ch]}
                   </label>
@@ -103,14 +103,14 @@ function TemplateEditorDialog({
           </div>
           <Field label="邮件主题"><Input value={subject} onChange={(e) => setSubject(e.target.value)} /></Field>
           <Field label="邮件正文" hint="支持 {{candidate_name}} 等变量">
-            <Textarea value={emailBody} onChange={(e) => setEmailBody(e.target.value)} className="min-h-[150px] font-sans text-[11.5px] leading-6" />
+            <Textarea value={emailBody} onChange={(e) => setEmailBody(e.target.value)} className="min-h-[150px] font-sans text-[13px] leading-6" />
           </Field>
           <Field label="短信正文" hint={`${smsBody.length}/140 字`}>
-            <Textarea value={smsBody} onChange={(e) => setSmsBody(e.target.value)} className="min-h-[72px] text-[11.5px]" />
+            <Textarea value={smsBody} onChange={(e) => setSmsBody(e.target.value)} className="min-h-[72px] text-[13px]" />
           </Field>
           <div className="flex flex-wrap gap-1.5">
             {["{{candidate_name}}", "{{company}}", "{{job_title}}", "{{interview_time}}", "{{meeting_link}}", "{{salary}}"].map((v) => (
-              <button key={v} onClick={() => setEmailBody((prev) => `${prev}${v}`)} className="rounded border border-line bg-[#fafbf8] px-1.5 py-1 text-[9px] text-muted hover:border-pine/30 hover:text-pine">{v}</button>
+              <button key={v} onClick={() => setEmailBody((prev) => `${prev}${v}`)} className="rounded border border-line bg-[#fafbf8] px-1.5 py-1 text-[12px] text-muted hover:border-pine/30 hover:text-pine">{v}</button>
             ))}
           </div>
         </DialogBody>
@@ -156,15 +156,15 @@ function TemplateSheet({ template, onClose }: { template: MessageTemplate | null
             <div className="pr-8">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge tone={live.enabled ? "pine" : "neutral"} dot>{live.enabled ? "启用中" : "已停用"}</Badge>
-                <span className="text-[10px] text-muted">{live.code}</span>
+                <span className="text-[12.5px] text-muted">{live.code}</span>
               </div>
               <h2 className="mt-3 text-[19px] font-semibold tracking-[-0.03em] text-ink">{live.name}</h2>
-              <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[10px] text-muted"><span>{live.scenario}</span><span className="size-0.5 rounded-full bg-muted" /><span>发送给{live.audience}</span><span className="size-0.5 rounded-full bg-muted" /><span>更新于 {live.updatedAt}</span></div>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12.5px] text-muted"><span>{live.scenario}</span><span className="size-0.5 rounded-full bg-muted" /><span>发送给{live.audience}</span><span className="size-0.5 rounded-full bg-muted" /><span>更新于 {live.updatedAt}</span></div>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <Button size="sm" onClick={() => setEditOpen(true)}><Pencil /> 编辑模板</Button>
               <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard?.writeText(live.emailBody); toast.success("模板内容已复制"); }}><Copy /> 复制内容</Button>
-              <label className="ml-auto flex items-center gap-2 text-[10px] text-muted">启用 <Switch checked={live.enabled} onCheckedChange={() => { toggleTemplate(live.id); toast.success(live.enabled ? "模板已停用" : "模板已启用"); }} /></label>
+              <label className="ml-auto flex items-center gap-2 text-[12.5px] text-muted">启用 <Switch checked={live.enabled} onCheckedChange={() => { toggleTemplate(live.id); toast.success(live.enabled ? "模板已停用" : "模板已启用"); }} /></label>
             </div>
           </div>
           <div className="flex-1 overflow-y-auto p-5 md:p-6">
@@ -172,9 +172,9 @@ function TemplateSheet({ template, onClose }: { template: MessageTemplate | null
             <div className="mt-4 space-y-4">
               {live.channels.includes("email") ? (
                 <div className="surface overflow-hidden">
-                  <div className="flex items-center gap-2 border-b border-line bg-[#fafbf8] px-4 py-2.5 text-[9.5px] text-muted"><Mail className="size-3" /> 邮件预览 · {live.subject.replace(/\{\{company\}\}/g, "澄明科技").replace(/\{\{job_title\}\}/g, "高级产品经理")}</div>
-                  <div className="p-4 text-[10.5px] leading-6 text-ink-soft">
-                    <div className="mb-3 flex items-center gap-2 border-b border-line pb-3"><span className="flex size-7 items-center justify-center rounded-lg bg-pine text-white"><Sparkles className="size-3" /></span><div><div className="text-[10px] font-medium text-ink">澄明科技招聘团队</div><div className="text-[8.5px] text-muted">talent@chengming.ai</div></div></div>
+                  <div className="flex items-center gap-2 border-b border-line bg-[#fafbf8] px-4 py-2.5 text-[12px] text-muted"><Mail className="size-3" /> 邮件预览 · {live.subject.replace(/\{\{company\}\}/g, "澄明科技").replace(/\{\{job_title\}\}/g, "高级产品经理")}</div>
+                  <div className="p-4 text-[12.5px] leading-6 text-ink-soft">
+                    <div className="mb-3 flex items-center gap-2 border-b border-line pb-3"><span className="flex size-7 items-center justify-center rounded-lg bg-pine text-white"><Sparkles className="size-3" /></span><div><div className="text-[12.5px] font-medium text-ink">澄明科技招聘团队</div><div className="text-[11.5px] text-muted">talent@chengming.ai</div></div></div>
                     <p className="whitespace-pre-wrap">{sampleEmail}</p>
                   </div>
                 </div>
@@ -183,21 +183,21 @@ function TemplateSheet({ template, onClose }: { template: MessageTemplate | null
                 <div className="flex justify-center rounded-[18px] bg-[#e9ede6] p-5">
                   <div className="w-[260px] rounded-[28px] border-[6px] border-[#13201b] bg-[#fbfbf8] p-3 shadow-xl">
                     <div className="mx-auto mb-3 h-1 w-14 rounded-full bg-[#13201b]/20" />
-                    <div className="flex items-center gap-2 border-b border-line pb-2"><div className="flex size-6 items-center justify-center rounded-full bg-pine text-[8px] text-white">澄</div><div><div className="text-[8px] font-medium">澄明科技</div><div className="text-[7px] text-muted">短信 · 现在</div></div></div>
-                    <div className="mt-3 rounded-xl rounded-tl-sm bg-[#eef1ec] p-2.5 text-[8px] leading-4 text-ink-soft">{sampleSms}</div>
-                    <div className="mt-2 text-center text-[7px] text-muted">已送达</div>
+                    <div className="flex items-center gap-2 border-b border-line pb-2"><div className="flex size-6 items-center justify-center rounded-full bg-pine text-[11.5px] text-white">澄</div><div><div className="text-[11.5px] font-medium">澄明科技</div><div className="text-[11.5px] text-muted">短信 · 现在</div></div></div>
+                    <div className="mt-3 rounded-xl rounded-tl-sm bg-[#eef1ec] p-2.5 text-[11.5px] leading-4 text-ink-soft">{sampleSms}</div>
+                    <div className="mt-2 text-center text-[11.5px] text-muted">已送达</div>
                   </div>
                 </div>
               ) : null}
             </div>
             <div className="surface mt-4 p-4">
-              <div className="text-[10px] font-medium text-ink">模板变量</div>
+              <div className="text-[12.5px] font-medium text-ink">模板变量</div>
               <div className="mt-2 flex flex-wrap gap-1.5">
-                {live.variables.map((v) => <span key={v} className="rounded border border-line bg-[#fafbf8] px-1.5 py-1 font-mono text-[8.5px] text-muted">{`{{${v}}}`}</span>)}
+                {live.variables.map((v) => <span key={v} className="rounded border border-line bg-[#fafbf8] px-1.5 py-1 font-mono text-[11.5px] text-muted">{`{{${v}}}`}</span>)}
               </div>
-              <p className="mt-2 text-[9px] leading-4 text-muted">发送时会自动替换为候选人、职位与面试信息。缺失变量会导致发送失败。</p>
+              <p className="mt-2 text-[12px] leading-4 text-muted">发送时会自动替换为候选人、职位与面试信息。缺失变量会导致发送失败。</p>
             </div>
-            <div className="mt-4 flex items-start gap-2 rounded-xl bg-[#fafbf8] p-3.5 text-[9px] leading-5 text-muted"><CircleAlert className="mt-0.5 size-3 shrink-0" /> 修改模板后，仅影响后续发送，历史通知记录不会改变。</div>
+            <div className="mt-4 flex items-start gap-2 rounded-xl bg-[#fafbf8] p-3.5 text-[12px] leading-5 text-muted"><CircleAlert className="mt-0.5 size-3 shrink-0" /> 修改模板后，仅影响后续发送，历史通知记录不会改变。</div>
           </div>
         </div>
       </Sheet>
@@ -245,7 +245,7 @@ export default function MessagesPage() {
           ["打开 / 阅读率", "64", "%", "打开邮件或阅读短信"],
           ["发送失败", String(notifications.filter((n) => n.status === "failed").length), "条", "需要人工处理"],
         ].map(([label, value, suffix, note]) => (
-          <div key={label} className="surface p-4"><div className="text-[10.5px] text-muted">{label}</div><div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[10px] text-muted">{suffix}</span></div><div className="mt-1 text-[9px] text-muted">{note}</div></div>
+          <div key={label} className="surface p-4"><div className="text-[12.5px] text-muted">{label}</div><div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div><div className="mt-1 text-[12px] text-muted">{note}</div></div>
         ))}
       </div>
 
@@ -253,11 +253,11 @@ export default function MessagesPage() {
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 pt-2">
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="border-b-0">
-              <TabsTrigger value="templates">消息模板 <span className="num text-[10px] text-muted">{templates.length}</span></TabsTrigger>
-              <TabsTrigger value="records">通知记录 <span className="num text-[10px] text-muted">{notifications.length}</span></TabsTrigger>
+              <TabsTrigger value="templates">消息模板 <span className="num text-[12.5px] text-muted">{templates.length}</span></TabsTrigger>
+              <TabsTrigger value="records">通知记录 <span className="num text-[12.5px] text-muted">{notifications.length}</span></TabsTrigger>
             </TabsList>
           </Tabs>
-          <Link href="/settings" className="flex items-center gap-1 pb-2 text-[10px] text-muted hover:text-pine">发送设置 <Settings2 className="size-3" /></Link>
+          <Link href="/settings" className="flex items-center gap-1 pb-2 text-[12.5px] text-muted hover:text-pine">发送设置 <Settings2 className="size-3" /></Link>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-b border-line bg-[#fcfcf9] px-4 py-3">
@@ -270,13 +270,13 @@ export default function MessagesPage() {
           ) : (
             <Select value={recordStatus} onValueChange={setRecordStatus}><SelectTrigger className="w-[130px]"><SelectValue placeholder="全部状态" /></SelectTrigger><SelectContent><SelectItem value="all">全部状态</SelectItem><SelectItem value="delivered">已送达</SelectItem><SelectItem value="read">已读</SelectItem><SelectItem value="failed">发送失败</SelectItem><SelectItem value="queued">待发送</SelectItem></SelectContent></Select>
           )}
-          <span className="ml-auto text-[10px] text-muted">共 <span className="num font-medium text-ink">{tab === "templates" ? filteredTemplates.length : filteredRecords.length}</span> 条</span>
+          <span className="ml-auto text-[12.5px] text-muted">共 <span className="num font-medium text-ink">{tab === "templates" ? filteredTemplates.length : filteredRecords.length}</span> 条</span>
         </div>
 
         {tab === "templates" ? (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[960px] border-collapse text-left">
-              <thead><tr className="border-b border-line bg-[#fafbf8] text-[10px] text-muted">
+              <thead><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="min-w-[240px] py-2.5 pl-5 font-medium">模板名称</th>
                 <th className="w-[110px] py-2.5 pr-4 font-medium">业务场景</th>
                 <th className="w-[90px] py-2.5 pr-4 font-medium">发送对象</th>
@@ -288,13 +288,13 @@ export default function MessagesPage() {
               <tbody>
                 {filteredTemplates.map((t) => (
                   <tr key={t.id} className="group cursor-pointer border-b border-line/70 last:border-0 hover:bg-[#fafbf8]" onClick={() => setSelectedTemplate(t)}>
-                    <td className="py-3.5 pl-5 pr-4"><div className="flex items-center gap-2.5"><span className="flex size-8 items-center justify-center rounded-lg bg-[#eef2ea] text-pine"><MessageSquare className="size-3.5" /></span><div><div className="text-[11.5px] font-medium text-ink group-hover:text-pine">{t.name}</div><div className="mt-0.5 text-[9px] text-muted">{t.code} · 更新于 {t.updatedAt.slice(5)}</div></div></div></td>
-                    <td className="py-3.5 pr-4"><span className="rounded bg-[#f0f3ee] px-1.5 py-1 text-[9px] text-ink-soft">{t.scenario}</span></td>
-                    <td className="py-3.5 pr-4 text-[10px] text-ink-soft">{t.audience}</td>
-                    <td className="py-3.5 pr-4"><div className="flex items-center gap-1">{t.channels.map((ch) => <span key={ch} className={cn("flex items-center gap-1 rounded px-1.5 py-1 text-[8.5px]", ch === "email" ? "bg-[#e8eef5] text-[#2f5c80]" : ch === "sms" ? "bg-amber-soft text-[#8a6a24]" : "bg-[#eef1ec] text-muted")}>{ch === "email" ? <Mail className="size-2.5" /> : ch === "sms" ? <Smartphone className="size-2.5" /> : <Bell className="size-2.5" />}{channelLabel[ch]}</span>)}</div></td>
+                    <td className="py-3.5 pl-5 pr-4"><div className="flex items-center gap-2.5"><span className="flex size-8 items-center justify-center rounded-lg bg-[#eef2ea] text-pine"><MessageSquare className="size-3.5" /></span><div><div className="text-[13px] font-medium text-ink group-hover:text-pine">{t.name}</div><div className="mt-0.5 text-[12px] text-muted">{t.code} · 更新于 {t.updatedAt.slice(5)}</div></div></div></td>
+                    <td className="py-3.5 pr-4"><span className="rounded bg-[#f0f3ee] px-1.5 py-1 text-[12px] text-ink-soft">{t.scenario}</span></td>
+                    <td className="py-3.5 pr-4 text-[12.5px] text-ink-soft">{t.audience}</td>
+                    <td className="py-3.5 pr-4"><div className="flex items-center gap-1">{t.channels.map((ch) => <span key={ch} className={cn("flex items-center gap-1 rounded px-1.5 py-1 text-[11.5px]", ch === "email" ? "bg-[#e8eef5] text-[#2f5c80]" : ch === "sms" ? "bg-amber-soft text-[#8a6a24]" : "bg-[#eef1ec] text-muted")}>{ch === "email" ? <Mail className="size-2.5" /> : ch === "sms" ? <Smartphone className="size-2.5" /> : <Bell className="size-2.5" />}{channelLabel[ch]}</span>)}</div></td>
                     <td className="py-3.5 pr-4" onClick={(e) => e.stopPropagation()}><Switch checked={t.enabled} onCheckedChange={() => { toggleTemplate(t.id); toast.success(t.enabled ? "模板已停用" : "模板已启用"); }} /></td>
-                    <td className="py-3.5 pr-4"><div className="text-[10px] text-ink-soft">{t.creator}</div><div className="mt-0.5 text-[9px] text-muted">{t.updatedAt}</div></td>
-                    <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}><div className="flex justify-end gap-1"><Button size="sm" variant="ghost" className="h-7 px-2 text-[10px]" onClick={() => setSelectedTemplate(t)}><Eye /> 预览</Button><DropdownMenu><DropdownMenuTrigger asChild><button className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-3.5" /></button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={() => setSelectedTemplate(t)}><Pencil /> 编辑模板</DropdownMenuItem><DropdownMenuItem onClick={() => toast.success("模板已复制")}><Copy /> 复制模板</DropdownMenuItem><DropdownMenuItem onClick={() => setCreateOpen(true)}><Plus /> 新建模板</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></td>
+                    <td className="py-3.5 pr-4"><div className="text-[12.5px] text-ink-soft">{t.creator}</div><div className="mt-0.5 text-[12px] text-muted">{t.updatedAt}</div></td>
+                    <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}><div className="flex justify-end gap-1"><Button size="sm" variant="ghost" className="h-7 px-2 text-[12.5px]" onClick={() => setSelectedTemplate(t)}><Eye /> 预览</Button><DropdownMenu><DropdownMenuTrigger asChild><button className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-3.5" /></button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={() => setSelectedTemplate(t)}><Pencil /> 编辑模板</DropdownMenuItem><DropdownMenuItem onClick={() => toast.success("模板已复制")}><Copy /> 复制模板</DropdownMenuItem><DropdownMenuItem onClick={() => setCreateOpen(true)}><Plus /> 新建模板</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></td>
                   </tr>
                 ))}
               </tbody>
@@ -303,7 +303,7 @@ export default function MessagesPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1000px] border-collapse text-left">
-              <thead><tr className="border-b border-line bg-[#fafbf8] text-[10px] text-muted">
+              <thead><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="min-w-[170px] py-2.5 pl-5 font-medium">发送对象</th>
                 <th className="w-[100px] py-2.5 pr-4 font-medium">业务场景</th>
                 <th className="min-w-[150px] py-2.5 pr-4 font-medium">应聘职位</th>
@@ -320,15 +320,15 @@ export default function MessagesPage() {
                   const template = templates.find((t) => t.id === n.templateId);
                   return (
                     <tr key={n.id} className="border-b border-line/70 last:border-0 hover:bg-[#fafbf8]">
-                      <td className="py-3.5 pl-5 pr-4"><div className="text-[11px] font-medium text-ink">{n.recipient}</div><div className="mt-0.5 max-w-[170px] truncate text-[9px] text-muted">{n.recipientEmail}</div></td>
-                      <td className="py-3.5 pr-4"><span className="rounded bg-[#f0f3ee] px-1.5 py-1 text-[9px] text-ink-soft">{n.scenario}</span></td>
-                      <td className="py-3.5 pr-4 text-[10px] text-ink-soft">{job?.title}</td>
-                      <td className="py-3.5 pr-4"><div className="max-w-[150px] truncate text-[10px] text-ink-soft">{template?.name}</div><div className="mt-0.5 text-[8.5px] text-muted">{template?.code}</div></td>
-                      <td className="py-3.5 pr-4"><span className="flex items-center gap-1 text-[9.5px] text-muted">{n.channel === "email" ? <Mail className="size-3" /> : <Smartphone className="size-3" />}{n.channel === "email" ? "邮件" : "短信"}</span></td>
-                      <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center gap-1.5 rounded px-1.5 py-1 text-[9px]", n.status === "failed" ? "bg-signal-soft text-signal" : n.status === "read" ? "bg-pine-soft text-pine" : n.status === "delivered" ? "bg-[#eef1ec] text-ink-soft" : "bg-amber-soft text-[#7a5412]")}><span className="size-1.5 rounded-full bg-current" />{n.status === "failed" ? "发送失败" : n.status === "read" ? "已读" : n.status === "delivered" ? "已送达" : "待发送"}</span></td>
-                      <td className="py-3.5 pr-4 text-[9.5px] text-muted">{n.sentAt}</td>
-                      <td className="py-3.5 pr-4"><div className="flex items-center gap-1.5"><Avatar name={n.operator} size={20} /><span className="text-[9.5px] text-ink-soft">{n.operator}</span></div></td>
-                      <td className="px-4 py-3.5 text-right">{n.status === "failed" ? <button onClick={() => { retryNotification(n.id); toast.success("已重新发送"); }} className="text-[9.5px] font-medium text-signal hover:underline">重发</button> : <button onClick={() => toast.info(n.error ?? "消息已送达")} className="text-[12px] text-muted hover:text-ink">···</button>}</td>
+                      <td className="py-3.5 pl-5 pr-4"><div className="text-[13px] font-medium text-ink">{n.recipient}</div><div className="mt-0.5 max-w-[170px] truncate text-[12px] text-muted">{n.recipientEmail}</div></td>
+                      <td className="py-3.5 pr-4"><span className="rounded bg-[#f0f3ee] px-1.5 py-1 text-[12px] text-ink-soft">{n.scenario}</span></td>
+                      <td className="py-3.5 pr-4 text-[12.5px] text-ink-soft">{job?.title}</td>
+                      <td className="py-3.5 pr-4"><div className="max-w-[150px] truncate text-[12.5px] text-ink-soft">{template?.name}</div><div className="mt-0.5 text-[11.5px] text-muted">{template?.code}</div></td>
+                      <td className="py-3.5 pr-4"><span className="flex items-center gap-1 text-[12px] text-muted">{n.channel === "email" ? <Mail className="size-3" /> : <Smartphone className="size-3" />}{n.channel === "email" ? "邮件" : "短信"}</span></td>
+                      <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center gap-1.5 rounded px-1.5 py-1 text-[12px]", n.status === "failed" ? "bg-signal-soft text-signal" : n.status === "read" ? "bg-pine-soft text-pine" : n.status === "delivered" ? "bg-[#eef1ec] text-ink-soft" : "bg-amber-soft text-[#7a5412]")}><span className="size-1.5 rounded-full bg-current" />{n.status === "failed" ? "发送失败" : n.status === "read" ? "已读" : n.status === "delivered" ? "已送达" : "待发送"}</span></td>
+                      <td className="py-3.5 pr-4 text-[12px] text-muted">{n.sentAt}</td>
+                      <td className="py-3.5 pr-4"><div className="flex items-center gap-1.5"><Avatar name={n.operator} size={20} /><span className="text-[12px] text-ink-soft">{n.operator}</span></div></td>
+                      <td className="px-4 py-3.5 text-right">{n.status === "failed" ? <button onClick={() => { retryNotification(n.id); toast.success("已重新发送"); }} className="text-[12px] font-medium text-signal hover:underline">重发</button> : <button onClick={() => toast.info(n.error ?? "消息已送达")} className="text-[13.5px] text-muted hover:text-ink">···</button>}</td>
                     </tr>
                   );
                 })}
@@ -339,13 +339,13 @@ export default function MessagesPage() {
 
         {((tab === "templates" && filteredTemplates.length === 0) || (tab === "records" && filteredRecords.length === 0)) ? <EmptyState icon={<MessageSquare />} title="没有匹配的消息" description="调整筛选条件，或新建一个模板。" /> : null}
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-3 text-[10px] text-muted">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-3 text-[12.5px] text-muted">
           <span>发送失败会在 10 分钟后自动重试 1 次</span>
           <div className="flex gap-1"><button className="flex size-7 items-center justify-center rounded-md hover:bg-[#eef1ec]">‹</button><span className="flex size-7 items-center justify-center rounded-md bg-pine text-white">1</span><button className="flex size-7 items-center justify-center rounded-md hover:bg-[#eef1ec]">2</button><button className="flex size-7 items-center justify-center rounded-md hover:bg-[#eef1ec]">›</button></div>
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-1 text-[10px] text-muted"><span>消息模板会自动应用于候选人流程推进与 Offer 发放。</span><Link href="/settings" className="flex items-center gap-1 font-medium text-pine hover:underline">配置发件邮箱 <ArrowUpRight className="size-3" /></Link></div>
+      <div className="flex items-center justify-between px-1 text-[12.5px] text-muted"><span>消息模板会自动应用于候选人流程推进与 Offer 发放。</span><Link href="/settings" className="flex items-center gap-1 font-medium text-pine hover:underline">配置发件邮箱 <ArrowUpRight className="size-3" /></Link></div>
 
       <TemplateSheet template={selectedTemplate} onClose={() => setSelectedTemplate(null)} />
       <TemplateEditorDialog open={createOpen} onOpenChange={setCreateOpen} />

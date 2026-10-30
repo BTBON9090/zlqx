@@ -106,16 +106,16 @@ function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => v
         <div className="border-b border-line bg-surface px-6 py-6">
           <div className="pr-8">
             <div className="flex items-center gap-2">
-              <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
-              <span className="text-[10px] text-muted">创建于 {offer.createdAt}</span>
+              <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12.5px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
+              <span className="text-[12.5px] text-muted">创建于 {offer.createdAt}</span>
             </div>
             <div className="mt-4 flex items-center gap-3">
               <Avatar name={candidate?.name ?? "候选人"} size={44} />
               <div className="min-w-0 flex-1">
                 <div className="text-[18px] font-semibold tracking-[-0.03em] text-ink">{candidate?.name}</div>
-                <div className="mt-0.5 text-[10.5px] text-muted">{job?.title} · {job?.location}</div>
+                <div className="mt-0.5 text-[12.5px] text-muted">{job?.title} · {job?.location}</div>
               </div>
-              <div className="text-right"><div className="text-[9px] text-muted">薪资方案</div><div className="mt-0.5 text-[14px] font-semibold text-pine">{offer.salary}</div></div>
+              <div className="text-right"><div className="text-[12px] text-muted">薪资方案</div><div className="mt-0.5 text-[14px] font-semibold text-pine">{offer.salary}</div></div>
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
               {offer.status === "approving" || offer.status === "draft" ? (
@@ -132,10 +132,10 @@ function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => v
         </div>
         <div className="flex-1 overflow-y-auto p-5 md:p-6">
           <div className="rounded-[18px] bg-pine-deep p-5 text-white">
-            <div className="flex items-center gap-1.5 text-[10px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> Offer 摘要</div>
-            <div className="mt-3 grid grid-cols-2 gap-4 text-[10.5px]">
+            <div className="flex items-center gap-1.5 text-[12.5px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> Offer 摘要</div>
+            <div className="mt-3 grid grid-cols-2 gap-4 text-[12.5px]">
               {[["基本薪资", offer.salary.split(" · ")[0]], ["奖金 / 补贴", offer.bonus], ["入职日期", offer.startDate], ["有效期至", offer.deadline]].map(([k, v]) => (
-                <div key={k}><div className="text-[9px] text-[#8fae9f]">{k}</div><div className="mt-1 font-medium text-white">{v}</div></div>
+                <div key={k}><div className="text-[12px] text-[#8fae9f]">{k}</div><div className="mt-1 font-medium text-white">{v}</div></div>
               ))}
             </div>
           </div>
@@ -145,16 +145,16 @@ function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => v
               {[["招聘负责人", "林岚", "已提交"], ["部门负责人", approver?.name ?? "待分配", offer.status === "approving" ? "审批中" : "已通过"], ["财务审批", "顾清", offer.status === "approving" ? "待审批" : "已通过"], ["Offer 发放", "系统自动", offer.status === "sent" || offer.status === "accepted" ? "已发送" : "待发送"]].map(([role, name, st], i) => (
                 <div key={role} className="flex gap-3 pb-4 last:pb-0">
                   <div className="flex flex-col items-center">
-                    <span className={cn("flex size-5 items-center justify-center rounded-full text-[8px] font-semibold", i === 0 ? "bg-pine text-white" : st === "已通过" || st === "已发送" ? "bg-pine-soft text-pine" : st === "审批中" ? "bg-amber-soft text-[#8a6a24]" : "bg-[#eef1ec] text-muted")}>{i === 0 ? <Check className="size-2.5" /> : i + 1}</span>
+                    <span className={cn("flex size-5 items-center justify-center rounded-full text-[11.5px] font-semibold", i === 0 ? "bg-pine text-white" : st === "已通过" || st === "已发送" ? "bg-pine-soft text-pine" : st === "审批中" ? "bg-amber-soft text-[#8a6a24]" : "bg-[#eef1ec] text-muted")}>{i === 0 ? <Check className="size-2.5" /> : i + 1}</span>
                     {i < 3 ? <span className="mt-1 w-px flex-1 bg-line" /> : null}
                   </div>
-                  <div className="flex-1 -mt-0.5"><div className="flex items-center justify-between gap-2"><span className="text-[10.5px] font-medium text-ink">{role} · {name}</span><span className={cn("text-[9px]", st === "审批中" ? "text-[#8a6a24]" : "text-muted")}>{st}</span></div></div>
+                  <div className="flex-1 -mt-0.5"><div className="flex items-center justify-between gap-2"><span className="text-[12.5px] font-medium text-ink">{role} · {name}</span><span className={cn("text-[12px]", st === "审批中" ? "text-[#8a6a24]" : "text-muted")}>{st}</span></div></div>
                 </div>
               ))}
             </div>
           </div>
-          {offer.note ? <div className="mt-4 rounded-xl bg-[#fafbf8] p-4 text-[10.5px] leading-5 text-muted">{offer.note}</div> : null}
-          <div className="mt-4 flex items-start gap-2 rounded-xl bg-signal-soft/50 p-3.5 text-[9.5px] leading-5 text-[#8a4a35]"><CircleAlert className="mt-0.5 size-3 shrink-0" /> Offer 一经发送，候选人将通过邮件收到正式 Offer，所有变更会记录在审计日志中。</div>
+          {offer.note ? <div className="mt-4 rounded-xl bg-[#fafbf8] p-4 text-[12.5px] leading-5 text-muted">{offer.note}</div> : null}
+          <div className="mt-4 flex items-start gap-2 rounded-xl bg-signal-soft/50 p-3.5 text-[12px] leading-5 text-[#8a4a35]"><CircleAlert className="mt-0.5 size-3 shrink-0" /> Offer 一经发送，候选人将通过邮件收到正式 Offer，所有变更会记录在审计日志中。</div>
         </div>
       </div>
     </Sheet>
@@ -193,7 +193,7 @@ export default function OffersPage() {
           ["已接受", offers.filter((o) => o.status === "accepted").length, "份", "等待入职"],
           ["接受率", "86", "%", "近 90 天"],
         ].map(([label, value, suffix, note]) => (
-          <div key={String(label)} className="surface p-4"><div className="text-[10.5px] text-muted">{label}</div><div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[10px] text-muted">{suffix}</span></div><div className="mt-1 text-[9px] text-muted">{note}</div></div>
+          <div key={String(label)} className="surface p-4"><div className="text-[12.5px] text-muted">{label}</div><div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div><div className="mt-1 text-[12px] text-muted">{note}</div></div>
         ))}
       </div>
 
@@ -201,20 +201,20 @@ export default function OffersPage() {
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 pt-2">
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <TabsList className="border-b-0">
-              <TabsTrigger value="all">全部 <span className="num text-[10px] text-muted">{offers.length}</span></TabsTrigger>
+              <TabsTrigger value="all">全部 <span className="num text-[12.5px] text-muted">{offers.length}</span></TabsTrigger>
               <TabsTrigger value="approving">审批中</TabsTrigger>
               <TabsTrigger value="sent">已发送</TabsTrigger>
               <TabsTrigger value="accepted">已接受</TabsTrigger>
             </TabsList>
           </Tabs>
           <div className="flex items-center gap-2 pb-2">
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索候选人" className="h-8 w-[180px] rounded-lg border border-line bg-[#fafbf8] px-2.5 text-[10.5px] outline-none focus:border-pine/50" />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索候选人" className="h-8 w-[180px] rounded-lg border border-line bg-[#fafbf8] px-2.5 text-[12.5px] outline-none focus:border-pine/50" />
             <Button size="sm" variant="secondary" asChild><Link href="/messages">Offer 模板</Link></Button>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[940px] border-collapse text-left">
-            <thead><tr className="border-b border-line bg-[#fafbf8] text-[10px] text-muted">
+            <thead><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
               <th className="min-w-[190px] py-2.5 pl-5 font-medium">候选人</th>
               <th className="min-w-[160px] py-2.5 pr-4 font-medium">职位</th>
               <th className="w-[150px] py-2.5 pr-4 font-medium">薪资方案</th>
@@ -232,16 +232,16 @@ export default function OffersPage() {
                 const st = offerStatusMeta[o.status];
                 return (
                   <tr key={o.id} className="group cursor-pointer border-b border-line/70 last:border-0 hover:bg-[#fafbf8]" onClick={() => setSelected(o)}>
-                    <td className="py-3.5 pl-5 pr-4"><div className="flex items-center gap-2.5"><Avatar name={c?.name ?? "候选人"} size={30} /><div><div className="text-[11.5px] font-medium text-ink group-hover:text-pine">{c?.name}</div><div className="mt-0.5 text-[9px] text-muted">{c?.currentTitle}</div></div></div></td>
-                    <td className="py-3.5 pr-4"><div className="text-[10.5px] text-ink-soft">{j?.title}</div><div className="mt-0.5 text-[9px] text-muted">{j?.location}</div></td>
-                    <td className="py-3.5 pr-4"><div className="text-[10.5px] font-medium text-ink">{o.salary}</div><div className="mt-0.5 text-[9px] text-muted">{o.bonus}</div></td>
-                    <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[9px] font-medium", st.tone)}><span className={cn("size-1.5 rounded-full", st.dot)} />{st.label}</span></td>
-                    <td className="py-3.5 pr-4"><span className="text-[10px] text-ink-soft">{approver?.name}</span></td>
-                    <td className="py-3.5 pr-4 text-[10px] text-ink-soft">{o.startDate.slice(5)}</td>
-                    <td className="py-3.5 pr-4 text-[10px] text-muted">{o.deadline.slice(5)}</td>
+                    <td className="py-3.5 pl-5 pr-4"><div className="flex items-center gap-2.5"><Avatar name={c?.name ?? "候选人"} size={30} /><div><div className="text-[13px] font-medium text-ink group-hover:text-pine">{c?.name}</div><div className="mt-0.5 text-[12px] text-muted">{c?.currentTitle}</div></div></div></td>
+                    <td className="py-3.5 pr-4"><div className="text-[12.5px] text-ink-soft">{j?.title}</div><div className="mt-0.5 text-[12px] text-muted">{j?.location}</div></td>
+                    <td className="py-3.5 pr-4"><div className="text-[12.5px] font-medium text-ink">{o.salary}</div><div className="mt-0.5 text-[12px] text-muted">{o.bonus}</div></td>
+                    <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium", st.tone)}><span className={cn("size-1.5 rounded-full", st.dot)} />{st.label}</span></td>
+                    <td className="py-3.5 pr-4"><span className="text-[12.5px] text-ink-soft">{approver?.name}</span></td>
+                    <td className="py-3.5 pr-4 text-[12.5px] text-ink-soft">{o.startDate.slice(5)}</td>
+                    <td className="py-3.5 pr-4 text-[12.5px] text-muted">{o.deadline.slice(5)}</td>
                     <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
-                        {o.status === "approving" ? <Button size="sm" variant="soft" className="h-7 px-2 text-[10px]" onClick={() => { updateOffer(o.id, { status: "sent" }); toast.success("Offer 已审批并发送"); }}>审批</Button> : <Button size="sm" variant="ghost" className="h-7 px-2 text-[10px]" onClick={() => setSelected(o)}>查看</Button>}
+                        {o.status === "approving" ? <Button size="sm" variant="soft" className="h-7 px-2 text-[12.5px]" onClick={() => { updateOffer(o.id, { status: "sent" }); toast.success("Offer 已审批并发送"); }}>审批</Button> : <Button size="sm" variant="ghost" className="h-7 px-2 text-[12.5px]" onClick={() => setSelected(o)}>查看</Button>}
                         <button className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-3.5" /></button>
                       </div>
                     </td>
@@ -252,10 +252,10 @@ export default function OffersPage() {
           </table>
         </div>
         {filtered.length === 0 ? <EmptyState icon={<FileText />} title="没有符合条件的 Offer" description="创建一份新的 Offer，或切换筛选条件。" action={<Button size="sm" onClick={() => setCreateOpen(true)}><Plus /> 创建 Offer</Button>} /> : null}
-        <div className="flex items-center justify-between border-t border-line px-5 py-3 text-[10px] text-muted"><span>共 {filtered.length} 份 Offer</span><span>审批通过后自动发送邮件</span></div>
+        <div className="flex items-center justify-between border-t border-line px-5 py-3 text-[12.5px] text-muted"><span>共 {filtered.length} 份 Offer</span><span>审批通过后自动发送邮件</span></div>
       </div>
 
-      <div className="flex items-center justify-between px-1 text-[10px] text-muted">
+      <div className="flex items-center justify-between px-1 text-[12.5px] text-muted">
         <span>Offer 模板与发送记录可在消息管理中统一维护。</span>
         <Link href="/messages" className="flex items-center gap-1 font-medium text-pine hover:underline">管理 Offer 模板 <ArrowUpRight className="size-3" /></Link>
       </div>
