@@ -104,7 +104,7 @@ export function ScoreRing({
 
 export function Sparkline({
   data,
-  color = "#0c4539",
+  color = "var(--pine)",
   width = 96,
   height = 32,
   fill = true,
@@ -135,7 +135,7 @@ export function Sparkline({
   );
 }
 
-export function MiniBars({ data, color = "#0c4539" }: { data: number[]; color?: string }) {
+export function MiniBars({ data, color = "var(--pine)" }: { data: number[]; color?: string }) {
   const max = Math.max(...data, 1);
   return (
     <div className="flex h-8 items-end gap-[3px]" aria-hidden>
@@ -202,10 +202,10 @@ export function Stat({
   tone?: "pine" | "signal" | "amber" | "blue";
 }) {
   const colors = {
-    pine: "#0c4539",
-    signal: "#df4f2c",
-    amber: "#b1802f",
-    blue: "#2f6f8f",
+    pine: "var(--pine)",
+    signal: "var(--signal)",
+    amber: "var(--amber)",
+    blue: "var(--info-ink)",
   };
   return (
     <div className="surface flex min-w-0 flex-col justify-between gap-4 p-4.5">

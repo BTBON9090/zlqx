@@ -118,7 +118,7 @@ function CandidatesContent() {
           >
             <span className="flex items-baseline gap-1.5">
               <span className={cn("num text-[22px] font-semibold leading-none tracking-[-0.04em]", stage === t.key ? "text-pine" : "text-ink")}>{counts[t.key]}</span>
-              {t.key === "screening" && counts[t.key] > 0 ? <span className="rounded bg-amber-soft px-1 py-0.5 text-[11.5px] font-medium text-[#7a5412]">待处理</span> : null}
+              {t.key === "screening" && counts[t.key] > 0 ? <span className="rounded bg-amber-soft px-1 py-0.5 text-[11.5px] font-medium text-amber-deep">待处理</span> : null}
             </span>
             <span className={cn("text-[12.5px]", stage === t.key ? "font-medium text-pine" : "text-muted")}>{t.label}</span>
             {stage === t.key ? <span className="absolute inset-x-0 bottom-0 h-[2px] bg-pine" /> : null}

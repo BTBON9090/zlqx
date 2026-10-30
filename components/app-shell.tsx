@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { BrandLockup, BrandMark, CompanyMark } from "@/components/brand";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/toggle";
@@ -117,17 +118,17 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div className="mx-3 flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.045] px-2.5 py-2">
         <CompanyMark name="澄明科技" size={28} />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[13.5px] font-medium text-[#eef4ee]">澄明科技</div>
-          <div className="mt-0.5 truncate text-[12.5px] text-[#a4beb0]">企业版 · 华东区</div>
+          <div className="truncate text-[13.5px] font-medium text-[var(--rail-text)]">澄明科技</div>
+          <div className="mt-0.5 truncate text-[12.5px] text-[var(--rail-muted)]">企业版 · 华东区</div>
         </div>
-        <ChevronDown className="size-3.5 text-[#a4beb0]" />
+        <ChevronDown className="size-3.5 text-[var(--rail-muted)]" />
       </div>
 
       <nav className="mt-5 flex-1 overflow-y-auto px-3 pb-4 scroll-none">
         {navGroups.map((group, gi) => (
           <div key={group.label ?? "main"} className={cn(gi > 0 && "mt-5")}>
             {group.label ? (
-              <div className="mb-1.5 px-2.5 text-[12.5px] font-medium tracking-[0.06em] text-[#92af9f]">{group.label}</div>
+              <div className="mb-1.5 px-2.5 text-[12.5px] font-medium tracking-[0.06em] text-[var(--rail-icon)]">{group.label}</div>
             ) : null}
             <div className="space-y-0.5">
               {group.items.map((item) => {
@@ -140,17 +141,17 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     onClick={onNavigate}
                     className={cn(
                       "group relative flex h-[36px] items-center gap-2.5 rounded-[9px] px-2.5 text-[13.5px] font-medium transition-colors",
-                      active ? "bg-white/[0.09] text-white" : "text-[#b7ccc1] hover:bg-white/[0.05] hover:text-[#e5eee7]"
+                      active ? "bg-white/[0.09] text-white" : "text-[var(--rail-muted)] hover:bg-white/[0.05] hover:text-[var(--rail-text)]"
                     )}
                   >
                     {active ? <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-signal" /> : null}
-                    <Icon className={cn("size-[15px] shrink-0", active ? "text-[#f1c4b6]" : "text-[#97b2a5] group-hover:text-[#d0dfd6]")} strokeWidth={1.8} />
+                    <Icon className={cn("size-[15px] shrink-0", active ? "text-[var(--rail-accent)]" : "text-[var(--rail-icon)] group-hover:text-[var(--rail-text)]")} strokeWidth={1.8} />
                     <span className="flex-1">{item.label}</span>
                     {item.ai ? (
-                      <span className="rounded bg-signal/18 px-1.5 py-0.5 text-[12px] font-semibold tracking-[0.04em] text-[#ffb9a6]">AI</span>
+                      <span className="rounded bg-signal/18 px-1.5 py-0.5 text-[12px] font-semibold tracking-[0.04em] text-[var(--rail-accent)]">AI</span>
                     ) : null}
                     {item.live && todayCount > 0 ? (
-                      <span className="rounded-md bg-white/10 px-1.5 py-0.5 text-[12px] num text-[#d7e6dc]">{todayCount}</span>
+                      <span className="rounded-md bg-white/10 px-1.5 py-0.5 text-[12px] num text-[var(--rail-text)]">{todayCount}</span>
                     ) : null}
                   </Link>
                 );
@@ -160,15 +161,15 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="mx-3 mb-3 rounded-xl border border-white/8 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(223,79,44,.2),transparent_55%)] p-3">
-        <div className="flex items-center gap-1.5 text-[13px] font-medium text-[#e8f0e9]">
-          <Sparkles className="size-3.5 text-[#f0a48f]" />
+      <div className="rail-ai-card mx-3 mb-3 rounded-xl border border-white/8 p-3">
+        <div className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--rail-text)]">
+          <Sparkles className="size-3.5 text-[var(--rail-accent)]" />
           小聘 · AI 助手
         </div>
-        <p className="mt-1.5 text-[12.5px] leading-[1.6] text-[#a4beb0]">今天的 3 个招聘信号，已经整理好了。</p>
+        <p className="mt-1.5 text-[12.5px] leading-[1.6] text-[var(--rail-muted)]">今天的 3 个招聘信号，已经整理好了。</p>
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("open-copilot"))}
-          className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-medium text-[#f0b09d] transition-colors hover:text-white"
+          className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-medium text-[var(--rail-accent)] transition-colors hover:text-white"
         >
           查看简报 <ArrowRight className="size-3" />
         </button>
@@ -178,11 +179,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <Link href="/profile" onClick={onNavigate} className="flex min-w-0 items-center gap-2">
           <Avatar name="林岚" size={28} />
           <div className="min-w-0">
-            <div className="truncate text-[13px] font-medium text-[#e8f0e9]">林岚</div>
-            <div className="truncate text-[12px] text-[#a4beb0]">招聘负责人</div>
+            <div className="truncate text-[13px] font-medium text-[var(--rail-text)]">林岚</div>
+            <div className="truncate text-[12px] text-[var(--rail-muted)]">招聘负责人</div>
           </div>
         </Link>
-        <Link href="/settings" onClick={onNavigate} aria-label="企业设置" className="flex size-7 items-center justify-center rounded-lg text-[#a4beb0] transition-colors hover:bg-white/8 hover:text-white">
+        <Link href="/settings" onClick={onNavigate} aria-label="企业设置" className="flex size-7 items-center justify-center rounded-lg text-[var(--rail-muted)] transition-colors hover:bg-white/8 hover:text-white">
           <Settings className="size-3.5" />
         </Link>
       </div>
@@ -359,14 +360,14 @@ function CopilotPanel({ open, onClose }: { open: boolean; onClose: () => void })
       <div className="flex max-h-[min(620px,calc(100vh-32px))] flex-col overflow-hidden rounded-[22px] border border-line bg-surface shadow-pop animate-rise">
         <div className="flex items-center gap-3 bg-pine-deep px-4 py-3.5 text-white">
           <div className="relative flex size-8 items-center justify-center rounded-[10px] bg-white/10">
-            <Sparkles className="size-4 text-[#f4b6a4]" />
-            <span className="absolute -bottom-0.5 -right-0.5 size-2 rounded-full border border-pine-deep bg-[#7fd2a8]" />
+            <Sparkles className="size-4 text-[var(--rail-accent)]" />
+            <span className="absolute -bottom-0.5 -right-0.5 size-2 rounded-full border border-pine-deep bg-[var(--rail-accent)]" />
           </div>
           <div className="flex-1">
             <div className="text-[14px] font-medium">小聘 · AI 招聘助手</div>
-            <div className="mt-0.5 text-[12.5px] text-[#9cb8a9]">在线 · 可以读取当前招聘数据</div>
+            <div className="mt-0.5 text-[12.5px] text-[var(--rail-muted)]">在线 · 可以读取当前招聘数据</div>
           </div>
-          <button onClick={onClose} aria-label="关闭 AI 助手" className="flex size-7 items-center justify-center rounded-lg text-[#b7ccc1] transition-colors hover:bg-white/10 hover:text-white">
+          <button onClick={onClose} aria-label="关闭 AI 助手" className="flex size-7 items-center justify-center rounded-lg text-[var(--rail-muted)] transition-colors hover:bg-white/10 hover:text-white">
             <X className="size-4" />
           </button>
         </div>
@@ -476,10 +477,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {mobileOpen ? (
           <div className="fixed inset-0 z-50 lg:hidden">
-            <button aria-label="关闭菜单" className="absolute inset-0 bg-[#071c16]/50 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+            <button aria-label="关闭菜单" className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
             <aside className="relative h-full w-[264px] bg-pine-deep shadow-pop animate-[sheetIn_.25s_ease-out]">
               <SidebarContent onNavigate={() => setMobileOpen(false)} />
-              <button onClick={() => setMobileOpen(false)} aria-label="关闭菜单" className="absolute right-3 top-4 flex size-8 items-center justify-center rounded-lg text-[#9cb8a9] hover:bg-white/10 hover:text-white">
+              <button onClick={() => setMobileOpen(false)} aria-label="关闭菜单" className="absolute right-3 top-4 flex size-8 items-center justify-center rounded-lg text-[var(--rail-muted)] hover:bg-white/10 hover:text-white">
                 <X className="size-4" />
               </button>
             </aside>
@@ -515,9 +516,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Sparkles className="size-4 text-signal" />
               </button>
 
+              <ThemeSwitcher />
+
               <Popover>
                 <PopoverTrigger asChild>
-                  <button aria-label="待办" className="relative flex size-9 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-[#eef0ec]">
+                  <button aria-label="待办" className="relative hidden size-9 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-[#eef0ec] sm:flex">
                     <ListTodo className="size-4" />
                     {openTasks > 0 ? <span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-signal ring-2 ring-white" /> : null}
                   </button>
@@ -606,7 +609,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <Check className="size-3.5 text-pine" />
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <span className="flex size-5 items-center justify-center rounded bg-[#e8eef5] text-[12px] font-semibold text-[#2f5c80]">上</span>
+                    <span className="flex size-5 items-center justify-center rounded bg-info-soft text-[12px] font-semibold text-info-ink">上</span>
                     <span className="flex-1">澄明科技 · 上海</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -664,11 +667,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {!copilotOpen ? (
           <button
             onClick={() => setCopilotOpen(true)}
-            className="group fixed bottom-5 right-5 z-40 hidden items-center gap-2 rounded-full bg-pine py-3 pl-3 pr-3 text-white shadow-[0_14px_34px_-12px_rgba(7,47,39,.55)] transition-all hover:bg-pine-deep hover:pr-5 sm:bottom-6 sm:right-6 sm:flex sm:pr-4"
+            className="group fixed bottom-5 right-5 z-40 hidden items-center gap-2 rounded-full bg-pine py-3 pl-3 pr-3 text-white shadow-[0_14px_34px_-12px_rgba(0,0,0,.35)] transition-all hover:bg-pine-deep hover:pr-5 sm:bottom-6 sm:right-6 sm:flex sm:pr-4"
             aria-label="打开 AI 助手"
           >
             <span className="relative flex size-7 items-center justify-center rounded-full bg-white/12">
-              <Sparkles className="size-3.5 text-[#f4b6a4]" />
+              <Sparkles className="size-3.5 text-[var(--rail-accent)]" />
               <span className="absolute inset-0 rounded-full border border-white/20 animate-ping opacity-20" />
             </span>
             <span className="hidden text-[13px] font-medium sm:block">问小聘</span>

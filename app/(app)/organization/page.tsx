@@ -35,7 +35,7 @@ import type { Employee } from "@/lib/types";
 
 const statusMeta: Record<string, { label: string; tone: string }> = {
   active: { label: "正常", tone: "bg-pine-soft text-pine" },
-  invited: { label: "待激活", tone: "bg-amber-soft text-[#7a5412]" },
+  invited: { label: "待激活", tone: "bg-amber-soft text-amber-deep" },
   disabled: { label: "已停用", tone: "bg-[#eef1ec] text-muted" },
 };
 
@@ -103,7 +103,7 @@ function EditMemberDialog({
 }
 
 export default function OrganizationPage() {
-  const { departments, employees, roles, addEmployee, addDepartment, updateEmployee } = useApp();
+  const { departments, employees, roles, addEmployee, addDepartment, updateDepartment, updateEmployee } = useApp();
   const [selectedDept, setSelectedDept] = useState("all");
   const [deptQuery, setDeptQuery] = useState("");
   const [memberQuery, setMemberQuery] = useState("");
@@ -121,6 +121,10 @@ export default function OrganizationPage() {
   const [newRoles, setNewRoles] = useState<string[]>(["r3"]);
   const [deptName, setDeptName] = useState("");
   const [deptParent, setDeptParent] = useState("dept-1");
+  const [editDeptOpen, setEditDeptOpen] = useState(false);
+  const [editDeptId, setEditDeptId] = useState("");
+  const [editDeptName, setEditDeptName] = useState("");
+  const [editDeptParent, setEditDeptParent] = useState<string | null>(null);
 
   const childrenOf = (id: string) => departments.filter((d) => d.parentId === id);
   const descendants = (id: string): string[] => {
@@ -174,8 +178,8 @@ export default function OrganizationPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => { setDeptParent(id); setDeptOpen(true); }}><FolderPlus /> 新建子部门</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => toast.info("部门编辑即将开放")}><Building2 /> 编辑部门</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => toast.success("成员已加入部门")}><UserPlus /> 添加成员</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setEditDeptId(id); setEditDeptName(dept.name); setEditDeptParent(dept.parentId); setEditDeptOpen(true); }}><Building2 /> 编辑部门</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setNewDept(dept.id); setAddOpen(true); }}><UserPlus /> 添加成员</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -407,6 +411,27 @@ export default function OrganizationPage() {
           </div>
         ) : null}
       </Sheet>
+      <Dialog open={editDeptOpen} onOpenChange={setEditDeptOpen}>
+        <DialogContent size="sm" className="p-0">
+          <DialogHeader title="编辑部门" description="修改部门名称或调整上级部门。" icon={<Building2 />} />
+          <DialogBody className="space-y-4">
+            <Field label="部门名称" required><Input value={editDeptName} onChange={(e) => setEditDeptName(e.target.value)} /></Field>
+            <Field label="上级部门">
+              <Select value={editDeptParent ?? "none"} onValueChange={(v) => setEditDeptParent(v === "none" ? null : v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">作为一级部门</SelectItem>
+                  {departments.filter((d) => d.id !== editDeptId).map((d) => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </Field>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setEditDeptOpen(false)}>取消</Button>
+            <Button onClick={() => { if (!editDeptName.trim()) { toast.error("部门名称不能为空"); return; } updateDepartment(editDeptId, { name: editDeptName, parentId: editDeptParent }); toast.success("部门已更新"); setEditDeptOpen(false); }}><Check /> 保存修改</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <EditMemberDialog employee={editMember} open={!!editMember} onOpenChange={(v) => !v && setEditMember(null)} />
     </div>
   );

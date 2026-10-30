@@ -43,12 +43,12 @@ function SignalOrb() {
         <path d="M170 140 L110 202" stroke="white" strokeOpacity=".1" />
         <path d="M170 140 L242 188" stroke="white" strokeOpacity=".08" />
         <circle cx="170" cy="140" r="33" fill="white" fillOpacity=".06" />
-        <circle cx="170" cy="140" r="6" fill="#f2f4ef" />
-        <circle cx="250" cy="78" r="4.5" fill="#df4f2c" />
-        <circle cx="250" cy="78" r="10" stroke="#df4f2c" strokeOpacity=".35" />
-        <circle cx="110" cy="202" r="3.5" fill="#9bd0b4" />
-        <circle cx="242" cy="188" r="3" fill="#f2f4ef" fillOpacity=".8" />
-        <circle cx="92" cy="92" r="2.5" fill="#f2f4ef" fillOpacity=".5" />
+        <circle cx="170" cy="140" r="6" fill="var(--paper)" />
+        <circle cx="250" cy="78" r="4.5" fill="var(--rail-accent)" />
+        <circle cx="250" cy="78" r="10" stroke="var(--rail-accent)" strokeOpacity=".35" />
+        <circle cx="110" cy="202" r="3.5" fill="var(--rail-accent)" />
+        <circle cx="242" cy="188" r="3" fill="var(--paper)" fillOpacity=".8" />
+        <circle cx="92" cy="92" r="2.5" fill="var(--paper)" fillOpacity=".5" />
       </svg>
       <div className="absolute right-[38px] top-[48px] rounded-md border border-white/10 bg-white/6 px-2 py-1 text-[12px] tracking-wide text-white/70 backdrop-blur-sm">
         决策窗口 · 2
@@ -97,16 +97,15 @@ export default function DashboardPage() {
         <section className="col-span-12 xl:col-span-8">
           <div className="ai-orbit noise relative overflow-hidden rounded-[20px] p-6 text-white md:p-7">
             <div className="signal-grid absolute inset-0 opacity-55" />
-            <div className="absolute -left-16 -top-24 size-[280px] rounded-full bg-[#4f8c72]/20 blur-3xl" />
             <SignalOrb />
             <div className="relative z-10 max-w-[560px]">
               <div className="flex items-center gap-2.5">
                 <span className="flex size-6 items-center justify-center rounded-md border border-white/15 bg-white/8">
-                  <Sparkles className="size-3 text-[#f2b3a1]" />
+                  <Sparkles className="size-3 theme-accent-text" />
                 </span>
-                <span className="text-[13px] font-medium tracking-[0.02em] text-[#cfe0d5]">AI 今日招聘简报</span>
-                <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/6 px-2 py-0.5 text-[12px] text-[#a9c3b5]">
-                  <span className="pulse-dot inline-block size-1 rounded-full bg-[#7fd2a8]" />
+                <span className="text-[13px] font-medium tracking-[0.02em] text-white/80">AI 今日招聘简报</span>
+                <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/6 px-2 py-0.5 text-[12px] text-white/65">
+                  <span className="pulse-dot inline-block size-1 rounded-full theme-accent-bg" />
                   08:12 更新
                 </span>
               </div>
@@ -115,18 +114,18 @@ export default function DashboardPage() {
                 <br />
                 <span className="text-white/72">把注意力放在两个决策窗口。</span>
               </h2>
-              <p className="mt-3 max-w-[510px] text-[13.5px] leading-6 text-[#b7cbbf]">
+              <p className="mt-3 max-w-[510px] text-[13.5px] leading-6 text-white/60">
                 高级产品经理岗位的简历质量高于近 30 天均值，但裴然的 Offer 已在财务审批停留 1 天；周予安将在 10:00 进入二面，这是本周最值得关注的一场面试。
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-2">
                 <Button
                   size="sm"
-                  className="bg-[#f2f4ef] text-pine hover:bg-white"
+                  className="bg-[var(--surface)] text-pine hover:bg-white"
                   onClick={() => window.dispatchEvent(new CustomEvent("open-copilot"))}
                 >
                   <Sparkles /> 生成行动清单
                 </Button>
-                <Button size="sm" variant="ghost" className="text-[#d5e4da] hover:bg-white/10 hover:text-white" asChild>
+                <Button size="sm" variant="ghost" className="text-white/75 hover:bg-white/10 hover:text-white" asChild>
                   <Link href="/candidates?candidate=cand-1">
                     查看周予安 <ArrowRight />
                   </Link>
@@ -140,8 +139,8 @@ export default function DashboardPage() {
                 ].map(([label, value, note]) => (
                   <div key={label} className="flex items-baseline gap-2">
                     <span className="num text-[20px] font-semibold leading-none">{value}</span>
-                    <span className="text-[12.5px] text-[#a9c3b5]">
-                      {label} <span className="text-[#7d9a8c]">· {note}</span>
+                    <span className="text-[12.5px] text-white/65">
+                      {label} <span className="text-white/40">· {note}</span>
                     </span>
                   </div>
                 ))}
@@ -172,7 +171,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-[#f0f2ed]">
                   <div
-                    className={cn("h-full rounded-full transition-all duration-700", i === 0 ? "bg-pine" : i === 1 ? "bg-[#3f7460]" : i === 2 ? "bg-[#6b9b82]" : i === 3 ? "bg-[#a8c4ad]" : "bg-[#d6a58f]")}
+                    className={cn("h-full rounded-full transition-all duration-700", i === 0 ? "bg-pine" : i === 1 ? "bg-pine/80" : i === 2 ? "bg-pine/60" : i === 3 ? "bg-pine/35" : "bg-signal/35")}
                     style={{ width: `${f.width}%` }}
                   />
                 </div>
@@ -196,8 +195,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
         <Stat label="在招职位" value={activeJobs.length} suffix="个" change="+2" spark={[4, 4, 5, 5, 6, 6, 7]} />
         <Stat label="待处理简历" value={26} suffix="份" change="+18%" spark={[8, 12, 10, 16, 14, 21, 26]} tone="blue" />
-        <Stat label="本周面试" value={12} suffix="场" change="+3" spark={[4, 6, 5, 8, 7, 9, 12]} tone="amber" />
-        <Stat label="Offer 接受率" value="86" suffix="%" change="+6pt" spark={[72, 75, 74, 80, 78, 84, 86]} tone="signal" />
+        <Stat label="本周面试" value={12} suffix="场" change="+3" spark={[4, 6, 5, 8, 7, 9, 12]} tone="blue" />
+        <Stat label="Offer 接受率" value="86" suffix="%" change="+6pt" spark={[72, 75, 74, 80, 78, 84, 86]} />
       </div>
 
       <div className="grid grid-cols-12 gap-4 xl:gap-5">
@@ -250,7 +249,7 @@ export default function DashboardPage() {
                   <span
                     className={cn(
                       "ml-1 hidden h-[22px] items-center rounded-md px-2 text-[12.5px] font-medium md:inline-flex",
-                      iv.status === "confirmed" ? "bg-pine-soft text-pine" : "bg-amber-soft text-[#7a5412]"
+                      iv.status === "confirmed" ? "bg-pine-soft text-pine" : "bg-amber-soft text-amber-deep"
                     )}
                   >
                     {iv.status === "confirmed" ? "已确认" : "待确认"}
@@ -290,7 +289,7 @@ export default function DashboardPage() {
                     {task.due}
                   </span>
                 </span>
-                {task.id === "task-2" ? <span className="rounded bg-amber-soft px-1.5 py-0.5 text-[12px] font-medium text-[#7a5412]">审批</span> : null}
+                {task.id === "task-2" ? <span className="rounded bg-amber-soft px-1.5 py-0.5 text-[12px] font-medium text-amber-deep">审批</span> : null}
               </label>
             ))}
           </div>
@@ -385,7 +384,7 @@ export default function DashboardPage() {
                         <span>本周 +{job.newThisWeek}</span>
                       </div>
                     </div>
-                    <span className={cn("num text-[14px] font-semibold", health >= 85 ? "text-pine" : "text-[#8a6a24]")}>{health}</span>
+                    <span className={cn("num text-[14px] font-semibold", health >= 85 ? "text-pine" : "text-amber-deep")}>{health}</span>
                   </div>
                   <div className="mt-3 flex items-center gap-3">
                     <Progress value={job.hired} max={job.headcount} className="h-1 flex-1" barClassName={health >= 85 ? "bg-pine" : "bg-amber"} />
@@ -398,7 +397,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-4 flex items-start gap-2.5 rounded-xl bg-signal-soft/55 px-3.5 py-3">
             <Sparkles className="mt-0.5 size-3.5 shrink-0 text-signal" />
-            <p className="text-[12.5px] leading-5 text-[#8a4a35]">
+            <p className="text-[12.5px] leading-5 text-danger">
               解决方案顾问的面试转化低于同类岗位 12%，建议让 AI 重新校准岗位画像。
             </p>
           </div>
@@ -408,7 +407,7 @@ export default function DashboardPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 px-1 pb-2 text-[12.5px] text-muted">
         <span>数据更新于 2026-10-30 08:12 · 仅展示你有权限查看的招聘数据</span>
         <span className="flex items-center gap-2">
-          <span className="size-1.5 rounded-full bg-[#6fae8c]" /> 所有服务运行正常
+          <span className="size-1.5 rounded-full bg-success" /> 所有服务运行正常
         </span>
       </div>
     </div>

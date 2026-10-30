@@ -41,6 +41,7 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState(me.phone);
   const [title, setTitle] = useState(me.title);
   const [bio, setBio] = useState("负责澄明科技的招聘体系与 AI 招聘实践，关注候选人体验与招聘效率。");
+  const [tab, setTab] = useState("info");
   const [twoFactor, setTwoFactor] = useState(true);
   const [emailNotify, setEmailNotify] = useState(true);
   const [smsNotify, setSmsNotify] = useState(true);
@@ -58,22 +59,21 @@ export default function ProfilePage() {
 
       <div className="relative overflow-hidden rounded-[22px] bg-pine-deep p-6 text-white md:p-7">
         <div className="signal-grid absolute inset-0 opacity-40" />
-        <div className="absolute -right-20 -top-24 size-[320px] rounded-full bg-[#4f8c72]/20 blur-3xl" />
         <div className="relative flex flex-wrap items-center gap-5">
           <Avatar name={me.name} size={72} ring />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2"><h2 className="text-[23px] font-semibold tracking-[-0.03em]">{me.name}</h2><Badge className="bg-white/10 text-white">{myRoles[0]?.name ?? "成员"}</Badge></div>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-[#b7cbbf]"><span>{me.title}</span><span className="flex items-center gap-1"><Building2 className="size-3" /> {dept?.name}</span><span className="flex items-center gap-1"><MapPin className="size-3" /> 北京</span><span className="flex items-center gap-1"><Mail className="size-3" /> {me.email}</span></div>
-            <div className="mt-3 flex flex-wrap gap-1.5">{myRoles.map((r) => <span key={r.id} className="rounded-md border border-white/12 bg-white/6 px-2 py-1 text-[12px] text-[#cfe0d5]">{r.name}</span>)}</div>
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-white/60"><span>{me.title}</span><span className="flex items-center gap-1"><Building2 className="size-3" /> {dept?.name}</span><span className="flex items-center gap-1"><MapPin className="size-3" /> 北京</span><span className="flex items-center gap-1"><Mail className="size-3" /> {me.email}</span></div>
+            <div className="mt-3 flex flex-wrap gap-1.5">{myRoles.map((r) => <span key={r.id} className="rounded-md border border-white/12 bg-white/6 px-2 py-1 text-[12px] text-white/80">{r.name}</span>)}</div>
           </div>
           <div className="flex gap-2">
-            <Button size="sm" className="bg-[#f2f4ef] text-pine hover:bg-white" onClick={() => toast.info("编辑资料在下方「个人信息」中完成")}><User /> 编辑资料</Button>
-            <Button size="sm" variant="ghost" className="text-[#d5e4da] hover:bg-white/10 hover:text-white" onClick={() => toast.info("请在「安全设置」中修改密码")}><KeyRound /> 修改密码</Button>
+            <Button size="sm" className="bg-[var(--surface)] text-pine hover:bg-white" onClick={() => setTab("info")}><User /> 编辑资料</Button>
+            <Button size="sm" variant="ghost" className="text-white/75 hover:bg-white/10 hover:text-white" onClick={() => setTab("security")}><KeyRound /> 修改密码</Button>
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue="info">
+      <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="info"><UserRound className="size-3.5" /> 个人信息</TabsTrigger>
           <TabsTrigger value="security"><LockKeyhole className="size-3.5" /> 安全设置</TabsTrigger>
@@ -99,15 +99,15 @@ export default function ProfilePage() {
             <div className="surface p-5">
               <SectionTitle title="账号信息" />
               <div className="mt-2 divide-y divide-line">
-                <InfoLine label="账号状态"><span className="flex items-center gap-1.5 text-pine"><span className="size-1.5 rounded-full bg-[#6fae8c]" /> 正常</span></InfoLine>
+                <InfoLine label="账号状态"><span className="flex items-center gap-1.5 text-pine"><span className="size-1.5 rounded-full bg-success" /> 正常</span></InfoLine>
                 <InfoLine label="加入时间">{me.joinedAt}</InfoLine>
                 <InfoLine label="最后登录">2026-10-30 08:04</InfoLine>
                 <InfoLine label="登录设备">Chrome · macOS</InfoLine>
               </div>
             </div>
             <div className="rounded-[18px] bg-pine-deep p-5 text-white">
-              <div className="flex items-center gap-1.5 text-[12.5px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> 小聘提示</div>
-              <p className="mt-2 text-[12.5px] leading-5 text-[#b7cbbf]">你本周已完成 18 次招聘操作，平均响应候选人时间 2.1 小时，比团队均值快 34%。</p>
+              <div className="flex items-center gap-1.5 text-[12.5px] text-white/65"><Sparkles className="size-3 theme-accent-text" /> 小聘提示</div>
+              <p className="mt-2 text-[12.5px] leading-5 text-white/60">你本周已完成 18 次招聘操作，平均响应候选人时间 2.1 小时，比团队均值快 34%。</p>
             </div>
           </div>
         </TabsContent>
@@ -212,7 +212,7 @@ export default function ProfilePage() {
           <div className="surface p-5">
             <SectionTitle title="通知预览" description="每日 09:00 发送" icon={<Mail />} />
             <div className="mt-3 overflow-hidden rounded-xl border border-line">
-              <div className="bg-pine-deep px-4 py-3 text-white"><div className="text-[12px] text-[#a9c3b5]">澄明科技 · 招聘简报</div><div className="mt-0.5 text-[13px] font-medium">10月30日 · 今日 5 场面试</div></div>
+              <div className="bg-pine-deep px-4 py-3 text-white"><div className="text-[12px] text-white/65">澄明科技 · 招聘简报</div><div className="mt-0.5 text-[13px] font-medium">10月30日 · 今日 5 场面试</div></div>
               <div className="space-y-2 bg-white p-4 text-[12px] leading-5 text-ink-soft">
                 <div>· 周予安 10:00 二面，请提前查看面试准备。</div>
                 <div>· 裴然的 Offer 仍在财务审批，已停留 1 天。</div>

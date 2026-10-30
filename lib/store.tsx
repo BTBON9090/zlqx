@@ -137,7 +137,9 @@ interface AppActions {
   }) => Employee;
   updateEmployee: (id: string, patch: Partial<Employee>) => void;
   addDepartment: (name: string, parentId: string | null) => Department;
+  updateDepartment: (id: string, patch: Partial<Department>) => void;
   addRole: (input: { name: string; description: string; color: string }) => Role;
+  duplicateRole: (roleId: string) => Role | undefined;
   updateRoleMeta: (roleId: string, patch: Partial<Pick<Role, "name" | "description" | "color">>) => void;
   deleteRole: (roleId: string) => void;
   updateRolePermissions: (roleId: string, permissions: Record<string, string[]>) => void;
@@ -522,6 +524,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return dept;
   }, []);
 
+  const updateDepartment = useCallback<AppActions["updateDepartment"]>((id, patch) => {
+    setState((prev) => ({
+      ...prev,
+      departments: prev.departments.map((d) => (d.id === id ? { ...d, ...patch } : d)),
+    }));
+  }, []);
+
   const addRole = useCallback<AppActions["addRole"]>((input) => {
     const role: Role = {
       id: uid("role"),
@@ -545,6 +554,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setState((prev) => ({ ...prev, roles: [...prev.roles, role] }));
     return role;
   }, []);
+
+  const duplicateRole = useCallback<AppActions["duplicateRole"]>((roleId) => {
+    const source = state.roles.find((r) => r.id === roleId);
+    if (!source) return undefined;
+    const copy: Role = {
+      ...source,
+      id: uid("role"),
+      name: `${source.name} 副本`,
+      system: false,
+      memberIds: [],
+    };
+    setState((prev) => ({ ...prev, roles: [...prev.roles, copy] }));
+    return copy;
+  }, [state.roles]);
 
   const updateRolePermissions = useCallback<AppActions["updateRolePermissions"]>((roleId, permissions) => {
     setState((prev) => ({
@@ -682,7 +705,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       addEmployee,
       updateEmployee,
       addDepartment,
+      updateDepartment,
       addRole,
+      duplicateRole,
       updateRoleMeta,
       deleteRole,
       updateRolePermissions,
@@ -712,7 +737,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       addEmployee,
       updateEmployee,
       addDepartment,
+      updateDepartment,
       addRole,
+      duplicateRole,
       updateRoleMeta,
       deleteRole,
       updateRolePermissions,

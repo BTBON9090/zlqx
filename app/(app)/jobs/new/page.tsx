@@ -442,11 +442,11 @@ export default function NewJobPage() {
             </div>
 
             <div className="rounded-[18px] bg-pine-deep p-4 text-white">
-              <div className="flex items-center gap-2 text-[13px] font-medium"><Sparkles className="size-3.5 text-[#f2b3a1]" /> 小聘建议</div>
-              <p className="mt-2 text-[12.5px] leading-5 text-[#a9c3b5]">
+              <div className="flex items-center gap-2 text-[13px] font-medium"><Sparkles className="size-3.5 theme-accent-text" /> 小聘建议</div>
+              <p className="mt-2 text-[12.5px] leading-5 text-white/65">
                 这个职位发布后，预计每周可收到 12–18 份简历。AI 会优先推送匹配度 80 分以上的候选人。
               </p>
-              <button onClick={generateJd} className="mt-3 flex items-center gap-1 text-[12.5px] font-medium text-[#f0b09d] hover:text-white">
+              <button onClick={generateJd} className="mt-3 flex items-center gap-1 text-[12.5px] font-medium theme-accent-text hover:text-white">
                 让 AI 补齐 JD <ArrowRight className="size-3" />
               </button>
             </div>

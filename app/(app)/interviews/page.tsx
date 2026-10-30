@@ -42,7 +42,7 @@ import { cn, formatDateWithWeek, interviewTypeMeta } from "@/lib/utils";
 import type { Interview, InterviewType } from "@/lib/types";
 
 const statusMeta: Record<string, { label: string; tone: string; dot: string }> = {
-  pending: { label: "待确认", tone: "bg-amber-soft text-[#7a5412]", dot: "bg-amber" },
+  pending: { label: "待确认", tone: "bg-amber-soft text-amber-deep", dot: "bg-amber" },
   confirmed: { label: "已确认", tone: "bg-pine-soft text-pine", dot: "bg-pine" },
   done: { label: "已完成", tone: "bg-[#eef1ec] text-muted", dot: "bg-[#9aa69e]" },
   cancelled: { label: "已取消", tone: "bg-signal-soft text-signal", dot: "bg-signal" },
@@ -158,7 +158,7 @@ function RescheduleDialog({
         <DialogBody className="space-y-4">
           <Field label="新的面试日期" required><input type="date" min="2026-10-30" value={date} onChange={(e) => setDate(e.target.value)} className="flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 text-[14px] outline-none focus:border-pine/60" /></Field>
           <Field label="开始时间" required><input type="time" value={start} onChange={(e) => setStart(e.target.value)} className="flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 text-[14px] outline-none focus:border-pine/60" /></Field>
-          <label className="flex items-center gap-2 text-[12.5px] text-muted"><input type="checkbox" defaultChecked className="accent-[#0c4539]" /> 自动发送改期通知给候选人与面试官</label>
+          <label className="flex items-center gap-2 text-[12.5px] text-muted"><input type="checkbox" defaultChecked className="accent-[var(--pine)]" /> 自动发送改期通知给候选人与面试官</label>
         </DialogBody>
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>取消</Button>
@@ -267,8 +267,8 @@ function InterviewDetailSheet({
 
               {interview.type === "ai" ? (
                 <div className="rounded-[16px] bg-pine-deep p-5 text-white">
-                  <div className="flex items-center gap-2 text-[12.5px] font-medium"><AudioLines className="size-3.5 text-[#f2b3a1]" /> 数字人面试</div>
-                  <p className="mt-2 text-[12.5px] leading-5 text-[#b7cbbf]">{interview.aiSummary ?? "数字人将按结构化题纲完成面试，并在结束后生成评分与纪要。"}</p>
+                  <div className="flex items-center gap-2 text-[12.5px] font-medium"><AudioLines className="size-3.5 theme-accent-text" /> 数字人面试</div>
+                  <p className="mt-2 text-[12.5px] leading-5 text-white/60">{interview.aiSummary ?? "数字人将按结构化题纲完成面试，并在结束后生成评分与纪要。"}</p>
                   <div className="mt-3 grid grid-cols-3 gap-2 text-[12px]">
                     <span className="rounded bg-white/8 px-2 py-1.5 text-center">6 道问题</span>
                     <span className="rounded bg-white/8 px-2 py-1.5 text-center">20 分钟</span>
@@ -298,8 +298,8 @@ function InterviewDetailSheet({
           {tab === "prep" ? (
             <div className="space-y-4">
               <div className="rounded-[16px] bg-pine-deep p-5 text-white">
-                <div className="flex items-center gap-1.5 text-[12.5px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> 小聘的面试准备</div>
-                <p className="mt-2 text-[12.5px] leading-5 text-[#b7cbbf]">已结合候选人简历、岗位画像与初试反馈，整理出本次面试的验证重点。</p>
+                <div className="flex items-center gap-1.5 text-[12.5px] text-white/65"><Sparkles className="size-3 theme-accent-text" /> 小聘的面试准备</div>
+                <p className="mt-2 text-[12.5px] leading-5 text-white/60">已结合候选人简历、岗位画像与初试反馈，整理出本次面试的验证重点。</p>
               </div>
               <div className="surface p-5">
                 <SectionTitle title="建议追问" description="优先验证简历中的模糊点" icon={<Sparkles />} />
@@ -466,7 +466,7 @@ function InterviewsContent() {
               <div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div>
               <div className="mt-1 text-[12px] text-muted">{note}</div>
             </div>
-            <span className={cn("flex size-9 items-center justify-center rounded-xl", tone === "pine" ? "bg-pine-soft text-pine" : tone === "amber" ? "bg-amber-soft text-[#8a6a24]" : tone === "signal" ? "bg-signal-soft text-signal" : "bg-[#e8eef5] text-[#2f5c80]")}>
+            <span className={cn("flex size-9 items-center justify-center rounded-xl", tone === "pine" ? "bg-pine-soft text-pine" : tone === "amber" ? "bg-amber-soft text-amber-deep" : tone === "signal" ? "bg-signal-soft text-signal" : "bg-info-soft text-info-ink")}>
               <CalendarClock className="size-4" />
             </span>
           </div>
@@ -483,7 +483,7 @@ function InterviewsContent() {
               </button>
             ))}
           </div>
-          <span className="hidden items-center gap-1 pb-2 text-[12px] text-muted md:flex"><span className="size-1.5 rounded-full bg-[#6fae8c]" /> 与面试官日历已同步</span>
+          <span className="hidden items-center gap-1 pb-2 text-[12px] text-muted md:flex"><span className="size-1.5 rounded-full bg-success" /> 与面试官日历已同步</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-b border-line bg-[#fcfcf9] px-4 py-3">
@@ -667,7 +667,7 @@ function InterviewsContent() {
                 );
               })}
             </div>
-            <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-line pt-3 text-[11.5px] text-muted"><span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-[#4d7ea8]" /> 视频</span><span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-[#b1802f]" /> 现场</span><span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-pine" /> 数字人</span><span className="ml-auto">点击面试卡片查看详情</span></div>
+            <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-line pt-3 text-[11.5px] text-muted"><span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-info-ink" /> 视频</span><span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-[#b1802f]" /> 现场</span><span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-pine" /> 数字人</span><span className="ml-auto">点击面试卡片查看详情</span></div>
           </DialogBody>
         </DialogContent>
       </Dialog>

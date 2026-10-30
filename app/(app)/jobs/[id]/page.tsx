@@ -160,7 +160,6 @@ export default function JobDetailPage() {
 
       <div className="surface overflow-hidden">
         <div className="relative p-5 md:p-6">
-          <div className="absolute right-0 top-0 h-full w-[38%] bg-[radial-gradient(80%_100%_at_100%_0%,rgba(12,69,57,.06),transparent_70%)]" />
           <div className="relative flex flex-wrap items-start justify-between gap-5">
             <div className="flex min-w-0 items-start gap-4">
               <div className="flex size-12 shrink-0 items-center justify-center rounded-[14px] bg-pine-soft text-pine">
@@ -296,7 +295,7 @@ export default function JobDetailPage() {
                   <div className="mt-3 flex items-center gap-2.5 rounded-xl bg-[#f7f8f4] p-3">
                     <Avatar name={owner?.name ?? "负责人"} size={32} />
                     <div className="min-w-0 flex-1"><div className="text-[13px] font-medium text-ink">{owner?.name} · 招聘负责人</div><div className="mt-0.5 text-[12px] text-muted">负责职位与候选人推进</div></div>
-                    <span className="size-1.5 rounded-full bg-[#6fae8c]" />
+                    <span className="size-1.5 rounded-full bg-success" />
                   </div>
                   <div className="mt-2.5 flex items-center gap-2.5 rounded-xl bg-[#f7f8f4] p-3">
                     <AvatarGroup names={["陈墨", "林岚", "赵珩"]} size={26} />
@@ -410,7 +409,7 @@ export default function JobDetailPage() {
                 </div>
                 <div className="flex items-start gap-2 rounded-xl bg-signal-soft/55 p-4">
                   <Sparkles className="mt-0.5 size-3.5 shrink-0 text-signal" />
-                  <p className="text-[12.5px] leading-5 text-[#8a4a35]">AI 建议：在面试中增加一道「AI 产品失败复盘」问题，用于验证候选人对大模型能力边界的理解，而不只是成功经验。</p>
+                  <p className="text-[12.5px] leading-5 text-danger">AI 建议：在面试中增加一道「AI 产品失败复盘」问题，用于验证候选人对大模型能力边界的理解，而不只是成功经验。</p>
                 </div>
               </div>
             </div>

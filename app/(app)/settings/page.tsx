@@ -59,6 +59,7 @@ export default function SettingsPage() {
   const [verifyContact, setVerifyContact] = useState("林岚");
   const [verifyPhone, setVerifyPhone] = useState("138 1033 6291");
   const [verifyFile, setVerifyFile] = useState("招聘业务授权书.pdf");
+  const [apiDocOpen, setApiDocOpen] = useState(false);
 
   const saveCompany = () => {
     updateCompany(form);
@@ -91,7 +92,7 @@ export default function SettingsPage() {
           <Button size="sm" variant="secondary" onClick={() => { setForm(settings.company); setEditOpen(true); }}><Settings2 /> 编辑资料</Button>
         </div>
         <div className="surface flex items-center gap-3 p-4">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-amber-soft text-[#8a6a24]"><ShieldCheck className="size-4.5" /></div>
+          <div className="flex size-10 items-center justify-center rounded-xl bg-amber-soft text-amber-deep"><ShieldCheck className="size-4.5" /></div>
           <div className="min-w-0 flex-1">
             <div className="text-[12.5px] text-muted">认证进度</div>
             <div className="mt-0.5 text-[13.5px] font-semibold text-ink">2 / 3 项已完成</div>
@@ -144,7 +145,7 @@ export default function SettingsPage() {
             </div>
             <div className="surface p-5">
               <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3"><div className={cn("flex size-9 items-center justify-center rounded-xl", settings.company.recruitAuthorized ? "bg-pine-soft text-pine" : "bg-amber-soft text-[#8a6a24]")}><ShieldCheck className="size-4" /></div><div><div className="text-[13.5px] font-semibold text-ink">招聘业务授权</div><div className="mt-0.5 text-[12px] text-muted">用于发布职位、发送面试邀约与 Offer</div></div></div>
+                <div className="flex items-start gap-3"><div className={cn("flex size-9 items-center justify-center rounded-xl", settings.company.recruitAuthorized ? "bg-pine-soft text-pine" : "bg-amber-soft text-amber-deep")}><ShieldCheck className="size-4" /></div><div><div className="text-[13.5px] font-semibold text-ink">招聘业务授权</div><div className="mt-0.5 text-[12px] text-muted">用于发布职位、发送面试邀约与 Offer</div></div></div>
                 <Badge tone={settings.company.recruitAuthorized ? "pine" : "amber"} dot>{settings.company.recruitAuthorized ? "已认证" : "待认证"}</Badge>
               </div>
               <div className="mt-4 rounded-xl bg-[#fafbf8] p-3.5 text-[12.5px] leading-5 text-muted">
@@ -199,9 +200,9 @@ export default function SettingsPage() {
             </div>
             <div className="space-y-4">
               <div className="rounded-[18px] bg-pine-deep p-5 text-white">
-                <div className="flex items-center gap-1.5 text-[12.5px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> 小聘建议</div>
-                <p className="mt-2 text-[12.5px] leading-5 text-[#b7cbbf]">你的团队平均面试反馈时间为 31 小时。将反馈时限设为 24 小时，可以让人均招聘周期缩短约 2.4 天。</p>
-                <button onClick={() => setRecruit({ ...recruit, requireFeedback: true })} className="mt-3 text-[12px] font-medium text-[#f0b09d] hover:text-white">启用 24 小时反馈提醒</button>
+                <div className="flex items-center gap-1.5 text-[12.5px] text-white/65"><Sparkles className="size-3 theme-accent-text" /> 小聘建议</div>
+                <p className="mt-2 text-[12.5px] leading-5 text-white/60">你的团队平均面试反馈时间为 31 小时。将反馈时限设为 24 小时，可以让人均招聘周期缩短约 2.4 天。</p>
+                <button onClick={() => setRecruit({ ...recruit, requireFeedback: true })} className="mt-3 text-[12px] font-medium theme-accent-text hover:text-white">启用 24 小时反馈提醒</button>
               </div>
               <div className="surface p-5">
                 <SectionTitle title="招聘团队" description="拥有招聘权限的成员" icon={<Users />} />
@@ -226,7 +227,7 @@ export default function SettingsPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2"><span className="text-[13px] font-medium text-ink">{ch.name}</span><Switch checked={connected[ch.id]} onCheckedChange={(v) => { setConnected((prev) => ({ ...prev, [ch.id]: v })); toast.success(v ? `${ch.name} 已连接` : `${ch.name} 已断开`); }} /></div>
                     <div className="mt-0.5 text-[12px] leading-4 text-muted">{ch.desc}</div>
-                    <div className="mt-1.5 flex items-center gap-1 text-[11.5px]">{connected[ch.id] ? <><span className="size-1.5 rounded-full bg-[#6fae8c]" /><span className="text-pine">已连接</span></> : <span className="text-muted">未连接</span>}</div>
+                    <div className="mt-1.5 flex items-center gap-1 text-[11.5px]">{connected[ch.id] ? <><span className="size-1.5 rounded-full bg-success" /><span className="text-pine">已连接</span></> : <span className="text-muted">未连接</span>}</div>
                   </div>
                 </div>
               ))}
@@ -237,7 +238,7 @@ export default function SettingsPage() {
               <SectionTitle title="API 访问" description="用于企业自有系统对接" icon={<KeyRound />} />
               <div className="mt-4 flex items-center gap-2 rounded-lg border border-line bg-[#fafbf8] px-3 py-2.5"><code className="min-w-0 flex-1 truncate text-[12.5px] text-ink-soft">wl_live_sk_7f3a...c92e</code><button onClick={() => { navigator.clipboard?.writeText("wl_live_sk_7f3a...c92e"); toast.success("API Key 已复制"); }} className="text-muted hover:text-ink"><Copy className="size-3.5" /></button></div>
               <div className="mt-2 text-[12px] leading-5 text-muted">请勿在客户端暴露 API Key。最近使用：今天 09:42 · 招聘数据同步服务</div>
-              <Button variant="secondary" size="sm" className="mt-3" onClick={() => toast.info("API 文档即将开放")}><FileText /> 查看 API 文档</Button>
+              <Button variant="secondary" size="sm" className="mt-3" onClick={() => setApiDocOpen(true)}><FileText /> 查看 API 文档</Button>
             </div>
             <div className="surface p-5">
               <SectionTitle title="Webhook" description="招聘事件推送到企业系统" icon={<Globe />} />
@@ -307,7 +308,7 @@ export default function SettingsPage() {
         <DialogContent size="md" className="p-0">
           <DialogHeader title="招聘业务授权" description="上传加盖公章的授权书，审核通过后即可发布职位。" icon={<ShieldCheck />} />
           <DialogBody className="space-y-4">
-            <div className="rounded-xl bg-amber-soft/50 p-3.5 text-[12.5px] leading-5 text-[#7a5412]">
+            <div className="rounded-xl bg-amber-soft/50 p-3.5 text-[12.5px] leading-5 text-amber-deep">
               {settings.company.recruitAuthorized ? "招聘业务授权已通过。如需更新授权书，可重新上传。" : "请上传企业营业执照副本与招聘业务授权书。文件需加盖企业公章，支持 PDF / JPG / PNG。"}
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -324,6 +325,30 @@ export default function SettingsPage() {
             <div className="flex items-start gap-2 rounded-lg bg-[#fafbf8] p-3 text-[12px] leading-5 text-muted"><CircleAlert className="mt-0.5 size-3 shrink-0" /> 提交后预计 1 个工作日内完成审核。审核结果会通过站内信与邮件通知。</div>
           </DialogBody>
           <DialogFooter><Button variant="secondary" onClick={() => setVerifyOpen(false)}>取消</Button><Button onClick={submitVerify}><Check /> 提交认证</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={apiDocOpen} onOpenChange={setApiDocOpen}>
+        <DialogContent size="lg" className="p-0">
+          <DialogHeader title="API 接入说明" description="用于企业自有系统与智聘千寻同步招聘数据。" icon={<KeyRound />} />
+          <DialogBody className="space-y-4">
+            <div className="rounded-xl border border-line bg-[#fafbf8] p-4">
+              <div className="text-[12.5px] font-medium text-ink">认证方式</div>
+              <p className="mt-1.5 text-[12px] leading-5 text-muted">在请求头中携带 Bearer Token。请勿在浏览器或客户端暴露 API Key。</p>
+              <code className="mt-2 block rounded-lg bg-white px-3 py-2 font-mono text-[12px] text-ink-soft">Authorization: Bearer wl_live_sk_***</code>
+            </div>
+            <div className="divide-y divide-line rounded-xl border border-line">
+              {[["GET", "/api/v1/jobs", "查询职位列表"], ["GET", "/api/v1/candidates", "查询候选人"], ["POST", "/api/v1/resumes", "上传并解析简历"], ["POST", "/api/v1/interviews", "创建面试安排"], ["GET", "/api/v1/offers", "查询 Offer 审批状态"]].map(([method, path, desc]) => (
+                <div key={path} className="flex items-center gap-3 px-4 py-3">
+                  <span className={cn("w-12 shrink-0 rounded px-1.5 py-1 text-center font-mono text-[11.5px] font-semibold", method === "GET" ? "bg-info-soft text-info-ink" : "bg-pine-soft text-pine")}>{method}</span>
+                  <code className="min-w-0 flex-1 truncate font-mono text-[12px] text-ink">{path}</code>
+                  <span className="hidden text-[11.5px] text-muted sm:block">{desc}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-start gap-2 rounded-xl bg-amber-soft/60 p-3 text-[12px] leading-5 text-amber-deep"><CircleAlert className="mt-0.5 size-3.5 shrink-0" /> 当前为前端演示，接口尚未真实开放。接入生产环境前请配置鉴权、限流与审计。</div>
+          </DialogBody>
+          <DialogFooter><Button variant="secondary" onClick={() => setApiDocOpen(false)}>关闭</Button><Button onClick={() => { navigator.clipboard?.writeText("https://api.zhipin-qianxun.com/v1"); toast.success("API 地址已复制"); }}><Copy /> 复制 API 地址</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

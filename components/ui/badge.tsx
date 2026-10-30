@@ -16,8 +16,8 @@ export function Badge({
     neutral: "bg-[#eef0ec] text-ink-soft",
     pine: "bg-pine-soft text-pine",
     signal: "bg-signal-soft text-signal",
-    amber: "bg-amber-soft text-[#7a5412]",
-    blue: "bg-[#e8eef5] text-[#2f5c80]",
+    amber: "bg-amber-soft text-amber-deep",
+    blue: "bg-info-soft text-info-ink",
     outline: "border border-line bg-transparent text-muted",
   };
   return (

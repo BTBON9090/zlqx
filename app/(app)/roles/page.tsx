@@ -84,7 +84,7 @@ function PermissionDialog({
         <DialogHeader title={`${readOnly ? "查看" : "设置"}「${role.name}」权限`} description={readOnly ? "系统内置角色，权限不可修改。你可以复制它来创建自定义角色。" : "按模块配置权限，保存后立即对角色成员生效。"} icon={<ShieldCheck />} />
         <DialogBody className="space-y-4">
           {readOnly ? (
-            <div className="flex items-start gap-2 rounded-xl bg-amber-soft/60 p-3 text-[12.5px] leading-5 text-[#7a5412]"><Lock className="mt-0.5 size-3.5 shrink-0" /> 系统内置角色用于保障平台基础能力，不可编辑或删除。如需调整，请复制为新角色。</div>
+            <div className="flex items-start gap-2 rounded-xl bg-amber-soft/60 p-3 text-[12.5px] leading-5 text-amber-deep"><Lock className="mt-0.5 size-3.5 shrink-0" /> 系统内置角色用于保障平台基础能力，不可编辑或删除。如需调整，请复制为新角色。</div>
           ) : (
             <div className="flex items-center justify-between gap-3">
               <span className="text-[12.5px] text-muted">已选择 <span className="num font-semibold text-ink">{total}</span> / {allTotal} 项权限</span>
@@ -173,7 +173,7 @@ function AddMemberDialog({ role, open, onOpenChange }: { role: Role | null; open
 }
 
 export default function RolesPage() {
-  const { roles, employees, departments, addRole, updateRoleMembers, updateRoleMeta, deleteRole } = useApp();
+  const { roles, employees, departments, addRole, duplicateRole, updateRoleMembers, updateRoleMeta, deleteRole } = useApp();
   const [selectedId, setSelectedId] = useState("r1");
   const [query, setQuery] = useState("");
   const [permOpen, setPermOpen] = useState(false);
@@ -257,7 +257,7 @@ export default function RolesPage() {
               <div className="flex flex-wrap gap-2">
                 <Button variant="secondary" size="sm" onClick={() => setPermOpen(true)}>{role.system ? <><Lock /> 查看权限</> : <><ShieldCheck /> 设置角色权限</>}</Button>
                 <Button size="sm" onClick={() => setAddMemberOpen(true)}><UserPlus /> 添加成员</Button>
-                <DropdownMenu><DropdownMenuTrigger asChild><button className="flex size-8 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-4" /></button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={() => toast.success("角色已复制")}><Copy /> 复制角色</DropdownMenuItem><DropdownMenuItem onClick={() => { setEditRoleName(role.name); setEditRoleDesc(role.description); setEditRoleColor(role.color); setEditRoleOpen(true); }}><ShieldCheck /> 编辑角色</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem danger onClick={() => { if (role.system) { toast.info("系统角色不可删除"); return; } deleteRole(role.id); setSelectedId("r1"); toast.success("角色已删除"); }}><Trash2 /> 删除角色</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
+                <DropdownMenu><DropdownMenuTrigger asChild><button className="flex size-8 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-4" /></button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={() => { const copy = duplicateRole(role.id); if (copy) { setSelectedId(copy.id); toast.success("角色已复制"); } }}><Copy /> 复制角色</DropdownMenuItem><DropdownMenuItem onClick={() => { setEditRoleName(role.name); setEditRoleDesc(role.description); setEditRoleColor(role.color); setEditRoleOpen(true); }}><ShieldCheck /> 编辑角色</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem danger onClick={() => { if (role.system) { toast.info("系统角色不可删除"); return; } deleteRole(role.id); setSelectedId("r1"); toast.success("角色已删除"); }}><Trash2 /> 删除角色</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
               </div>
             </div>
 
@@ -307,7 +307,7 @@ export default function RolesPage() {
                       <td className="py-3 pr-4 text-[12px] text-ink-soft">{e.email}</td>
                       <td className="py-3 pr-4 text-[12px] text-ink-soft">{departments.find((d) => d.id === e.departmentId)?.name}</td>
                       <td className="py-3 pr-4 text-[12px] text-muted">{scopeLabels[role.id] ?? "自定义"}</td>
-                      <td className="py-3 pr-4"><span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", e.status === "active" ? "bg-pine-soft text-pine" : e.status === "invited" ? "bg-amber-soft text-[#7a5412]" : "bg-[#eef1ec] text-muted")}>{e.status === "active" ? "正常" : e.status === "invited" ? "待激活" : "已停用"}</span></td>
+                      <td className="py-3 pr-4"><span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", e.status === "active" ? "bg-pine-soft text-pine" : e.status === "invited" ? "bg-amber-soft text-amber-deep" : "bg-[#eef1ec] text-muted")}>{e.status === "active" ? "正常" : e.status === "invited" ? "待激活" : "已停用"}</span></td>
                       <td className="px-4 py-3 text-right"><div className="flex justify-end gap-1"><Button size="sm" variant="ghost" className="h-7 px-2 text-[12px]" onClick={() => toast.info("成员详情可在员工与部门中查看")}>详情</Button><button onClick={() => { updateRoleMembers(role.id, role.memberIds.filter((id) => id !== e.id)); toast.success("成员已移出角色"); }} className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-signal" aria-label="移除角色"><UserMinus className="size-3.5" /></button></div></td>
                     </tr>
                   ))}

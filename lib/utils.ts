@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const jobStatusMeta: Record<JobStatus, { label: string; tone: string; dot: string }> = {
   active: { label: "招聘中", tone: "bg-pine-soft text-pine", dot: "bg-pine" },
-  reviewing: { label: "审核中", tone: "bg-amber-soft text-[#7a5412]", dot: "bg-amber" },
+  reviewing: { label: "审核中", tone: "bg-amber-soft text-amber-deep", dot: "bg-amber" },
   draft: { label: "未开始", tone: "bg-[#eef0ec] text-muted", dot: "bg-[#9aa69e]" },
   closed: { label: "已结束", tone: "bg-[#eef0ec] text-muted", dot: "bg-[#9aa69e]" },
   paused: { label: "已暂停", tone: "bg-signal-soft text-signal", dot: "bg-signal" },
@@ -16,23 +16,23 @@ export const jobStatusMeta: Record<JobStatus, { label: string; tone: string; dot
 
 export const candidateStageMeta: Record<CandidateStage, { label: string; short: string; tone: string; dot: string }> = {
   screening: { label: "待筛选", short: "筛选", tone: "bg-[#eef0ec] text-ink-soft", dot: "bg-[#8c9a91]" },
-  interview: { label: "面试中", short: "面试", tone: "bg-[#e8eef5] text-[#2f5c80]", dot: "bg-[#4d7ea8]" },
-  offer: { label: "Offer", short: "Offer", tone: "bg-amber-soft text-[#7a5412]", dot: "bg-amber" },
+  interview: { label: "面试中", short: "面试", tone: "bg-info-soft text-info-ink", dot: "bg-info-ink" },
+  offer: { label: "Offer", short: "Offer", tone: "bg-amber-soft text-amber-deep", dot: "bg-amber" },
   hired: { label: "已入职", short: "入职", tone: "bg-pine-soft text-pine", dot: "bg-pine" },
   archived: { label: "已归档", short: "归档", tone: "bg-[#f0eeec] text-muted", dot: "bg-[#a9a39a]" },
 };
 
 export const interviewTypeMeta: Record<InterviewType, { label: string; tone: string }> = {
-  video: { label: "视频面试", tone: "text-[#2f5c80] bg-[#e8eef5]" },
-  onsite: { label: "现场面试", tone: "text-[#7a5412] bg-amber-soft" },
+  video: { label: "视频面试", tone: "bg-info-soft text-info-ink" },
+  onsite: { label: "现场面试", tone: "bg-amber-soft text-amber-deep" },
   phone: { label: "电话面试", tone: "text-ink-soft bg-[#eef0ec]" },
   ai: { label: "数字人面试", tone: "text-pine bg-pine-soft" },
 };
 
 export const offerStatusMeta: Record<OfferStatus, { label: string; tone: string; dot: string }> = {
   draft: { label: "草稿", tone: "bg-[#eef0ec] text-muted", dot: "bg-[#9aa69e]" },
-  approving: { label: "审批中", tone: "bg-amber-soft text-[#7a5412]", dot: "bg-amber" },
-  sent: { label: "已发送", tone: "bg-[#e8eef5] text-[#2f5c80]", dot: "bg-[#4d7ea8]" },
+  approving: { label: "审批中", tone: "bg-amber-soft text-amber-deep", dot: "bg-amber" },
+  sent: { label: "已发送", tone: "bg-info-soft text-info-ink", dot: "bg-info-ink" },
   accepted: { label: "已接受", tone: "bg-pine-soft text-pine", dot: "bg-pine" },
   declined: { label: "已拒绝", tone: "bg-signal-soft text-signal", dot: "bg-signal" },
 };
@@ -84,10 +84,10 @@ export function isToday(date: string) {
 }
 
 export function scoreTone(score: number) {
-  if (score >= 90) return { text: "text-pine", stroke: "#0c4539", bg: "#dbeae3" };
-  if (score >= 85) return { text: "text-[#2f6f8f]", stroke: "#2f6f8f", bg: "#e3ecf2" };
-  if (score >= 80) return { text: "text-[#8a6a24]", stroke: "#b1802f", bg: "#f6edd9" };
-  return { text: "text-muted", stroke: "#9aa69e", bg: "#eef0ec" };
+  if (score >= 90) return { text: "text-pine", stroke: "var(--pine)", bg: "var(--pine-soft)" };
+  if (score >= 85) return { text: "text-info-ink", stroke: "var(--info-ink)", bg: "var(--info-soft)" };
+  if (score >= 80) return { text: "text-amber-deep", stroke: "var(--amber)", bg: "var(--amber-soft)" };
+  return { text: "text-muted", stroke: "var(--muted)", bg: "var(--mint)" };
 }
 
 export function candidateName(candidates: { id: string; name: string }[], id: string) {

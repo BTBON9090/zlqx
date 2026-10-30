@@ -447,9 +447,9 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                   </div>
 
                   <div className="rounded-[16px] bg-pine-deep p-4 text-white">
-                    <div className="flex items-center gap-1.5 text-[12.5px] font-medium"><Sparkles className="size-3 text-[#f2b3a1]" /> 小聘建议</div>
-                    <p className="mt-2 text-[12px] leading-5 text-[#a9c3b5]">{candidate.ai.fit.slice(0, 110)}…</p>
-                    <button onClick={() => setTab("ai")} className="mt-2.5 flex items-center gap-1 text-[12px] font-medium text-[#f0b09d] hover:text-white">查看完整评估 <ArrowRight className="size-3" /></button>
+                    <div className="flex items-center gap-1.5 text-[12.5px] font-medium"><Sparkles className="size-3 theme-accent-text" /> 小聘建议</div>
+                    <p className="mt-2 text-[12px] leading-5 text-white/65">{candidate.ai.fit.slice(0, 110)}…</p>
+                    <button onClick={() => setTab("ai")} className="mt-2.5 flex items-center gap-1 text-[12px] font-medium theme-accent-text hover:text-white">查看完整评估 <ArrowRight className="size-3" /></button>
                   </div>
 
                   <div className="surface p-4">
@@ -473,15 +473,15 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                   <div className="signal-grid absolute inset-0 opacity-40" />
                   <div className="relative flex flex-wrap items-start justify-between gap-4">
                     <div>
-                      <div className="flex items-center gap-1.5 text-[12.5px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> AI 推荐报告 · {candidate.score}% 匹配</div>
+                      <div className="flex items-center gap-1.5 text-[12.5px] text-white/65"><Sparkles className="size-3 theme-accent-text" /> AI 推荐报告 · {candidate.score}% 匹配</div>
                       <h3 className="mt-2 max-w-[420px] text-[17px] font-semibold leading-6 tracking-[-0.02em]">{candidate.ai.headline}</h3>
-                      <p className="mt-2 max-w-[480px] text-[12.5px] leading-5 text-[#b7cbbf]">{candidate.ai.fit}</p>
+                      <p className="mt-2 max-w-[480px] text-[12.5px] leading-5 text-white/60">{candidate.ai.fit}</p>
                     </div>
                     <div className="flex gap-1.5">
-                      <Button size="sm" variant="ghost" className="text-[#d5e4da] hover:bg-white/10 hover:text-white" onClick={regenerate} disabled={regenerating}>
+                      <Button size="sm" variant="ghost" className="text-white/75 hover:bg-white/10 hover:text-white" onClick={regenerate} disabled={regenerating}>
                         {regenerating ? <span className="size-3 animate-spin rounded-full border border-white/30 border-t-white" /> : <Wand2 />} 重新生成
                       </Button>
-                      <Button size="sm" className="bg-[#f2f4ef] text-pine hover:bg-white" onClick={() => { addGeneration({ type: "report", title: `${candidate.name} · 推荐报告`, subtitle: `${job?.title} · 匹配度 ${candidate.score}%`, status: "ready", jobId: candidate.jobId, candidateId: candidate.id }); toast.success("已存入 AI 工作台"); }}>
+                      <Button size="sm" className="bg-[var(--surface)] text-pine hover:bg-white" onClick={() => { addGeneration({ type: "report", title: `${candidate.name} · 推荐报告`, subtitle: `${job?.title} · 匹配度 ${candidate.score}%`, status: "ready", jobId: candidate.jobId, candidateId: candidate.id }); toast.success("已存入 AI 工作台"); }}>
                         <FileText /> 存入报告
                       </Button>
                     </div>
@@ -558,7 +558,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                           <div className="flex flex-wrap items-center gap-1.5">
                             <span className="text-[13px] font-medium text-ink">{iv.round}</span>
                             <span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", type.tone)}>{type.label}</span>
-                            <span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", iv.status === "done" ? "bg-pine-soft text-pine" : iv.status === "cancelled" ? "bg-signal-soft text-signal" : "bg-amber-soft text-[#7a5412]")}>
+                            <span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", iv.status === "done" ? "bg-pine-soft text-pine" : iv.status === "cancelled" ? "bg-signal-soft text-signal" : "bg-amber-soft text-amber-deep")}>
                               {iv.status === "done" ? "已完成" : iv.status === "cancelled" ? "已取消" : iv.status === "confirmed" ? "已确认" : "待确认"}
                             </span>
                           </div>
@@ -609,7 +609,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                   <div className="border-b border-line px-4 py-3 text-[12.5px] font-medium text-muted">消息记录</div>
                   {candidateNotifications.map((n) => (
                     <div key={n.id} className="flex items-center gap-3 border-b border-line/70 px-4 py-3 last:border-0">
-                      <span className={cn("flex size-7 items-center justify-center rounded-lg", n.channel === "email" ? "bg-[#e8eef5] text-[#2f5c80]" : "bg-amber-soft text-[#8a6a24]")}>
+                      <span className={cn("flex size-7 items-center justify-center rounded-lg", n.channel === "email" ? "bg-info-soft text-info-ink" : "bg-amber-soft text-amber-deep")}>
                         {n.channel === "email" ? <Mail className="size-3.5" /> : <MessageSquare className="size-3.5" />}
                       </span>
                       <div className="min-w-0 flex-1">

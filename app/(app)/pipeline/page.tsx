@@ -113,7 +113,7 @@ const initialFlows: FlowTemplate[] = [
   },
 ];
 
-const offerFlows = [
+const initialOfferFlows = [
   { id: "of-1", name: "标准 Offer 审批", description: "适用于大多数岗位，HRBP → 部门负责人 → 财务 → CEO。", steps: ["HRBP 发起", "部门负责人", "财务审批", "CEO 审批"], avg: "1.2 天", pending: 1, active: true },
   { id: "of-2", name: "高管特批流程", description: "适用于总监及以上岗位，增加 CEO 与董事会审批。", steps: ["HRBP 发起", "部门负责人", "财务审批", "CEO 审批", "董事会"], avg: "3.8 天", pending: 0, active: true },
 ];
@@ -125,9 +125,20 @@ const jobTemplates = [
   { title: "客户成功经理", dept: "客户成功", skills: ["客户成功", "HR SaaS", "项目管理"], use: 5 },
 ];
 
+type OfferFlow = (typeof initialOfferFlows)[number];
+
 export default function PipelinePage() {
   const { jobs } = useApp();
   const [flows, setFlows] = useState(initialFlows);
+  const [offerFlows, setOfferFlows] = useState(initialOfferFlows);
+  const [editFlow, setEditFlow] = useState<FlowTemplate | null>(null);
+  const [editFlowName, setEditFlowName] = useState("");
+  const [editFlowDesc, setEditFlowDesc] = useState("");
+  const [editOffer, setEditOffer] = useState<OfferFlow | null>(null);
+  const [editOfferSteps, setEditOfferSteps] = useState<string[]>([]);
+  const [newOfferOpen, setNewOfferOpen] = useState(false);
+  const [newOfferName, setNewOfferName] = useState("");
+  const [newOfferDesc, setNewOfferDesc] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
@@ -183,7 +194,7 @@ export default function PipelinePage() {
           <div key={String(label)} className="surface p-4">
             <div className="text-[12.5px] text-muted">{label}</div>
             <div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div>
-            <div className="mt-1 flex items-center gap-1.5 text-[12px] text-muted"><span className={cn("size-1.5 rounded-full", tone === "pine" ? "bg-pine" : tone === "blue" ? "bg-[#4d7ea8]" : tone === "amber" ? "bg-amber" : "bg-signal")} />{note}</div>
+            <div className="mt-1 flex items-center gap-1.5 text-[12px] text-muted"><span className={cn("size-1.5 rounded-full", tone === "pine" ? "bg-pine" : tone === "blue" ? "bg-info-ink" : tone === "amber" ? "bg-amber" : "bg-signal")} />{note}</div>
           </div>
         ))}
       </div>
@@ -215,7 +226,7 @@ export default function PipelinePage() {
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {flow.steps.map((s, i) => (
                         <div key={`${flow.id}-${s.name}`} className="flex items-center gap-1.5">
-                          <span className={cn("rounded-md border px-2 py-1 text-[12px] font-medium", s.type === "screen" ? "border-line bg-[#fafbf8] text-muted" : s.type === "offer" ? "border-amber/20 bg-amber-soft/60 text-[#8a6a24]" : "border-pine/15 bg-pine-soft/50 text-pine")}>
+                          <span className={cn("rounded-md border px-2 py-1 text-[12px] font-medium", s.type === "screen" ? "border-line bg-[#fafbf8] text-muted" : s.type === "offer" ? "border-amber/20 bg-amber-soft/60 text-amber-deep" : "border-pine/15 bg-pine-soft/50 text-pine")}>
                             {s.name}
                             {s.ai ? <span className="ml-1 text-[11.5px] text-pine/70">AI</span> : null}
                           </span>
@@ -234,8 +245,8 @@ export default function PipelinePage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><button className="flex size-7 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-3.5" /></button></DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => toast.info("流程编辑即将开放")}><Settings2 /> 编辑流程</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast.success("流程模板已复制")}><Copy /> 复制模板</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { setEditFlow(flow); setEditFlowName(flow.name); setEditFlowDesc(flow.description); }}><Settings2 /> 编辑流程</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { const copy = { ...flow, id: `flow-${Date.now()}`, name: `${flow.name} 副本`, default: false }; setFlows((prev) => [...prev, copy]); toast.success("流程模板已复制"); }}><Copy /> 复制模板</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => { setFlows((prev) => prev.map((f) => ({ ...f, default: f.id === flow.id }))); toast.success("已设为默认流程"); }}><Check /> 设为默认</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem danger onClick={() => { setFlows((prev) => prev.filter((f) => f.id !== flow.id)); toast.success("流程模板已删除"); }}><XIcon /> 删除模板</DropdownMenuItem>
@@ -257,7 +268,7 @@ export default function PipelinePage() {
             <div key={flow.id} className="surface p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-amber-soft text-[#8a6a24]"><Rocket className="size-4.5" /></div>
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-amber-soft text-amber-deep"><Rocket className="size-4.5" /></div>
                   <div>
                     <div className="flex items-center gap-2"><h3 className="text-[14px] font-semibold text-ink">{flow.name}</h3><Badge tone="pine" dot>启用中</Badge></div>
                     <p className="mt-1 text-[12.5px] text-muted">{flow.description}</p>
@@ -266,7 +277,7 @@ export default function PipelinePage() {
                 <div className="flex items-center gap-5 text-[12.5px] text-muted">
                   <span className="flex items-center gap-1"><Timer className="size-3" /> 平均 {flow.avg}</span>
                   <span className="flex items-center gap-1"><CircleDot className="size-3" /> {flow.pending} 个待审批</span>
-                  <Button variant="ghost" size="sm" onClick={() => toast.info("审批流编辑即将开放")}><Settings2 /> 配置</Button>
+                  <Button variant="ghost" size="sm" onClick={() => { setEditOffer(flow); setEditOfferSteps(flow.steps); }}><Settings2 /> 配置</Button>
                 </div>
               </div>
               <div className="mt-5 flex flex-col gap-0 sm:flex-row sm:items-center">
@@ -284,7 +295,7 @@ export default function PipelinePage() {
           ))}
           <div className="rounded-xl border border-dashed border-line bg-[#fafbf8] p-5 text-center">
             <p className="text-[12.5px] text-muted">需要不同的审批链？可以按岗位、部门或薪资区间配置条件审批。</p>
-            <Button variant="secondary" size="sm" className="mt-3" onClick={() => toast.info("条件审批配置即将开放")}><Plus /> 新建审批流程</Button>
+            <Button variant="secondary" size="sm" className="mt-3" onClick={() => { setNewOfferName(""); setNewOfferDesc(""); setNewOfferOpen(true); }}><Plus /> 新建审批流程</Button>
           </div>
         </TabsContent>
 
@@ -332,6 +343,48 @@ export default function PipelinePage() {
             <div className="rounded-xl bg-[#fafbf8] p-3.5 text-[12px] leading-5 text-muted">新建流程后，可将其设为默认流程，或在发布职位时选择。数字人初试可随时在流程中开启或关闭。</div>
           </DialogBody>
           <DialogFooter><Button variant="secondary" onClick={() => setCreateOpen(false)}>取消</Button><Button onClick={createFlow}><Check /> 创建流程</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editFlow} onOpenChange={(v) => !v && setEditFlow(null)}>
+        <DialogContent size="sm" className="p-0">
+          <DialogHeader title="编辑流程模板" description="调整模板名称与适用范围说明。" icon={<Workflow />} />
+          <DialogBody className="space-y-4">
+            <Field label="流程名称" required><Input value={editFlowName} onChange={(e) => setEditFlowName(e.target.value)} /></Field>
+            <Field label="流程说明"><Textarea value={editFlowDesc} onChange={(e) => setEditFlowDesc(e.target.value)} className="min-h-[88px]" /></Field>
+            {editFlow ? <div className="flex flex-wrap gap-1.5">{editFlow.steps.map((s) => <span key={s.name} className="rounded-md border border-line bg-[#fafbf8] px-2 py-1 text-[12px] text-ink-soft">{s.name}</span>)}</div> : null}
+          </DialogBody>
+          <DialogFooter><Button variant="secondary" onClick={() => setEditFlow(null)}>取消</Button><Button onClick={() => { if (!editFlow) return; if (!editFlowName.trim()) { toast.error("流程名称不能为空"); return; } setFlows((prev) => prev.map((f) => f.id === editFlow.id ? { ...f, name: editFlowName, description: editFlowDesc } : f)); setEditFlow(null); toast.success("流程已更新"); }}><Check /> 保存修改</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editOffer} onOpenChange={(v) => !v && setEditOffer(null)}>
+        <DialogContent size="md" className="p-0">
+          <DialogHeader title="配置 Offer 审批流" description="调整审批节点顺序，保存后对新 Offer 生效。" icon={<Rocket />} />
+          <DialogBody className="space-y-3">
+            {editOfferSteps.map((step, index) => (
+              <div key={`${step}-${index}`} className="flex items-center gap-2">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-pine-soft text-[11.5px] font-semibold text-pine">{index + 1}</span>
+                <Input value={step} onChange={(e) => setEditOfferSteps((prev) => prev.map((v, i) => i === index ? e.target.value : v))} className="h-9" />
+                <button onClick={() => setEditOfferSteps((prev) => prev.filter((_, i) => i !== index))} className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-danger" aria-label="删除审批节点"><XIcon /></button>
+              </div>
+            ))}
+            <Button variant="secondary" size="sm" onClick={() => setEditOfferSteps((prev) => [...prev, "新的审批节点"])}><Plus /> 添加审批节点</Button>
+            <div className="rounded-xl bg-[#fafbf8] p-3 text-[12px] leading-5 text-muted">审批顺序会影响 Offer 发放速度，建议保留财务审批节点。</div>
+          </DialogBody>
+          <DialogFooter><Button variant="secondary" onClick={() => setEditOffer(null)}>取消</Button><Button onClick={() => { if (!editOffer) return; setOfferFlows((prev) => prev.map((f) => f.id === editOffer.id ? { ...f, steps: editOfferSteps } : f)); setEditOffer(null); toast.success("审批流已更新"); }}><Check /> 保存配置</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={newOfferOpen} onOpenChange={setNewOfferOpen}>
+        <DialogContent size="sm" className="p-0">
+          <DialogHeader title="新建审批流程" description="适用于特殊岗位或高管审批。" icon={<Rocket />} />
+          <DialogBody className="space-y-4">
+            <Field label="流程名称" required><Input value={newOfferName} onChange={(e) => setNewOfferName(e.target.value)} placeholder="例如：海外岗位审批" /></Field>
+            <Field label="流程说明"><Textarea value={newOfferDesc} onChange={(e) => setNewOfferDesc(e.target.value)} className="min-h-[72px]" placeholder="说明适用的岗位范围…" /></Field>
+            <Field label="默认审批节点"><div className="flex flex-wrap gap-1.5">{["HRBP 发起", "部门负责人", "财务审批", "CEO 审批"].map((s) => <span key={s} className="rounded-md border border-line bg-[#fafbf8] px-2 py-1 text-[12px] text-ink-soft">{s}</span>)}</div></Field>
+          </DialogBody>
+          <DialogFooter><Button variant="secondary" onClick={() => setNewOfferOpen(false)}>取消</Button><Button onClick={() => { if (!newOfferName.trim()) { toast.error("流程名称不能为空"); return; } setOfferFlows((prev) => [...prev, { id: `of-${Date.now()}`, name: newOfferName, description: newOfferDesc || "自定义审批流程。", steps: ["HRBP 发起", "部门负责人", "财务审批"], avg: "—", pending: 0, active: true }]); setNewOfferOpen(false); toast.success("审批流程已创建"); }}><Check /> 创建流程</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

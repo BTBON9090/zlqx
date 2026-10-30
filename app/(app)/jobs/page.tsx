@@ -42,7 +42,7 @@ const tabs: { key: JobStatus | "all"; label: string }[] = [
 
 export default function JobsPage() {
   const router = useRouter();
-  const { jobs, employees, departments, updateJob } = useApp();
+  const { jobs, employees, departments, updateJob, addJob } = useApp();
   const [tab, setTab] = useState<JobStatus | "all">("all");
   const [query, setQuery] = useState("");
   const [dept, setDept] = useState("all");
@@ -232,7 +232,7 @@ export default function JobsPage() {
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
-                            <DropdownMenuItem onClick={() => toast.success("已复制职位：" + job.title)}>
+                            <DropdownMenuItem onClick={() => { const copy = addJob({ title: `${job.title} 副本`, departmentId: job.departmentId, location: job.location, workMode: job.workMode, employment: job.employment, salary: job.salary, experience: job.experience, education: job.education, headcount: job.headcount, summary: job.summary, responsibilities: job.responsibilities, requirements: job.requirements, skills: job.skills, status: "draft", ownerId: job.ownerId, priority: job.priority }); toast.success("已复制为新职位草稿"); router.push(`/jobs/${copy.id}`); }}>
                               <Copy /> 复制职位
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push(`/jobs/${job.id}?edit=1`)}>

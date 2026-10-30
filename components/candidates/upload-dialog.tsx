@@ -110,7 +110,7 @@ export function UploadResumeDialog({ open, onOpenChange }: { open: boolean; onOp
             <div className="flex size-11 items-center justify-center rounded-xl border border-line bg-white text-pine shadow-sm"><Upload className="size-5" /></div>
             <p className="mt-3 text-[13.5px] font-medium text-ink">拖拽简历到这里，或 <button onClick={() => inputRef.current?.click()} className="text-pine underline underline-offset-2">选择文件</button></p>
             <p className="mt-1 text-[12.5px] text-muted">最多 8 份 · PDF / DOCX / JPG / PNG · 单个文件 ≤ 20MB</p>
-            <button onClick={() => { setFiles(samples); setPhase("idle"); setProgress(0); }} className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-medium text-[#8a6a24] hover:underline"><Sparkles className="size-3" /> 使用示例简历体验</button>
+            <button onClick={() => { setFiles(samples); setPhase("idle"); setProgress(0); }} className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-medium text-amber-deep hover:underline"><Sparkles className="size-3" /> 使用示例简历体验</button>
           </div>
 
           {files.length > 0 ? (

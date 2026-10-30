@@ -27,6 +27,7 @@ export function Avatar({
       className={cn(
         "inline-flex shrink-0 items-center justify-center font-semibold tracking-tight",
         square ? "rounded-[8px]" : "rounded-full",
+        "avatar-tone",
         ring && "ring-2 ring-white",
         className
       )}

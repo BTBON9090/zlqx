@@ -9,7 +9,6 @@ import {
   ChevronRight,
   CircleAlert,
   FileText,
-  MoreHorizontal,
   Plus,
   Send,
   Sparkles,
@@ -132,10 +131,10 @@ function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => v
         </div>
         <div className="flex-1 overflow-y-auto p-5 md:p-6">
           <div className="rounded-[18px] bg-pine-deep p-5 text-white">
-            <div className="flex items-center gap-1.5 text-[12.5px] text-[#a9c3b5]"><Sparkles className="size-3 text-[#f2b3a1]" /> Offer 摘要</div>
+            <div className="flex items-center gap-1.5 text-[12.5px] text-white/65"><Sparkles className="size-3 theme-accent-text" /> Offer 摘要</div>
             <div className="mt-3 grid grid-cols-2 gap-4 text-[12.5px]">
               {[["基本薪资", offer.salary.split(" · ")[0]], ["奖金 / 补贴", offer.bonus], ["入职日期", offer.startDate], ["有效期至", offer.deadline]].map(([k, v]) => (
-                <div key={k}><div className="text-[12px] text-[#8fae9f]">{k}</div><div className="mt-1 font-medium text-white">{v}</div></div>
+                <div key={k}><div className="text-[12px] text-white/45">{k}</div><div className="mt-1 font-medium text-white">{v}</div></div>
               ))}
             </div>
           </div>
@@ -145,16 +144,16 @@ function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => v
               {[["招聘负责人", "林岚", "已提交"], ["部门负责人", approver?.name ?? "待分配", offer.status === "approving" ? "审批中" : "已通过"], ["财务审批", "顾清", offer.status === "approving" ? "待审批" : "已通过"], ["Offer 发放", "系统自动", offer.status === "sent" || offer.status === "accepted" ? "已发送" : "待发送"]].map(([role, name, st], i) => (
                 <div key={role} className="flex gap-3 pb-4 last:pb-0">
                   <div className="flex flex-col items-center">
-                    <span className={cn("flex size-5 items-center justify-center rounded-full text-[11.5px] font-semibold", i === 0 ? "bg-pine text-white" : st === "已通过" || st === "已发送" ? "bg-pine-soft text-pine" : st === "审批中" ? "bg-amber-soft text-[#8a6a24]" : "bg-[#eef1ec] text-muted")}>{i === 0 ? <Check className="size-2.5" /> : i + 1}</span>
+                    <span className={cn("flex size-5 items-center justify-center rounded-full text-[11.5px] font-semibold", i === 0 ? "bg-pine text-white" : st === "已通过" || st === "已发送" ? "bg-pine-soft text-pine" : st === "审批中" ? "bg-amber-soft text-amber-deep" : "bg-[#eef1ec] text-muted")}>{i === 0 ? <Check className="size-2.5" /> : i + 1}</span>
                     {i < 3 ? <span className="mt-1 w-px flex-1 bg-line" /> : null}
                   </div>
-                  <div className="flex-1 -mt-0.5"><div className="flex items-center justify-between gap-2"><span className="text-[12.5px] font-medium text-ink">{role} · {name}</span><span className={cn("text-[12px]", st === "审批中" ? "text-[#8a6a24]" : "text-muted")}>{st}</span></div></div>
+                  <div className="flex-1 -mt-0.5"><div className="flex items-center justify-between gap-2"><span className="text-[12.5px] font-medium text-ink">{role} · {name}</span><span className={cn("text-[12px]", st === "审批中" ? "text-amber-deep" : "text-muted")}>{st}</span></div></div>
                 </div>
               ))}
             </div>
           </div>
           {offer.note ? <div className="mt-4 rounded-xl bg-[#fafbf8] p-4 text-[12.5px] leading-5 text-muted">{offer.note}</div> : null}
-          <div className="mt-4 flex items-start gap-2 rounded-xl bg-signal-soft/50 p-3.5 text-[12px] leading-5 text-[#8a4a35]"><CircleAlert className="mt-0.5 size-3 shrink-0" /> Offer 一经发送，候选人将通过邮件收到正式 Offer，所有变更会记录在审计日志中。</div>
+          <div className="mt-4 flex items-start gap-2 rounded-xl bg-signal-soft/50 p-3.5 text-[12px] leading-5 text-danger"><CircleAlert className="mt-0.5 size-3 shrink-0" /> Offer 一经发送，候选人将通过邮件收到正式 Offer，所有变更会记录在审计日志中。</div>
         </div>
       </div>
     </Sheet>
@@ -242,7 +241,6 @@ export default function OffersPage() {
                     <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
                         {o.status === "approving" ? <Button size="sm" variant="soft" className="h-7 px-2 text-[12.5px]" onClick={() => { updateOffer(o.id, { status: "sent" }); toast.success("Offer 已审批并发送"); }}>审批</Button> : <Button size="sm" variant="ghost" className="h-7 px-2 text-[12.5px]" onClick={() => setSelected(o)}>查看</Button>}
-                        <button className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-3.5" /></button>
                       </div>
                     </td>
                   </tr>

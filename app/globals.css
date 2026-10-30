@@ -19,9 +19,12 @@
   --color-signal-soft: var(--signal-soft);
   --color-amber: var(--amber);
   --color-amber-soft: var(--amber-soft);
+  --color-amber-deep: var(--amber-ink);
   --color-success: var(--success);
   --color-danger: var(--danger);
   --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-info-ink: var(--info-ink);
 
   --radius-xs: 6px;
   --radius-sm: 9px;
@@ -30,29 +33,112 @@
   --radius-xl: 20px;
   --radius-2xl: 26px;
 
-  --shadow-lift: 0 18px 50px -24px rgba(11, 50, 42, 0.28);
-  --shadow-pop: 0 22px 70px -30px rgba(9, 35, 29, 0.38);
+  --shadow-lift: 0 18px 50px -24px rgba(0, 0, 0, 0.22);
+  --shadow-pop: 0 22px 70px -30px rgba(0, 0, 0, 0.3);
 }
 
-:root {
-  --paper: #f2f4ef;
+:root,
+[data-theme="mono"] {
+  color-scheme: light;
+  --paper: #f4f4f1;
   --surface: #ffffff;
-  --ink: #12201b;
-  --ink-soft: #3d4c45;
-  --muted: #718078;
-  --line: #e2e7df;
-  --line-strong: #d2d9d0;
-  --pine: #0c4539;
-  --pine-deep: #072f27;
-  --pine-soft: #dbeae3;
-  --mint: #eaf3ee;
-  --signal: #df4f2c;
-  --signal-soft: #fbe8e1;
-  --amber: #d99a32;
-  --amber-soft: #fbf0d9;
-  --success: #227858;
+  --ink: #151515;
+  --ink-soft: #3f4340;
+  --muted: #737873;
+  --line: #e3e3df;
+  --line-strong: #d1d2cc;
+  --pine: #151617;
+  --pine-deep: #050505;
+  --pine-soft: #e9e9e6;
+  --mint: #f2f2ef;
+  --signal: #1b1b1b;
+  --signal-soft: #ecece9;
+  --amber: #8a8a86;
+  --amber-soft: #efefec;
+  --amber-ink: #555555;
+  --success: #4a4f4b;
+  --danger: #b3261e;
+  --info: #62676b;
+  --info-soft: #efefec;
+  --info-ink: #55585b;
+  --rail-text: #f6f6f3;
+  --rail-muted: #b8b9b5;
+  --rail-icon: #9c9e9a;
+  --rail-accent: #ffffff;
+  --rail-border: rgba(255, 255, 255, 0.09);
+  --rail-hover: rgba(255, 255, 255, 0.06);
+  --rail-active: rgba(255, 255, 255, 0.1);
+  --rail-card: rgba(255, 255, 255, 0.045);
+  --brand-dot: #ffffff;
+}
+
+[data-theme="blue"] {
+  color-scheme: light;
+  --paper: #f3f7fd;
+  --surface: #ffffff;
+  --ink: #0d1b2f;
+  --ink-soft: #34465f;
+  --muted: #6b7c93;
+  --line: #dee7f2;
+  --line-strong: #cbd9e9;
+  --pine: #1d4ed8;
+  --pine-deep: #0a1f44;
+  --pine-soft: #e4edff;
+  --mint: #eef5ff;
+  --signal: #175cd3;
+  --signal-soft: #e6efff;
+  --amber: #b7791f;
+  --amber-soft: #fdf3df;
+  --amber-ink: #7a5412;
+  --success: #237a57;
   --danger: #bf432e;
-  --info: #2f6f8f;
+  --info: #2563eb;
+  --info-soft: #e8eef5;
+  --info-ink: #2f5c80;
+  --rail-text: #eef5ff;
+  --rail-muted: #a9bddc;
+  --rail-icon: #8aa6ce;
+  --rail-accent: #9cc2ff;
+  --rail-border: rgba(255, 255, 255, 0.1);
+  --rail-hover: rgba(255, 255, 255, 0.07);
+  --rail-active: rgba(255, 255, 255, 0.12);
+  --rail-card: rgba(255, 255, 255, 0.055);
+  --brand-dot: #9cc2ff;
+}
+
+[data-theme="custom"] {
+  color-scheme: light;
+  --custom-color: #6366f1;
+  --paper: color-mix(in srgb, var(--custom-color) 3%, #f6f6f3);
+  --surface: #ffffff;
+  --ink: #151515;
+  --ink-soft: #3f4540;
+  --muted: #747a75;
+  --line: color-mix(in srgb, var(--custom-color) 8%, #e6e6e2);
+  --line-strong: color-mix(in srgb, var(--custom-color) 14%, #d5d5d0);
+  --pine: var(--custom-color);
+  --pine-deep: color-mix(in srgb, var(--custom-color) 34%, #000);
+  --pine-soft: color-mix(in srgb, var(--custom-color) 14%, #fff);
+  --mint: color-mix(in srgb, var(--custom-color) 7%, #fff);
+  --signal: var(--custom-color);
+  --signal-soft: color-mix(in srgb, var(--custom-color) 12%, #fff);
+  --amber: #b7791f;
+  --amber-soft: #fdf3df;
+  --amber-ink: #7a5412;
+  --success: #237a57;
+  --danger: #bf432e;
+  --info: color-mix(in srgb, var(--custom-color) 74%, #111);
+  --info-soft: color-mix(in srgb, var(--custom-color) 10%, #fff);
+  --info-ink: color-mix(in srgb, var(--custom-color) 72%, #111);
+  --rail-text: #ffffff;
+  --rail-muted: color-mix(in srgb, var(--custom-color) 14%, #b9b9b9);
+  --rail-icon: color-mix(in srgb, var(--custom-color) 16%, #9b9b9b);
+  --rail-accent: color-mix(in srgb, var(--custom-color) 34%, #fff);
+  --rail-border: rgba(255, 255, 255, 0.1);
+  --rail-hover: rgba(255, 255, 255, 0.07);
+  --rail-active: rgba(255, 255, 255, 0.12);
+  --rail-card: rgba(255, 255, 255, 0.055);
+  --brand-dot: color-mix(in srgb, var(--custom-color) 34%, #fff);
 }
 
 * {
@@ -69,11 +155,12 @@ body {
   color: var(--ink);
   font-family: "Sora Variable", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   font-feature-settings: "ss01" on, "cv02" on;
+  transition: background-color 220ms ease, color 220ms ease;
 }
 
 ::selection {
-  background: #cfe3d8;
-  color: #072f27;
+  background: var(--pine-soft);
+  color: var(--pine-deep);
 }
 
 button,
@@ -144,9 +231,9 @@ button:not(:disabled),
   }
   .ai-orbit {
     background:
-      radial-gradient(120% 120% at 85% 15%, rgba(223, 79, 44, 0.24) 0%, transparent 46%),
-      radial-gradient(90% 90% at 10% 100%, rgba(102, 178, 145, 0.18) 0%, transparent 50%),
-      linear-gradient(145deg, #0a3a2f 0%, #072a23 100%);
+      radial-gradient(120% 120% at 85% 15%, color-mix(in srgb, var(--signal) 28%, transparent) 0%, transparent 46%),
+      radial-gradient(90% 90% at 10% 100%, color-mix(in srgb, var(--mint) 20%, transparent) 0%, transparent 50%),
+      linear-gradient(145deg, var(--pine) 0%, var(--pine-deep) 100%);
   }
   .glass {
     background: rgba(255, 255, 255, 0.72);
@@ -163,6 +250,42 @@ button:not(:disabled),
   }
   .scroll-none::-webkit-scrollbar {
     display: none;
+  }
+  [data-theme="mono"] .avatar-tone {
+    filter: grayscale(1);
+  }
+  .rail-ai-card {
+    background: radial-gradient(120% 100% at 100% 0%, color-mix(in srgb, var(--rail-accent) 16%, transparent), transparent 55%);
+  }
+  .theme-accent-text {
+    color: var(--rail-accent);
+  }
+  .theme-accent-bg {
+    background-color: var(--rail-accent);
+  }
+  .theme-accent-bg-70 {
+    background-color: color-mix(in srgb, var(--rail-accent) 70%, transparent);
+  }
+  .theme-accent-bg-45 {
+    background-color: color-mix(in srgb, var(--rail-accent) 45%, transparent);
+  }
+  .theme-accent-bg-15 {
+    background-color: color-mix(in srgb, var(--rail-accent) 15%, transparent);
+  }
+  .theme-accent-bg-10 {
+    background-color: color-mix(in srgb, var(--rail-accent) 10%, transparent);
+  }
+  .theme-accent-border {
+    border-color: var(--rail-accent);
+  }
+  .theme-accent-border-40 {
+    border-color: color-mix(in srgb, var(--rail-accent) 40%, transparent);
+  }
+  .theme-accent-border-30 {
+    border-color: color-mix(in srgb, var(--rail-accent) 30%, transparent);
+  }
+  .theme-accent-border-25 {
+    border-color: color-mix(in srgb, var(--rail-accent) 25%, transparent);
   }
   .shimmer {
     background: linear-gradient(100deg, #eef1ec 20%, #f7f8f5 38%, #eef1ec 56%);

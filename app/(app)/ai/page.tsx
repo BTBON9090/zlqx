@@ -117,10 +117,10 @@ function ProfileDocument({ job }: { job: Job }) {
           </ul>
         </div>
         <div>
-          <div className="text-[12.5px] font-medium text-[#8a6a24]">加分项</div>
+          <div className="text-[12.5px] font-medium text-amber-deep">加分项</div>
           <ul className="mt-2 space-y-1.5 text-[13px] leading-5 text-ink-soft">
             {job.aiProfile.niceToHave.map((m) => (
-              <li key={m} className="flex gap-2"><Plus className="mt-0.5 size-3 shrink-0 text-[#b1802f]" />{m}</li>
+              <li key={m} className="flex gap-2"><Plus className="mt-0.5 size-3 shrink-0 text-amber-deep" />{m}</li>
             ))}
           </ul>
         </div>
@@ -130,8 +130,8 @@ function ProfileDocument({ job }: { job: Job }) {
         <p className="mt-1.5 text-[13px] leading-5 text-ink-soft">{job.aiProfile.successProfile}</p>
       </div>
       <div className="rounded-xl bg-pine p-3.5 text-white">
-        <div className="text-[12.5px] font-medium text-[#bcd7c9]">面试评估重点</div>
-        <p className="mt-1.5 text-[13px] leading-5 text-[#e2eee6]">优先验证候选人的业务抽象能力与 AI 产品判断；对「完整负责产品线」的经历进行深挖，避免只看公司光环。</p>
+        <div className="text-[12.5px] font-medium text-white/60">面试评估重点</div>
+        <p className="mt-1.5 text-[13px] leading-5 text-white/80">优先验证候选人的业务抽象能力与 AI 产品判断；对「完整负责产品线」的经历进行深挖，避免只看公司光环。</p>
       </div>
     </div>
   );
@@ -196,14 +196,14 @@ function InterviewDocument({ job, candidate }: { job: Job; candidate: Candidate 
       <div className="rounded-xl bg-pine p-4 text-white">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <div className="text-[12.5px] text-[#a9c3b5]">数字人面试 · 初试</div>
+            <div className="text-[12.5px] text-white/65">数字人面试 · 初试</div>
             <div className="mt-1 text-[14px] font-semibold">{candidate.name} · {job.title}</div>
           </div>
-          <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-2 py-1 text-[12px] text-[#cfe0d5]">
-            <span className="pulse-dot size-1 rounded-full bg-[#7fd2a8]" /> 20 分钟
+          <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-2 py-1 text-[12px] text-white/80">
+            <span className="pulse-dot size-1 rounded-full theme-accent-bg" /> 20 分钟
           </span>
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-2 text-[12px] text-[#b7cbbf]">
+        <div className="mt-3 grid grid-cols-3 gap-2 text-[12px] text-white/60">
           <span>结构化问题 6 道</span>
           <span>自动追问 2 次</span>
           <span>生成评分与纪要</span>
@@ -326,43 +326,42 @@ export default function AiCenterPage() {
 
       <section className="ai-orbit noise relative overflow-hidden rounded-[22px] p-6 text-white md:p-8">
         <div className="signal-grid absolute inset-0 opacity-50" />
-        <div className="absolute -right-20 -top-24 size-[360px] rounded-full bg-[#4f8c72]/20 blur-3xl" />
         <div className="absolute bottom-0 right-0 hidden h-full w-[46%] items-center justify-center md:flex">
           <div className="relative flex size-[230px] items-center justify-center">
             <div className="absolute inset-0 rounded-full border border-white/10" />
             <div className="absolute inset-[38px] rounded-full border border-white/10" />
             <div className="absolute inset-[76px] rounded-full border border-dashed border-white/12" />
-            <div className="absolute left-1/2 top-1/2 size-[126px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1b5a49]/60 blur-2xl" />
+            <div className="absolute left-1/2 top-1/2 size-[126px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/8 blur-2xl" />
             <div className="relative flex size-[92px] items-center justify-center rounded-full border border-white/15 bg-white/8 backdrop-blur-sm">
-              <Sparkles className="size-8 text-[#f2b3a1]" />
+              <Sparkles className="size-8 theme-accent-text" />
               <span className="absolute inset-0 rounded-full border border-white/15 animate-drift" />
             </div>
-            <span className="absolute right-2 top-7 rounded-md border border-white/10 bg-white/8 px-2 py-1 text-[12px] text-[#cfe0d5]">JD 生成</span>
-            <span className="absolute bottom-7 left-1 rounded-md border border-white/10 bg-white/8 px-2 py-1 text-[12px] text-[#cfe0d5]">人岗匹配</span>
-            <span className="absolute -bottom-1 right-10 rounded-md border border-white/10 bg-white/8 px-2 py-1 text-[12px] text-[#cfe0d5]">数字人面试</span>
+            <span className="absolute right-2 top-7 rounded-md border border-white/10 bg-white/8 px-2 py-1 text-[12px] text-white/80">JD 生成</span>
+            <span className="absolute bottom-7 left-1 rounded-md border border-white/10 bg-white/8 px-2 py-1 text-[12px] text-white/80">人岗匹配</span>
+            <span className="absolute -bottom-1 right-10 rounded-md border border-white/10 bg-white/8 px-2 py-1 text-[12px] text-white/80">数字人面试</span>
           </div>
         </div>
         <div className="relative z-10 max-w-[640px]">
           <div className="flex items-center gap-2">
-            <span className="flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[12px] text-[#cfe0d5]">
-              <span className="size-1.5 rounded-full bg-[#7fd2a8]" /> 已连接招聘数据
+            <span className="flex items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[12px] text-white/80">
+              <span className="size-1.5 rounded-full theme-accent-bg" /> 已连接招聘数据
             </span>
-            <span className="rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[12px] text-[#9cb8a9]">Wanlian Reasoner</span>
+            <span className="rounded-full border border-white/12 bg-white/6 px-2.5 py-1 text-[12px] text-white/55">Qianxun Reasoner</span>
           </div>
           <h2 className="mt-5 max-w-[560px] text-balance text-[26px] font-semibold leading-[1.3] tracking-[-0.035em] md:text-[30px]">
             把招聘里重复的部分，
             <br />
             交给小聘。
           </h2>
-          <p className="mt-3 max-w-[520px] text-[13.5px] leading-6 text-[#b7cbbf]">
+          <p className="mt-3 max-w-[520px] text-[13.5px] leading-6 text-white/60">
             写 JD、生成岗位画像、分析候选人、设计面试题纲——从一句话开始，小聘会读取当前职位与候选人上下文，给出可编辑的结果。
           </p>
-          <div className="mt-6 rounded-2xl border border-white/12 bg-[#05251f]/55 p-3 backdrop-blur-md">
+          <div className="mt-6 rounded-2xl border border-white/12 bg-black/35 p-3 backdrop-blur-md">
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="例如：为高级产品经理写一份 JD，突出 AI 产品与团队自治…"
-              className="h-[64px] w-full resize-none bg-transparent px-1 text-[13.5px] leading-6 text-white outline-none placeholder:text-[#7d9a8c]"
+              className="h-[64px] w-full resize-none bg-transparent px-1 text-[13.5px] leading-6 text-white outline-none placeholder:text-white/40"
             />
             <div className="mt-1 flex flex-wrap items-center justify-between gap-2 border-t border-white/8 pt-2.5">
               <div className="flex flex-wrap items-center gap-1.5">
@@ -377,7 +376,7 @@ export default function AiCenterPage() {
                     onClick={() => setMode(key as Mode)}
                     className={cn(
                       "rounded-full px-2.5 py-1 text-[12px] transition-colors",
-                      mode === key ? "bg-white text-pine" : "border border-white/12 text-[#a9c3b5] hover:bg-white/8 hover:text-white"
+                      mode === key ? "bg-white text-pine" : "border border-white/12 text-white/65 hover:bg-white/8 hover:text-white"
                     )}
                   >
                     {label}
@@ -386,14 +385,14 @@ export default function AiCenterPage() {
               </div>
               <Button
                 size="sm"
-                className="bg-[#f2f4ef] text-pine hover:bg-white"
+                className="bg-[var(--surface)] text-pine hover:bg-white"
                 onClick={() => openStudio(mode, prompt || undefined)}
               >
                 <Wand2 /> 开始生成
               </Button>
             </div>
           </div>
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12px] text-[#8fae9f]">
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12px] text-white/45">
             <button onClick={() => openStudio("jd", "帮我为「高级产品经理」写一份有吸引力的 JD")} className="hover:text-white">写一份高级产品经理 JD</button>
             <button onClick={() => openStudio("report", "为周予安生成推荐报告")} className="hover:text-white">生成周予安的推荐报告</button>
             <button onClick={() => openStudio("interview", "为前端工程师设计一场数字人初试")} className="hover:text-white">设计数字人面试</button>
@@ -408,37 +407,37 @@ export default function AiCenterPage() {
             onClick={() => openStudio(tool.key, tool.prompt)}
             className="surface group relative overflow-hidden p-5 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-lift"
           >
-            <div className={cn("mb-5 flex h-[92px] items-center justify-center overflow-hidden rounded-xl border border-line/70", idx === 0 ? "bg-[#eef4ee]" : idx === 1 ? "bg-[#eef2f5]" : idx === 2 ? "bg-[#f8f1e3]" : "bg-pine-deep")}>
+            <div className={cn("mb-5 flex h-[92px] items-center justify-center overflow-hidden rounded-xl border border-line/70", idx === 0 ? "bg-pine-soft" : idx === 1 ? "bg-info-soft" : idx === 2 ? "bg-amber-soft" : "bg-pine-deep")}>
               {idx === 0 ? (
-                <div className="w-[73%] rounded-lg border border-[#d7e4da] bg-white p-2.5 shadow-sm">
+                <div className="w-[73%] rounded-lg border border-line bg-white p-2.5 shadow-sm">
                   <div className="h-1.5 w-1/3 rounded-full bg-pine/30" />
-                  <div className="mt-2 h-1 w-full rounded-full bg-[#e7ece5]" />
-                  <div className="mt-1 h-1 w-4/5 rounded-full bg-[#e7ece5]" />
+                  <div className="mt-2 h-1 w-full rounded-full bg-[#eef1ec]" />
+                  <div className="mt-1 h-1 w-4/5 rounded-full bg-[#eef1ec]" />
                   <div className="mt-2.5 flex gap-1.5">
                     <span className="h-4 w-9 rounded bg-pine/10" />
-                    <span className="h-4 w-12 rounded bg-[#e7ece5]" />
+                    <span className="h-4 w-12 rounded bg-[#eef1ec]" />
                   </div>
                 </div>
               ) : idx === 1 ? (
                 <div className="relative size-[76px]">
-                  <div className="absolute inset-0 rounded-full border border-[#d8e2e8]" />
-                  <div className="absolute inset-[13px] rounded-full border border-[#d8e2e8]" />
+                  <div className="absolute inset-0 rounded-full border border-line" />
+                  <div className="absolute inset-[13px] rounded-full border border-line" />
                   <svg viewBox="0 0 76 76" className="absolute inset-0">
-                    <polygon points="38,9 66,29 56,62 20,62 10,29" fill="rgba(47,111,143,.1)" stroke="#2f6f8f" strokeWidth="1.2" />
-                    <polygon points="38,20 55,32 49,52 27,52 21,32" fill="rgba(47,111,143,.14)" stroke="#2f6f8f" strokeWidth="1" />
+                    <polygon points="38,9 66,29 56,62 20,62 10,29" fill="var(--pine-soft)" stroke="var(--pine)" strokeWidth="1.2" />
+                    <polygon points="38,20 55,32 49,52 27,52 21,32" fill="var(--pine-soft)" stroke="var(--pine)" strokeWidth="1" />
                   </svg>
                 </div>
               ) : idx === 2 ? (
                 <div className="w-[75%]">
                   <div className="flex items-center justify-between">
-                    <span className="h-1.5 w-12 rounded-full bg-[#d9b466]/50" />
-                    <span className="num text-[14px] font-semibold text-[#8a6a24]">92</span>
+                    <span className="h-1.5 w-12 rounded-full bg-amber/50" />
+                    <span className="num text-[14px] font-semibold text-amber-deep">92</span>
                   </div>
                   <div className="mt-2 space-y-1.5">
                     {[80, 95, 65, 88].map((w, i) => (
                       <div key={i} className="flex items-center gap-1.5">
-                        <span className="h-1 w-5 rounded-full bg-[#e8dcc2]" />
-                        <span className="h-1.5 rounded-full bg-[#c69a48]/40" style={{ width: `${w}%` }} />
+                        <span className="h-1 w-5 rounded-full bg-line" />
+                        <span className="h-1.5 rounded-full bg-amber/40" style={{ width: `${w}%` }} />
                       </div>
                     ))}
                   </div>
@@ -446,11 +445,11 @@ export default function AiCenterPage() {
               ) : (
                 <div className="relative flex flex-col items-center">
                   <div className="flex size-11 items-center justify-center rounded-full border border-white/20 bg-white/10">
-                    <AudioLines className="size-5 text-[#f2b3a1]" />
+                    <AudioLines className="size-5 theme-accent-text" />
                   </div>
                   <div className="mt-2 flex items-end gap-[2px]">
                     {[4, 9, 6, 13, 8, 15, 7, 11, 5].map((h, i) => (
-                      <span key={i} className="w-[2px] rounded-full bg-[#7fd2a8]/70" style={{ height: h }} />
+                      <span key={i} className="w-[2px] rounded-full theme-accent-bg-70" style={{ height: h }} />
                     ))}
                   </div>
                 </div>
@@ -478,7 +477,7 @@ export default function AiCenterPage() {
         <section className="surface col-span-12 overflow-hidden xl:col-span-7">
           <div className="flex items-start justify-between gap-4 px-5 pb-3 pt-5">
             <SectionTitle title="最近生成" description="你可以继续编辑、保存或发送给团队" icon={<Zap />} />
-            <button className="text-[13px] font-medium text-pine hover:underline">查看全部</button>
+            <button onClick={() => toast.info("共 4 条生成记录，已全部展示")} className="text-[13px] font-medium text-pine hover:underline">查看全部</button>
           </div>
           <div className="divide-y divide-line">
             {generations.slice(0, 5).map((g) => {
@@ -495,7 +494,7 @@ export default function AiCenterPage() {
                   }}
                   className="group flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-[#fafbf8]"
                 >
-                  <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-lg [&_svg]:size-3.5", g.type === "jd" ? "bg-pine-soft text-pine" : g.type === "profile" ? "bg-[#e8eef5] text-[#2f5c80]" : g.type === "report" ? "bg-amber-soft text-[#8a6a24]" : "bg-[#f0ece7] text-[#7b5338]")}>
+                  <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-lg [&_svg]:size-3.5", g.type === "jd" ? "bg-pine-soft text-pine" : g.type === "profile" ? "bg-info-soft text-info-ink" : g.type === "report" ? "bg-amber-soft text-amber-deep" : "bg-signal-soft text-signal")}>
                     {toolIcons[g.type]}
                   </span>
                   <div className="min-w-0 flex-1">
@@ -546,32 +545,32 @@ export default function AiCenterPage() {
             <div className="signal-grid absolute inset-0 opacity-40" />
             <div className="relative">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-[12.5px] text-[#b7cbbf]">
-                  <span className="pulse-dot size-1.5 rounded-full bg-[#7fd2a8]" /> 正在面试
+                <div className="flex items-center gap-2 text-[12.5px] text-white/60">
+                  <span className="pulse-dot size-1.5 rounded-full theme-accent-bg" /> 正在面试
                 </div>
-                <span className="rounded-full border border-white/12 bg-white/6 px-2 py-0.5 text-[12px] text-[#9cb8a9]">数字人</span>
+                <span className="rounded-full border border-white/12 bg-white/6 px-2 py-0.5 text-[12px] text-white/55">数字人</span>
               </div>
               <div className="mt-4 flex items-center gap-3">
                 <div className="relative flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/8">
-                  <UserRound className="size-5 text-[#f2b3a1]" />
-                  <span className="absolute inset-0 rounded-full border border-[#7fd2a8]/40 animate-ping opacity-30" />
+                  <UserRound className="size-5 theme-accent-text" />
+                  <span className="absolute inset-0 rounded-full border theme-accent-border-40 animate-ping opacity-30" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[14px] font-medium">江屿 · 前端工程师</div>
-                  <div className="mt-0.5 text-[12px] text-[#9cb8a9]">数字人初试 · 第 4 / 6 题</div>
+                  <div className="mt-0.5 text-[12px] text-white/55">数字人初试 · 第 4 / 6 题</div>
                 </div>
                 <div className="flex items-end gap-[2px]">
                   {[5, 10, 6, 14, 8, 16, 7, 12].map((h, i) => (
-                    <span key={i} className="w-[2px] rounded-full bg-[#7fd2a8]/70" style={{ height: h }} />
+                    <span key={i} className="w-[2px] rounded-full theme-accent-bg-70" style={{ height: h }} />
                   ))}
                 </div>
               </div>
               <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-white/10">
-                <div className="h-full w-[66%] rounded-full bg-[#7fd2a8]" />
+                <div className="h-full w-[66%] rounded-full theme-accent-bg" />
               </div>
               <div className="mt-3 flex items-center justify-between">
-                <span className="text-[12px] text-[#9cb8a9]">预计 6 分钟后结束</span>
-                <Link href="/interviews/live/int-2" className="flex items-center gap-1 text-[12.5px] font-medium text-[#f0b09d] hover:text-white">
+                <span className="text-[12px] text-white/55">预计 6 分钟后结束</span>
+                <Link href="/interviews/live/int-2" className="flex items-center gap-1 text-[12.5px] font-medium theme-accent-text hover:text-white">
                   进入监控 <ArrowRight className="size-3" />
                 </Link>
               </div>
@@ -650,7 +649,7 @@ export default function AiCenterPage() {
               {!generating && !result ? (
                 <div className="flex h-full min-h-[380px] flex-col items-center justify-center text-center">
                   <div className="flex size-14 items-center justify-center rounded-2xl border border-line bg-[#fafbf8]">
-                    <Sparkles className="size-6 text-[#c0cbc2]" />
+                    <Sparkles className="size-6 text-muted" />
                   </div>
                   <p className="mt-3 text-[13.5px] font-medium text-ink">生成结果会出现在这里</p>
                   <p className="mt-1 max-w-[260px] text-[12.5px] leading-5 text-muted">小聘会先读取职位、团队与候选人上下文，再生成结构化内容。</p>

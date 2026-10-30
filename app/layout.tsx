@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 import { AppProvider } from "@/lib/store";
+import { ThemeProvider } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,30 +11,39 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#072f27",
+  themeColor: "#111111",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN">
-      <body>
-        <AppProvider>{children}</AppProvider>
-        <Toaster
-          position="top-center"
-          closeButton
-          toastOptions={{
-            style: {
-              background: "#ffffff",
-              border: "1px solid #e2e7df",
-              borderRadius: "12px",
-              color: "#12201b",
-              fontSize: "12.5px",
-              boxShadow: "0 20px 50px -24px rgba(7,47,39,.3)",
-            },
+    <html lang="zh-CN" data-theme="mono" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=JSON.parse(localStorage.getItem('zhipin-qianxun-theme')||'null');if(p&&p.mode){document.documentElement.dataset.theme=p.mode;if(p.mode==='custom'&&p.customColor){document.documentElement.style.setProperty('--custom-color',p.customColor)}}}catch(e){}})();`,
           }}
         />
+      </head>
+      <body>
+        <ThemeProvider>
+          <AppProvider>{children}</AppProvider>
+          <Toaster
+            position="top-center"
+            closeButton
+            toastOptions={{
+              style: {
+                background: "#ffffff",
+                border: "1px solid var(--line)",
+                borderRadius: "12px",
+                color: "var(--ink)",
+                fontSize: "12.5px",
+                boxShadow: "0 20px 50px -24px rgba(0,0,0,.24)",
+              },
+            }}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );

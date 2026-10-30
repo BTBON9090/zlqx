@@ -10,15 +10,15 @@ export function BrandMark({ size = 32, className }: { size?: number; className?:
       className={cn("shrink-0", className)}
       aria-hidden
     >
-      <rect width="32" height="32" rx="9" fill="#0c4539" />
+      <rect width="32" height="32" rx="9" fill="var(--pine)" />
       <path
         d="M6.5 20.2h4.1l2.4-8.1 3.9 11.2 3-8.4h5.6"
-        stroke="#f2f4ef"
+        stroke="var(--paper)"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="25.4" cy="9.4" r="2.1" fill="#df4f2c" />
+      <circle cx="25.4" cy="9.4" r="2.1" fill="var(--brand-dot)" />
     </svg>
   );
 }
@@ -35,10 +35,10 @@ export function BrandLockup({
       <BrandMark size={compact ? 28 : 32} />
       {!compact ? (
         <div className="leading-none">
-          <div className={cn("text-[15px] font-semibold tracking-[-0.03em]", light ? "text-[#f2f4ef]" : "text-ink")}>
+          <div className={cn("text-[15px] font-semibold tracking-[-0.03em]", light ? "text-[var(--rail-text)]" : "text-ink")}>
             智聘千寻
           </div>
-          <div className={cn("mt-1 text-[11.5px] font-medium tracking-[0.16em]", light ? "text-[#8fae9f]" : "text-muted")}>
+          <div className={cn("mt-1 text-[11.5px] font-medium tracking-[0.16em]", light ? "text-[var(--rail-muted)]" : "text-muted")}>
             ZHIPIN QIANXUN
           </div>
         </div>
@@ -51,7 +51,7 @@ export function CompanyMark({ name = "澄明科技", size = 32 }: { name?: strin
   return (
     <div
       style={{ width: size, height: size, fontSize: Math.round(size * 0.38) }}
-      className="flex shrink-0 items-center justify-center rounded-[9px] bg-[#e7ede4] font-semibold text-pine"
+      className="flex shrink-0 items-center justify-center rounded-[9px] bg-pine-soft font-semibold text-pine"
     >
       {name.slice(0, 1)}
     </div>
