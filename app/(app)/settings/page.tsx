@@ -81,26 +81,33 @@ export default function SettingsPage() {
         kicker="企业"
         title="企业设置"
         description="维护企业身份、招聘偏好、渠道授权与文件存储策略。认证信息仅管理员可见。"
-        actions={<Button variant="secondary" onClick={() => { updateCompany(form); updateSettings({ recruit, upload }); toast.success("企业设置已保存"); }}><Check /> 保存变更</Button>}
       />
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="surface flex items-center gap-3 p-4 lg:col-span-2">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#e7ede4] text-[18px] font-semibold text-pine">澄</div>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2"><span className="text-[14px] font-semibold text-ink">{settings.company.name}</span><Badge tone="pine" dot>企业已认证</Badge></div>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-[12.5px] text-muted"><span>{settings.company.industry}</span><span className="size-0.5 rounded-full bg-muted" /><span>{settings.company.size}</span><span className="size-0.5 rounded-full bg-muted" /><span>{settings.company.stage}</span></div>
-          </div>
-          <Button size="sm" variant="secondary" onClick={() => { setForm(settings.company); setEditOpen(true); }}><Settings2 /> 编辑资料</Button>
+      <div className="surface flex flex-wrap items-center gap-3 p-4">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-[18px] font-semibold text-pine">澄</div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2"><span className="text-[14px] font-semibold text-ink">{settings.company.name}</span><Badge tone="pine" dot>企业已认证</Badge></div>
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-[12.5px] text-muted"><span>{settings.company.industry}</span><span className="size-0.5 rounded-full bg-muted" /><span>{settings.company.size}</span><span className="size-0.5 rounded-full bg-muted" /><span>{settings.company.stage}</span></div>
         </div>
-        <div className="surface flex items-center gap-3 p-4">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-amber-soft text-amber-deep"><ShieldCheck className="size-4.5" /></div>
-          <div className="min-w-0 flex-1">
-            <div className="text-[12.5px] text-muted">认证进度</div>
-            <div className="mt-0.5 text-[13.5px] font-semibold text-ink">2 / 3 项已完成</div>
-            <Progress value={2} max={3} className="mt-1.5 h-1" />
-          </div>
-          {!settings.company.recruitAuthorized ? <button onClick={() => setVerifyOpen(true)} className="text-[12.5px] font-medium text-pine hover:underline">去认证</button> : null}
+        <Button size="sm" variant="secondary" onClick={() => { setForm(settings.company); setEditOpen(true); }}><Settings2 /> 编辑资料</Button>
+      </div>
+
+      <div className="surface p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2"><ShieldCheck className="size-4 text-pine" /><span className="text-[13px] font-medium text-ink">企业认证流程</span><span className="text-[12px] text-muted">已完成 {settings.company.recruitAuthorized ? 3 : 2} / 3</span></div>
+          {!settings.company.recruitAuthorized ? <Button size="sm" variant="ghost" onClick={() => setVerifyOpen(true)}>继续认证 <ArrowUpRight /></Button> : <span className="text-[12px] font-medium text-pine">认证完成</span>}
+        </div>
+        <div className="mt-3 grid gap-2 md:grid-cols-3">
+          {[
+            { title: "基础信息", date: "2024-06-12", done: true, action: null as (() => void) | null },
+            { title: "工商登记", date: "2024-06-18", done: true, action: null as (() => void) | null },
+            { title: "招聘业务授权", date: settings.company.recruitAuthorized ? "已认证" : "预计 1 个工作日", done: settings.company.recruitAuthorized, action: () => setVerifyOpen(true) },
+          ].map(({ title, date, done, action }, i) => (
+            <button key={title} onClick={action ?? undefined} disabled={!action} className={cn("flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-colors", done ? "border-pine/15 bg-pine-soft/25" : "border-amber/20 bg-amber-soft/25", action ? "hover:border-pine/35" : "cursor-default")}>
+              <span className={cn("flex size-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold", done ? "bg-pine text-white" : "bg-amber text-white")}>{done ? <Check className="size-3.5" /> : i + 1}</span>
+              <span className="min-w-0"><span className="block text-[12px] font-medium text-ink">{title}</span><span className="mt-0.5 block text-[11px] text-muted">{date}</span></span>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -138,10 +145,10 @@ export default function SettingsPage() {
                 <Badge tone="pine" dot>已认证</Badge>
               </div>
               <div className="mt-4 rounded-xl bg-[#fafbf8] p-3.5 text-[12.5px]">
-                <div className="flex justify-between py-1"><span className="text-muted">统一社会信用代码</span><span className="font-medium text-ink">{settings.company.code}</span></div>
-                <div className="flex justify-between py-1"><span className="text-muted">法定代表人</span><span className="font-medium text-ink">顾清</span></div>
-                <div className="flex justify-between py-1"><span className="text-muted">认证时间</span><span className="font-medium text-ink">2024-06-18</span></div>
-                <div className="flex justify-between py-1"><span className="text-muted">有效期至</span><span className="font-medium text-ink">长期</span></div>
+                <div className="flex flex-col gap-0.5 py-1.5"><span className="text-[11.5px] text-muted">统一社会信用代码</span><span className="text-[12.5px] font-medium text-ink">{settings.company.code}</span></div>
+                <div className="flex flex-col gap-0.5 py-1.5"><span className="text-[11.5px] text-muted">法定代表人</span><span className="text-[12.5px] font-medium text-ink">顾清</span></div>
+                <div className="flex flex-col gap-0.5 py-1.5"><span className="text-[11.5px] text-muted">认证时间</span><span className="text-[12.5px] font-medium text-ink">2024-06-18</span></div>
+                <div className="flex flex-col gap-0.5 py-1.5"><span className="text-[11.5px] text-muted">有效期至</span><span className="text-[12.5px] font-medium text-ink">长期</span></div>
               </div>
               <button onClick={() => toast.info("认证材料由管理员在认证详情中查看")} className="mt-3 flex items-center gap-1 text-[12px] font-medium text-pine hover:underline">查看认证材料 <ArrowUpRight className="size-3" /></button>
             </div>
@@ -157,23 +164,6 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="surface p-5">
-            <SectionTitle title="企业认证流程" description="完成认证后可解锁全部招聘能力" icon={<ShieldCheck />} />
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              {[
-                ["企业基本信息", "已完成", "2024-06-12", true],
-                ["工商登记认证", "已完成", "2024-06-18", true],
-                ["招聘业务授权", settings.company.recruitAuthorized ? "已完成" : "待认证", settings.company.recruitAuthorized ? "2026-10-30" : "预计 1 个工作日", !!settings.company.recruitAuthorized],
-              ].map(([title, status, date, done], i) => (
-                <div key={String(title)} className={cn("rounded-xl border p-4", done ? "border-pine/15 bg-pine-soft/25" : "border-amber/20 bg-amber-soft/25")}>
-                  <div className="flex items-center justify-between"><span className="flex size-6 items-center justify-center rounded-full bg-white text-[12px] font-semibold text-pine">{done ? <Check className="size-3" /> : i + 1}</span><span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", done ? "bg-pine text-white" : "bg-amber text-white")}>{status}</span></div>
-                  <div className="mt-2 text-[13px] font-medium text-ink">{title}</div>
-                  <div className="mt-0.5 text-[12px] text-muted">{date}</div>
-                  {!done ? <button onClick={() => setVerifyOpen(true)} className="mt-2 text-[12px] font-medium text-pine hover:underline">继续认证</button> : null}
-                </div>
-              ))}
-            </div>
-          </div>
         </TabsContent>
 
         <TabsContent value="recruit" className="mt-4">

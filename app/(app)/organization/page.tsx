@@ -28,13 +28,14 @@ import { SearchInput, Field, Input } from "@/components/ui/input";
 import { MultiPicker } from "@/components/ui/multi-picker";
 import { OverflowTags } from "@/components/ui/tag-overflow";
 import { useConfirm } from "@/components/ui/confirm";
+import { InfoTip } from "@/components/ui/info-tip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox, Switch } from "@/components/ui/toggle";
 import { Sheet, Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown";
 import { useApp } from "@/lib/store";
-import { cn, employeeDepartmentIds } from "@/lib/utils";
+import { cn, departmentPickerItems, employeeDepartmentIds } from "@/lib/utils";
 import type { Employee } from "@/lib/types";
 
 const statusMeta: Record<string, { label: string; tone: string }> = {
@@ -91,7 +92,7 @@ function EditMemberDialog({
             <Field label="姓名" required><Input value={name} onChange={(e) => setName(e.target.value)} /></Field>
             <Field label="职位"><Input value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
             <Field label="手机号"><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></Field>
-            <Field label="所属部门" hint="可多选"><MultiPicker items={departments.filter((d) => d.parentId).map((d) => ({ id: d.id, name: d.name }))} value={departmentIds} onChange={setDepartmentIds} placeholder="选择部门" searchPlaceholder="搜索部门" maxVisible={2} /></Field>
+            <Field label="所属部门" hint="可多选"><MultiPicker items={departmentPickerItems(departments)} value={departmentIds} onChange={setDepartmentIds} placeholder="选择部门" searchPlaceholder="搜索部门" maxVisible={2} /></Field>
             <Field label="账号状态"><Select value={status} onValueChange={(v) => setStatus(v as Employee["status"])}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="active">正常</SelectItem><SelectItem value="invited">待激活</SelectItem><SelectItem value="disabled">已停用</SelectItem></SelectContent></Select></Field>
           </div>
           <Field label="角色" hint="可多选">
@@ -132,6 +133,13 @@ export default function OrganizationPage() {
   const [editDeptName, setEditDeptName] = useState("");
   const [editDeptParent, setEditDeptParent] = useState<string | null>(null);
   const [editDeptHead, setEditDeptHead] = useState("");
+
+  useEffect(() => {
+    const employeeId = new URLSearchParams(window.location.search).get("employee");
+    if (!employeeId) return;
+    const target = employees.find((employee) => employee.id === employeeId);
+    if (target) setDetail(target);
+  }, [employees]);
 
   const childrenOf = (id: string) => departments.filter((d) => d.parentId === id);
   const descendants = (id: string): string[] => {
@@ -228,40 +236,36 @@ export default function OrganizationPage() {
 
   return (
     <div className="space-y-5">
-      <PageHeader
-        kicker="组织与权限"
-        title="员工与部门"
-        description="维护公司组织架构、员工信息与角色归属，让权限从组织结构中自然生长。"
-        actions={
-          <>
-            <Button variant="secondary" onClick={() => toast.success("通讯录已导出")}><Download /> 导出通讯录</Button>
-            <Button onClick={() => setAddOpen(true)}><UserPlus /> 邀请成员</Button>
-          </>
-        }
-      />
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex min-w-0 flex-wrap items-baseline gap-2.5">
+          <h1 className="text-[24px] font-semibold tracking-[-0.035em] text-ink">员工与部门</h1>
+          <span className="text-[12px] text-muted">{employees.length} 位成员 · {departments.length} 个部门</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="secondary" onClick={() => toast.success("通讯录已导出")}><Download /> 导出通讯录</Button>
+          <Button onClick={() => setAddOpen(true)}><UserPlus /> 邀请成员</Button>
+        </div>
+      </header>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
-          { label: "员工总数", value: employees.length, suffix: "人", note: "含待激活", icon: Users },
-          { label: "在岗员工", value: totalActive, suffix: "人", note: "正常", icon: UserCheck },
-          { label: "待激活", value: totalInvited, suffix: "人", note: "已发邀请", icon: Mail },
-          { label: "已停用", value: employees.filter((e) => e.status === "disabled").length, suffix: "人", note: "保留历史", icon: UserX },
-        ].map(({ label, value, suffix, note, icon: Icon }) => (
+          { label: "员工总数", value: employees.length, suffix: "人", tip: "包含在岗、待激活和已停用成员", icon: Users },
+          { label: "在岗员工", value: totalActive, suffix: "人", tip: "账号状态正常的成员", icon: UserCheck },
+          { label: "待激活", value: totalInvited, suffix: "人", tip: "已发送邀请，尚未接受", icon: Mail },
+          { label: "已停用", value: employees.filter((e) => e.status === "disabled").length, suffix: "人", tip: "停用后保留历史数据", icon: UserX },
+        ].map(({ label, value, suffix, tip, icon: Icon }) => (
           <div key={label} className="surface flex items-center justify-between gap-3 p-4">
             <div className="min-w-0">
-              <div className="flex min-w-0 items-center gap-1.5">
-                <span className="shrink-0 text-[12.5px] font-medium text-ink-soft">{label}</span>
-                <span className="truncate text-[12px] text-muted">· {note}</span>
-              </div>
-              <div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12px] text-muted">{suffix}</span></div>
+              <div className="flex items-center gap-1.5 text-[12px] text-muted">{label}<InfoTip text={tip} /></div>
+              <div className="mt-1.5 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12px] text-muted">{suffix}</span></div>
             </div>
             <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine"><Icon className="size-4" /></span>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-12 gap-5 xl:h-[calc(100vh-340px)] xl:min-h-[520px]">
-        <div className="surface col-span-12 flex flex-col overflow-hidden xl:col-span-3 xl:h-full">
+      <div className="grid grid-cols-12 items-start gap-5">
+        <div className="surface col-span-12 flex flex-col overflow-hidden xl:sticky xl:top-[76px] xl:col-span-3">
           <div className="border-b border-line p-3.5">
             <div className="flex items-center justify-between">
               <SectionTitle title="组织架构" />
@@ -272,7 +276,7 @@ export default function OrganizationPage() {
               <input value={deptQuery} onChange={(e) => setDeptQuery(e.target.value)} placeholder="搜索部门" className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12.5px] outline-none focus:border-pine/50" />
             </div>
           </div>
-          <div className="max-h-[600px] flex-1 overflow-y-auto p-2.5 xl:max-h-none">
+          <div className="max-h-[calc(100vh-250px)] flex-1 overflow-y-auto p-2.5">
             <button onClick={() => setSelectedDept("all")} className={cn("mb-1 flex h-8 w-full items-center gap-2 rounded-lg px-2 text-[13px] transition-colors", selectedDept === "all" ? "bg-pine-soft/70 font-medium text-pine" : "text-ink-soft hover:bg-[#f5f7f2]")}>
               <Users className="size-3.5" /> 全部成员<span className="num ml-auto text-[12px] text-muted">{employees.length}</span>
             </button>
@@ -283,31 +287,23 @@ export default function OrganizationPage() {
           </div>
         </div>
 
-        <div className="surface col-span-12 flex flex-col overflow-hidden xl:col-span-9 xl:h-full">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-[15px] font-semibold tracking-[-0.02em] text-ink">{selectedName}</h2>
-                <span className="rounded bg-[#eef1ec] px-1.5 py-0.5 text-[12px] text-muted">共 {visibleEmployees.length} 人</span>
-                {selectedDept !== "all" ? <span className="text-[12px] text-muted">负责人：{employees.find((e) => e.id === departments.find((d) => d.id === selectedDept)?.headId)?.name ?? "未设置"}</span> : null}
-              </div>
-              <div className="mt-1 text-[12.5px] text-muted">管理成员的部门、角色与账号状态</div>
+        <div className="surface col-span-12 overflow-visible xl:col-span-9">
+          <div className="flex flex-wrap items-center gap-2 rounded-t-[17px] border-b border-line bg-[#fcfcf9] px-4 py-3 xl:sticky xl:top-[60px] xl:z-20">
+            <div className="mr-1 hidden items-center gap-2 lg:flex">
+              <span className="text-[13px] font-medium text-ink">{selectedName}</span>
+              <span className="rounded bg-[#eef1ec] px-1.5 py-0.5 text-[12px] text-muted">共 {visibleEmployees.length} 人</span>
+              {selectedDept !== "all" ? <span className="text-[12px] text-muted">负责人：{employees.find((e) => e.id === departments.find((d) => d.id === selectedDept)?.headId)?.name ?? "未设置"}</span> : null}
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <label className="flex items-center gap-1.5 text-[12.5px] text-muted">包含子部门 <Switch checked={includeSub} onCheckedChange={setIncludeSub} /></label>
-              <Button size="sm" onClick={() => setAddOpen(true)}><UserPlus /> 添加成员</Button>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 border-b border-line bg-[#fcfcf9] px-4 py-3">
-            <SearchInput placeholder="搜索姓名、邮箱、职位" value={memberQuery} onChange={(e) => setMemberQuery(e.target.value)} className="w-full sm:w-[260px]" />
+            <SearchInput placeholder="搜索姓名、邮箱、职位" value={memberQuery} onChange={(e) => setMemberQuery(e.target.value)} className="w-full sm:w-[240px]" />
             <Select value={roleFilter} onValueChange={setRoleFilter}><SelectTrigger className="w-[130px]"><SelectValue placeholder="全部角色" /></SelectTrigger><SelectContent><SelectItem value="all">全部角色</SelectItem>{roles.map((r) => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}</SelectContent></Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}><SelectTrigger className="w-[124px]"><SelectValue placeholder="全部状态" /></SelectTrigger><SelectContent><SelectItem value="all">全部状态</SelectItem><SelectItem value="active">正常</SelectItem><SelectItem value="invited">待激活</SelectItem><SelectItem value="disabled">已停用</SelectItem></SelectContent></Select>
-            <span className="ml-auto text-[12.5px] text-muted">显示 {visibleEmployees.length} 人</span>
+            <label className="flex items-center gap-1.5 text-[12px] text-muted">包含子部门 <Switch checked={includeSub} onCheckedChange={setIncludeSub} /></label>
+            <span className="ml-auto text-[12px] text-muted lg:hidden">{visibleEmployees.length} 人</span>
           </div>
 
-          <div className="hidden min-h-0 flex-1 overflow-auto md:block">
+          <div className="hidden overflow-x-auto md:block 2xl:overflow-visible">
             <table className="w-full min-w-[900px] border-collapse text-left">
-              <thead className="sticky top-0 z-10 bg-[#fafbf8]"><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
+              <thead className="z-10 bg-[#fafbf8] 2xl:[&>tr>th]:sticky 2xl:[&>tr>th]:top-[117px] 2xl:[&>tr>th]:z-10 2xl:[&>tr>th]:bg-[#fafbf8]"><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="min-w-[180px] py-2.5 pl-5 font-medium">姓名</th>
                 <th className="min-w-[220px] py-2.5 pr-4 font-medium">联系方式</th>
                 <th className="min-w-[118px] py-2.5 pr-4 font-medium">部门</th>
@@ -371,7 +367,7 @@ export default function OrganizationPage() {
               <Field label="工作邮箱" required><Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="name@chengming.ai" /></Field>
               <Field label="手机号"><Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="138 0000 0000" /></Field>
               <Field label="职位"><Input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="例如：产品经理" /></Field>
-              <Field label="所属部门" hint="可多选"><MultiPicker items={departments.filter((d) => d.parentId).map((d) => ({ id: d.id, name: d.name }))} value={newDeptIds} onChange={setNewDeptIds} placeholder="选择部门" searchPlaceholder="搜索部门" maxVisible={2} /></Field>
+              <Field label="所属部门" hint="可多选"><MultiPicker items={departmentPickerItems(departments)} value={newDeptIds} onChange={setNewDeptIds} placeholder="选择部门" searchPlaceholder="搜索部门" maxVisible={2} /></Field>
             </div>
             <Field label="分配角色" hint="可多选">
               <MultiPicker items={roles.map((r) => ({ id: r.id, name: r.name, description: r.description }))} value={newRoles} onChange={setNewRoles} placeholder="选择角色" searchPlaceholder="搜索角色" maxVisible={2} />

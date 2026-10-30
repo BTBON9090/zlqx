@@ -142,6 +142,7 @@ interface AppActions {
   duplicateRole: (roleId: string) => Role | undefined;
   updateRoleMeta: (roleId: string, patch: Partial<Pick<Role, "name" | "description" | "color">>) => void;
   deleteRole: (roleId: string) => void;
+  updateRoleScope: (roleId: string, scope: Role["dataScope"], departmentIds?: string[]) => void;
   updateRolePermissions: (roleId: string, permissions: Record<string, string[]>) => void;
   updateRoleMembers: (roleId: string, memberIds: string[]) => void;
   updateTemplate: (id: string, patch: Partial<MessageTemplate>) => void;
@@ -169,6 +170,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setState((prev) => ({
           ...prev,
           ...parsed,
+          roles: (parsed.roles ?? prev.roles).map((r) => ({
+            ...r,
+            dataScope: r.dataScope ?? (r.id === "r5" ? "dept" : r.id === "r4" || r.id === "r7" ? "self" : "all"),
+          })),
           settings: parsed.settings ?? prev.settings,
         }));
       }
@@ -560,6 +565,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       description: input.description,
       color: input.color,
       memberIds: [],
+      dataScope: "self",
       permissions: {
         dashboard: ["view"],
         jobs: ["view"],
@@ -610,6 +616,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       ...prev,
       roles: prev.roles.filter((r) => r.id !== roleId),
       employees: prev.employees.map((e) => ({ ...e, roleIds: e.roleIds.filter((id) => id !== roleId) })),
+    }));
+  }, []);
+
+  const updateRoleScope = useCallback<AppActions["updateRoleScope"]>((roleId, scope, departmentIds) => {
+    setState((prev) => ({
+      ...prev,
+      roles: prev.roles.map((r) => (r.id === roleId ? { ...r, dataScope: scope, dataScopeDepartments: departmentIds ?? r.dataScopeDepartments } : r)),
     }));
   }, []);
 
@@ -731,6 +744,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       addRole,
       duplicateRole,
       updateRoleMeta,
+      updateRoleScope,
       deleteRole,
       updateRolePermissions,
       updateRoleMembers,
@@ -763,6 +777,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       addRole,
       duplicateRole,
       updateRoleMeta,
+      updateRoleScope,
       deleteRole,
       updateRolePermissions,
       updateRoleMembers,

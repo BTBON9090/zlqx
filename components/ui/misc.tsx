@@ -179,9 +179,9 @@ export function EmptyState({
 
 export function InfoLine({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-2.5">
-      <span className="shrink-0 text-[13.5px] text-muted">{label}</span>
-      <span className="min-w-0 break-words text-right text-[13.5px] font-medium leading-5 text-ink">{children}</span>
+    <div className="flex flex-col gap-1 py-2.5">
+      <span className="text-[11.5px] text-muted">{label}</span>
+      <span className="min-w-0 break-words text-[13px] font-medium leading-5 text-ink">{children}</span>
     </div>
   );
 }

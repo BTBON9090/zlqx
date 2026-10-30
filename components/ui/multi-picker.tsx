@@ -11,6 +11,7 @@ export interface PickerItem {
   id: string;
   name: string;
   description?: string;
+  level?: number;
 }
 
 export function MultiPicker({
@@ -77,7 +78,7 @@ export function MultiPicker({
           {filtered.map((item) => {
             const checked = value.includes(item.id);
             return (
-              <label key={item.id} className={cn("flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors", checked ? "bg-pine-soft/40" : "hover:bg-[#fafbf8]")}>
+              <label key={item.id} style={{ paddingLeft: 10 + (item.level ?? 0) * 14 }} className={cn("flex cursor-pointer items-center gap-2.5 rounded-lg py-2 pr-2.5 transition-colors", checked ? "bg-pine-soft/40" : "hover:bg-[#fafbf8]")}>
                 <Checkbox checked={checked} onCheckedChange={(v) => onChange(v ? [...value, item.id] : value.filter((id) => id !== item.id))} />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[12px] font-medium text-ink">{item.name}</span>

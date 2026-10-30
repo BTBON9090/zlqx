@@ -41,6 +41,22 @@ export function employeeDepartmentIds(employee: Employee) {
   return Array.from(new Set([employee.departmentId, ...(employee.departmentIds ?? [])].filter(Boolean)));
 }
 
+export function departmentPickerItems(departments: { id: string; name: string; parentId: string | null }[]) {
+  return departments.map((department) => {
+    let level = 0;
+    let current = department;
+    const seen = new Set<string>();
+    while (current.parentId && !seen.has(current.parentId)) {
+      seen.add(current.parentId);
+      const parent = departments.find((d) => d.id === current.parentId);
+      if (!parent) break;
+      level += 1;
+      current = parent;
+    }
+    return { id: department.id, name: department.name, level };
+  });
+}
+
 export function initials(name: string) {
   if (!name) return "?";
   const cleaned = name.replace(/\s/g, "");

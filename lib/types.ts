@@ -161,6 +161,8 @@ export interface Role {
   color: string;
   memberIds: string[];
   permissions: Record<string, string[]>;
+  dataScope: "all" | "dept" | "self" | "custom";
+  dataScopeDepartments?: string[];
 }
 
 export interface MessageTemplate {

@@ -66,6 +66,7 @@ export const permissionModules = [
   { key: "jobs", label: "职位管理", actions: ["view", "create", "edit", "delete", "export"] },
   { key: "candidates", label: "候选人管理", actions: ["view", "create", "edit", "delete", "export", "advance"] },
   { key: "interviews", label: "面试管理", actions: ["view", "create", "edit", "cancel", "feedback"] },
+  { key: "offers", label: "Offer 管理", actions: ["view", "create", "approve", "send"] },
   { key: "pipeline", label: "流程与模板", actions: ["view", "create", "edit", "delete"] },
   { key: "messages", label: "消息管理", actions: ["view", "create", "edit", "send"] },
   { key: "ai", label: "AI 中心", actions: ["view", "generate", "publish"] },
@@ -73,6 +74,14 @@ export const permissionModules = [
   { key: "roles", label: "角色与权限", actions: ["view", "create", "edit", "delete"] },
   { key: "settings", label: "企业设置", actions: ["view", "edit", "approve"] },
 ] as const;
+
+export const permissionGroups = [
+  { key: "overview", label: "概览", modules: ["dashboard"] },
+  { key: "recruit", label: "招聘业务", modules: ["jobs", "candidates", "interviews", "offers", "pipeline"] },
+  { key: "ai", label: "AI 能力", modules: ["ai"] },
+  { key: "org", label: "组织与权限", modules: ["org", "roles"] },
+  { key: "enterprise", label: "企业设置", modules: ["messages", "settings"] },
+];
 
 export const permissionActionLabels: Record<string, string> = {
   view: "查看",
@@ -102,6 +111,7 @@ export const roles: Role[] = [
     color: "#0c4539",
     memberIds: ["emp-1"],
     permissions: allPermissions,
+    dataScope: "all",
   },
   {
     id: "r2",
@@ -110,11 +120,13 @@ export const roles: Role[] = [
     system: false,
     color: "#8a4b4b",
     memberIds: ["emp-1", "emp-12"],
+    dataScope: "all",
     permissions: {
       dashboard: ["view"],
       jobs: ["view", "create", "edit", "export"],
       candidates: ["view", "create", "edit", "export", "advance"],
       interviews: ["view", "create", "edit", "cancel", "feedback"],
+      offers: ["view", "create", "approve", "send"],
       pipeline: ["view", "create", "edit"],
       messages: ["view", "create", "edit", "send"],
       ai: ["view", "generate", "publish"],
@@ -130,11 +142,13 @@ export const roles: Role[] = [
     system: false,
     color: "#2f6f8f",
     memberIds: ["emp-2", "emp-18"],
+    dataScope: "all",
     permissions: {
       dashboard: ["view"],
       jobs: ["view", "create", "edit"],
       candidates: ["view", "create", "edit", "advance"],
       interviews: ["view", "create", "edit", "feedback"],
+      offers: ["view", "create", "send"],
       pipeline: ["view"],
       messages: ["view", "send"],
       ai: ["view", "generate"],
@@ -150,6 +164,7 @@ export const roles: Role[] = [
     system: false,
     color: "#4b7c66",
     memberIds: ["emp-6", "emp-7", "emp-8", "emp-9", "emp-10", "emp-13", "emp-15", "emp-16", "emp-17", "emp-19", "emp-20"],
+    dataScope: "self",
     permissions: {
       dashboard: ["view"],
       jobs: ["view"],
@@ -170,11 +185,13 @@ export const roles: Role[] = [
     system: false,
     color: "#7a5c3e",
     memberIds: ["emp-3", "emp-4", "emp-5", "emp-7", "emp-8", "emp-9", "emp-11"],
+    dataScope: "dept",
     permissions: {
       dashboard: ["view"],
       jobs: ["view", "edit", "export"],
       candidates: ["view", "export"],
       interviews: ["view", "edit", "feedback"],
+      offers: ["view", "approve"],
       pipeline: ["view"],
       messages: ["view"],
       ai: ["view", "generate"],
@@ -190,11 +207,13 @@ export const roles: Role[] = [
     system: false,
     color: "#6a6455",
     memberIds: ["emp-5"],
+    dataScope: "all",
     permissions: {
       dashboard: ["view"],
       jobs: ["view"],
       candidates: ["view"],
       interviews: [],
+      offers: ["view", "approve"],
       pipeline: [],
       messages: [],
       ai: [],
@@ -210,11 +229,13 @@ export const roles: Role[] = [
     system: false,
     color: "#718078",
     memberIds: ["emp-14", "emp-18"],
+    dataScope: "self",
     permissions: {
       dashboard: ["view"],
       jobs: ["view"],
       candidates: ["view"],
       interviews: ["view"],
+      offers: ["view"],
       pipeline: ["view"],
       messages: [],
       ai: [],
