@@ -14,6 +14,7 @@ import {
   roles as seedRoles,
   settings as seedSettings,
   tasks as seedTasks,
+  permissionModules,
 } from "./data";
 import type {
   AiGeneration,
@@ -173,6 +174,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           roles: (parsed.roles ?? prev.roles).map((r) => ({
             ...r,
             dataScope: r.dataScope ?? (r.id === "r5" ? "dept" : r.id === "r4" || r.id === "r7" ? "self" : "all"),
+            permissions: r.system
+              ? Object.fromEntries(permissionModules.map((module) => [module.key, [...module.actions]]))
+              : r.permissions,
           })),
           settings: parsed.settings ?? prev.settings,
         }));
