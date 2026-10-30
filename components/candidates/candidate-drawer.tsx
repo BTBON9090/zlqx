@@ -45,6 +45,7 @@ import { Field, Input, Textarea } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScheduleInterviewDialog } from "@/components/interviews/schedule-dialog";
 import { useApp } from "@/lib/store";
+import { useConfirm } from "@/components/ui/confirm";
 import { candidateStageMeta, cn, formatDateWithWeek, interviewTypeMeta, scoreTone } from "@/lib/utils";
 import type { Candidate, CandidateStage, Job } from "@/lib/types";
 
@@ -201,8 +202,9 @@ function MessageDialog({
   );
 }
 
-export function CandidateDrawer({ candidateId, onClose }: { candidateId: string | null; onClose: () => void }) {
+export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidateId: string | null; onClose: () => void; onNavigate?: (id: string) => void }) {
   const { candidates, jobs, departments, employees, interviews, notifications, advanceCandidate, addGeneration } = useApp();
+  const confirm = useConfirm();
   const candidate = candidates.find((c) => c.id === candidateId);
   const [tab, setTab] = useState("resume");
   const [scheduleOpen, setScheduleOpen] = useState(false);
@@ -229,7 +231,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
   }, [candidate, job]);
 
   if (!candidate) {
-    return <Sheet open={false} onOpenChange={onClose}><div /></Sheet>;
+    return <Sheet open={false} onOpenChange={onClose} title="候选人详情"><div /></Sheet>;
   }
 
   const stage = candidateStageMeta[candidate.stage];
@@ -257,7 +259,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
 
   return (
     <>
-      <Sheet open={!!candidateId} onOpenChange={(v) => !v && onClose()} width="820px">
+      <Sheet open={!!candidateId} onOpenChange={(v) => !v && onClose()} width="820px" title="候选人详情" onPrevious={onNavigate && candidates.findIndex((c) => c.id === candidate.id) > 0 ? () => onNavigate(candidates[candidates.findIndex((c) => c.id === candidate.id) - 1].id) : undefined} onNext={onNavigate && candidates.findIndex((c) => c.id === candidate.id) < candidates.length - 1 ? () => onNavigate(candidates[candidates.findIndex((c) => c.id === candidate.id) + 1].id) : undefined}>
         <div className="flex h-full flex-col bg-paper">
           <div className="border-b border-line bg-surface px-5 pb-0 pt-5 md:px-6">
             <div className="flex flex-wrap items-start justify-between gap-4 pr-8">
@@ -314,7 +316,7 @@ export function CandidateDrawer({ candidateId, onClose }: { candidateId: string 
                 <DropdownMenuTrigger asChild><button className="flex size-8 items-center justify-center rounded-lg text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-4" /></button></DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => toast.success("已加入人才库")}><Archive /> 加入人才库</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { advanceCandidate(candidate.id, "archived", "手动归档"); toast.success("候选人已归档"); }}><Archive /> 归档候选人</DropdownMenuItem>
+                  <DropdownMenuItem onClick={async () => { const ok = await confirm({ title: "归档该候选人？", description: `确定归档「${candidate.name}」吗？归档后可在已归档中找回。`, confirmText: "归档", tone: "danger" }); if (!ok) return; advanceCandidate(candidate.id, "archived", "手动归档"); toast.success("候选人已归档"); }}><Archive /> 归档候选人</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => toast.info("已通知负责人跟进")}><UserRound /> 通知负责人</DropdownMenuItem>
                 </DropdownMenuContent>

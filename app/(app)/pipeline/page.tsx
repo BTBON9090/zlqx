@@ -30,6 +30,7 @@ import { Field, Input, Textarea } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown";
 import { useApp } from "@/lib/store";
+import { useConfirm } from "@/components/ui/confirm";
 import { cn } from "@/lib/utils";
 
 interface FlowTemplate {
@@ -129,6 +130,7 @@ type OfferFlow = (typeof initialOfferFlows)[number];
 
 export default function PipelinePage() {
   const { jobs } = useApp();
+  const confirm = useConfirm();
   const [flows, setFlows] = useState(initialFlows);
   const [offerFlows, setOfferFlows] = useState(initialOfferFlows);
   const [editFlow, setEditFlow] = useState<FlowTemplate | null>(null);
@@ -249,7 +251,7 @@ export default function PipelinePage() {
                         <DropdownMenuItem onClick={() => { const copy = { ...flow, id: `flow-${Date.now()}`, name: `${flow.name} 副本`, default: false }; setFlows((prev) => [...prev, copy]); toast.success("流程模板已复制"); }}><Copy /> 复制模板</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => { setFlows((prev) => prev.map((f) => ({ ...f, default: f.id === flow.id }))); toast.success("已设为默认流程"); }}><Check /> 设为默认</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem danger onClick={() => { setFlows((prev) => prev.filter((f) => f.id !== flow.id)); toast.success("流程模板已删除"); }}><XIcon /> 删除模板</DropdownMenuItem>
+                        <DropdownMenuItem danger onClick={async () => { const ok = await confirm({ title: "删除该流程模板？", description: `删除「${flow.name}」不会影响已经使用该流程的在途候选人，但新职位将无法再选择它。`, confirmText: "删除模板", tone: "danger" }); if (!ok) return; setFlows((prev) => prev.filter((f) => f.id !== flow.id)); toast.success("流程模板已删除"); }}><XIcon /> 删除模板</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -366,7 +368,7 @@ export default function PipelinePage() {
               <div key={`${step}-${index}`} className="flex items-center gap-2">
                 <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-pine-soft text-[11.5px] font-semibold text-pine">{index + 1}</span>
                 <Input value={step} onChange={(e) => setEditOfferSteps((prev) => prev.map((v, i) => i === index ? e.target.value : v))} className="h-9" />
-                <button onClick={() => setEditOfferSteps((prev) => prev.filter((_, i) => i !== index))} className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-danger" aria-label="删除审批节点"><XIcon /></button>
+                <button onClick={async () => { const ok = await confirm({ title: "删除该审批节点？", description: `确认删除「${step}」节点吗？删除后审批链会立即更新。`, confirmText: "删除节点", tone: "danger" }); if (!ok) return; setEditOfferSteps((prev) => prev.filter((_, i) => i !== index)); }} className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-danger" aria-label="删除审批节点"><XIcon /></button>
               </div>
             ))}
             <Button variant="secondary" size="sm" onClick={() => setEditOfferSteps((prev) => [...prev, "新的审批节点"])}><Plus /> 添加审批节点</Button>

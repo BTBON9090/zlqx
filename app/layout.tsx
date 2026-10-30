@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Toaster } from "sonner";
 import { AppProvider } from "@/lib/store";
 import { ThemeProvider } from "@/lib/theme";
+import { ConfirmProvider } from "@/components/ui/confirm";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh-CN" data-theme="mono" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <AppProvider>{children}</AppProvider>
+          <ConfirmProvider>
+            <AppProvider>{children}</AppProvider>
+          </ConfirmProvider>
           <Toaster
             position="top-center"
             closeButton

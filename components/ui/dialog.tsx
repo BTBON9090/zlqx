@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Dialog = DialogPrimitive.Root;
@@ -10,7 +10,7 @@ export const DialogTrigger = DialogPrimitive.Trigger;
 export const DialogClose = DialogPrimitive.Close;
 
 const overlayClass =
-  "fixed inset-0 z-50 bg-[#0a1f19]/40 backdrop-blur-[2px] data-[state=open]:animate-fade";
+  "fixed inset-0 z-50 bg-black/40 data-[state=open]:animate-fade";
 
 export function DialogContent({
   className,
@@ -97,11 +97,19 @@ export function Sheet({
   onOpenChange,
   children,
   width = "720px",
+  title = "详情",
+  headerActions,
+  onPrevious,
+  onNext,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   children: React.ReactNode;
   width?: string;
+  title?: string;
+  headerActions?: React.ReactNode;
+  onPrevious?: () => void;
+  onNext?: () => void;
 }) {
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -111,15 +119,25 @@ export function Sheet({
           style={{ width }}
           className="fixed inset-y-0 right-0 z-[51] w-full max-w-[100vw] overflow-hidden border-l border-line bg-paper shadow-pop outline-none"
         >
-          <DialogPrimitive.Title className="sr-only">详情面板</DialogPrimitive.Title>
+          <DialogPrimitive.Title className="sr-only">{title}</DialogPrimitive.Title>
           <DialogPrimitive.Description className="sr-only">查看详细信息</DialogPrimitive.Description>
-          <div className="flex h-full flex-col animate-[sheetIn_.28s_cubic-bezier(.22,1,.36,1)]">{children}</div>
-          <DialogPrimitive.Close
-            aria-label="关闭"
-            className="absolute right-4 top-4 z-20 flex size-8 items-center justify-center rounded-lg bg-white/80 text-muted shadow-sm transition-colors hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
-          >
-            <X className="size-4" />
-          </DialogPrimitive.Close>
+          <div className="flex h-full animate-[sheetIn_.28s_cubic-bezier(.22,1,.36,1)] flex-col">
+            <div className="flex h-14 shrink-0 items-center gap-2 border-b border-line bg-surface px-4 md:px-5">
+              <span className="min-w-0 truncate text-[14px] font-semibold tracking-[-0.01em] text-ink">{title}</span>
+              <div className="ml-auto flex items-center gap-1">
+                {onPrevious ? <button onClick={onPrevious} aria-label="上一个" className="flex size-8 items-center justify-center rounded-lg border border-line bg-surface text-ink-soft transition-colors hover:bg-[#eef1ec] hover:text-ink"><ChevronLeft className="size-4" /></button> : null}
+                {onNext ? <button onClick={onNext} aria-label="下一个" className="flex size-8 items-center justify-center rounded-lg border border-line bg-surface text-ink-soft transition-colors hover:bg-[#eef1ec] hover:text-ink"><ChevronRight className="size-4" /></button> : null}
+                {headerActions}
+                <DialogPrimitive.Close
+                  aria-label="关闭"
+                  className="flex size-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-[#eef1ec] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
+                >
+                  <X className="size-4" />
+                </DialogPrimitive.Close>
+              </div>
+            </div>
+            <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
+          </div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

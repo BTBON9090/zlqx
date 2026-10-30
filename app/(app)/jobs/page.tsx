@@ -29,6 +29,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Avatar } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { useApp } from "@/lib/store";
+import { useConfirm } from "@/components/ui/confirm";
 import { cn, jobStatusMeta } from "@/lib/utils";
 import type { JobStatus } from "@/lib/types";
 
@@ -43,6 +44,7 @@ const tabs: { key: JobStatus | "all"; label: string }[] = [
 export default function JobsPage() {
   const router = useRouter();
   const { jobs, employees, departments, updateJob, addJob } = useApp();
+  const confirm = useConfirm();
   const [tab, setTab] = useState<JobStatus | "all">("all");
   const [query, setQuery] = useState("");
   const [dept, setDept] = useState("all");
@@ -248,7 +250,7 @@ export default function JobsPage() {
                               {job.status === "active" ? "暂停招聘" : "恢复招聘"}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem danger onClick={() => { updateJob(job.id, { status: "closed" }); toast.success("职位已结束"); }}>
+                            <DropdownMenuItem danger onClick={async () => { const ok = await confirm({ title: "结束该职位招聘？", description: `结束后「${job.title}」将不再接收新简历，候选人流程会被保留。`, confirmText: "结束招聘", tone: "danger" }); if (!ok) return; updateJob(job.id, { status: "closed" }); toast.success("职位已结束"); }}>
                               <Trash2 /> 结束招聘
                             </DropdownMenuItem>
                           </DropdownMenuContent>

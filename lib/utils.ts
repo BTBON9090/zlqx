@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { CandidateStage, InterviewType, JobStatus, OfferStatus } from "./types";
+import type { CandidateStage, Employee, InterviewType, JobStatus, OfferStatus } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -36,6 +36,10 @@ export const offerStatusMeta: Record<OfferStatus, { label: string; tone: string;
   accepted: { label: "已接受", tone: "bg-pine-soft text-pine", dot: "bg-pine" },
   declined: { label: "已拒绝", tone: "bg-signal-soft text-signal", dot: "bg-signal" },
 };
+
+export function employeeDepartmentIds(employee: Employee) {
+  return Array.from(new Set([employee.departmentId, ...(employee.departmentIds ?? [])].filter(Boolean)));
+}
 
 export function initials(name: string) {
   if (!name) return "?";

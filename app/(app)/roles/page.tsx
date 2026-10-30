@@ -28,7 +28,9 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown";
 import { useApp } from "@/lib/store";
 import { permissionActionLabels, permissionModules } from "@/lib/data";
-import { cn } from "@/lib/utils";
+import { cn, employeeDepartmentIds } from "@/lib/utils";
+import { OverflowTags } from "@/components/ui/tag-overflow";
+import { useConfirm } from "@/components/ui/confirm";
 import type { Role } from "@/lib/types";
 
 const scopeLabels: Record<string, string> = {
@@ -159,7 +161,7 @@ function AddMemberDialog({ role, open, onOpenChange }: { role: Role | null; open
                   <Checkbox checked={checked} onCheckedChange={(v) => setMemberIds((prev) => v ? [...prev, e.id] : prev.filter((id) => id !== e.id))} />
                   <Avatar name={e.name} size={26} />
                   <div className="min-w-0 flex-1"><div className="text-[12.5px] font-medium text-ink">{e.name}</div><div className="mt-0.5 text-[12px] text-muted">{e.email}</div></div>
-                  <span className="text-[12px] text-muted">{departments.find((d) => d.id === e.departmentId)?.name}</span>
+                  <OverflowTags items={employeeDepartmentIds(e).map((id) => departments.find((d) => d.id === id)?.name ?? id)} max={1} tooltipLabel="所属部门" />
                 </label>
               );
             })}
@@ -174,6 +176,7 @@ function AddMemberDialog({ role, open, onOpenChange }: { role: Role | null; open
 
 export default function RolesPage() {
   const { roles, employees, departments, addRole, duplicateRole, updateRoleMembers, updateRoleMeta, deleteRole } = useApp();
+  const confirm = useConfirm();
   const [selectedId, setSelectedId] = useState("r1");
   const [query, setQuery] = useState("");
   const [permOpen, setPermOpen] = useState(false);
@@ -257,7 +260,7 @@ export default function RolesPage() {
               <div className="flex flex-wrap gap-2">
                 <Button variant="secondary" size="sm" onClick={() => setPermOpen(true)}>{role.system ? <><Lock /> 查看权限</> : <><ShieldCheck /> 设置角色权限</>}</Button>
                 <Button size="sm" onClick={() => setAddMemberOpen(true)}><UserPlus /> 添加成员</Button>
-                <DropdownMenu><DropdownMenuTrigger asChild><button className="flex size-8 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-4" /></button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={() => { const copy = duplicateRole(role.id); if (copy) { setSelectedId(copy.id); toast.success("角色已复制"); } }}><Copy /> 复制角色</DropdownMenuItem><DropdownMenuItem onClick={() => { setEditRoleName(role.name); setEditRoleDesc(role.description); setEditRoleColor(role.color); setEditRoleOpen(true); }}><ShieldCheck /> 编辑角色</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem danger onClick={() => { if (role.system) { toast.info("系统角色不可删除"); return; } deleteRole(role.id); setSelectedId("r1"); toast.success("角色已删除"); }}><Trash2 /> 删除角色</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
+                <DropdownMenu><DropdownMenuTrigger asChild><button className="flex size-8 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-4" /></button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={() => { const copy = duplicateRole(role.id); if (copy) { setSelectedId(copy.id); toast.success("角色已复制"); } }}><Copy /> 复制角色</DropdownMenuItem><DropdownMenuItem onClick={() => { setEditRoleName(role.name); setEditRoleDesc(role.description); setEditRoleColor(role.color); setEditRoleOpen(true); }}><ShieldCheck /> 编辑角色</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem danger onClick={async () => { if (role.system) { toast.info("系统角色不可删除"); return; } const ok = await confirm({ title: "删除该角色？", description: `删除「${role.name}」后，该角色会从所有成员身上移除，此操作不可撤销。`, confirmText: "删除角色", tone: "danger" }); if (!ok) return; deleteRole(role.id); setSelectedId("r1"); toast.success("角色已删除"); }}><Trash2 /> 删除角色</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
               </div>
             </div>
 
@@ -305,10 +308,10 @@ export default function RolesPage() {
                     <tr key={e.id} className="border-b border-line/70 last:border-0 hover:bg-[#fafbf8]">
                       <td className="py-3 pl-5 pr-4"><div className="flex items-center gap-2.5"><Avatar name={e.name} size={28} /><div><div className="text-[12.5px] font-medium text-ink">{e.name}</div><div className="mt-0.5 text-[11.5px] text-muted">{e.title}</div></div></div></td>
                       <td className="py-3 pr-4 text-[12px] text-ink-soft">{e.email}</td>
-                      <td className="py-3 pr-4 text-[12px] text-ink-soft">{departments.find((d) => d.id === e.departmentId)?.name}</td>
+                      <td className="py-3 pr-4"><OverflowTags items={employeeDepartmentIds(e).map((id) => departments.find((d) => d.id === id)?.name ?? id)} max={1} tooltipLabel="所属部门" /></td>
                       <td className="py-3 pr-4 text-[12px] text-muted">{scopeLabels[role.id] ?? "自定义"}</td>
                       <td className="py-3 pr-4"><span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", e.status === "active" ? "bg-pine-soft text-pine" : e.status === "invited" ? "bg-amber-soft text-amber-deep" : "bg-[#eef1ec] text-muted")}>{e.status === "active" ? "正常" : e.status === "invited" ? "待激活" : "已停用"}</span></td>
-                      <td className="px-4 py-3 text-right"><div className="flex justify-end gap-1"><Button size="sm" variant="ghost" className="h-7 px-2 text-[12px]" onClick={() => toast.info("成员详情可在员工与部门中查看")}>详情</Button><button onClick={() => { updateRoleMembers(role.id, role.memberIds.filter((id) => id !== e.id)); toast.success("成员已移出角色"); }} className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-signal" aria-label="移除角色"><UserMinus className="size-3.5" /></button></div></td>
+                      <td className="px-4 py-3 text-right"><div className="flex justify-end gap-1"><Button size="sm" variant="ghost" className="h-7 px-2 text-[12px]" onClick={() => toast.info("成员详情可在员工与部门中查看")}>详情</Button><button onClick={async () => { const ok = await confirm({ title: "移出该成员？", description: `确定将「${e.name}」从「${role.name}」中移除吗？`, confirmText: "移出角色", tone: "danger" }); if (!ok) return; updateRoleMembers(role.id, role.memberIds.filter((id) => id !== e.id)); toast.success("成员已移出角色"); }} className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-signal" aria-label="移除角色"><UserMinus className="size-3.5" /></button></div></td>
                     </tr>
                   ))}
                 </tbody>

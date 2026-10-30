@@ -144,6 +144,7 @@ export interface Employee {
   email: string;
   phone: string;
   departmentId: string;
+  departmentIds?: string[];
   title: string;
   roleIds: string[];
   status: EmployeeStatus;

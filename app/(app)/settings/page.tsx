@@ -36,6 +36,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { useApp } from "@/lib/store";
+import { useConfirm } from "@/components/ui/confirm";
 import { cn } from "@/lib/utils";
 
 const channels = [
@@ -50,6 +51,7 @@ const channels = [
 
 export default function SettingsPage() {
   const { settings, updateCompany, updateSettings } = useApp();
+  const confirm = useConfirm();
   const [editOpen, setEditOpen] = useState(false);
   const [verifyOpen, setVerifyOpen] = useState(false);
   const [form, setForm] = useState(settings.company);
@@ -270,7 +272,7 @@ export default function SettingsPage() {
                 <div className="mt-4 flex items-baseline justify-between"><span className="num text-[24px] font-semibold text-ink">{upload.used.toFixed(1)} GB</span><span className="text-[12.5px] text-muted">/ {upload.quota} GB</span></div>
                 <Progress value={upload.used} max={upload.quota} className="mt-3 h-2" />
                 <div className="mt-2 flex justify-between text-[12px] text-muted"><span>已使用 {Math.round((upload.used / upload.quota) * 100)}%</span><span>企业版配额</span></div>
-                <Button variant="secondary" size="sm" className="mt-4 w-full" onClick={() => toast.success("已清理 1.2 GB 过期文件")}><Cloud /> 清理过期文件</Button>
+                <Button variant="secondary" size="sm" className="mt-4 w-full" onClick={async () => { const ok = await confirm({ title: "清理过期文件？", description: "将删除超过保留期限的简历附件与认证材料，释放约 1.2 GB 空间。", confirmText: "清理文件", tone: "danger" }); if (!ok) return; toast.success("已清理 1.2 GB 过期文件"); }}><Cloud /> 清理过期文件</Button>
               </div>
               <div className="surface p-5">
                 <SectionTitle title="安全与合规" icon={<LockKeyhole />} />

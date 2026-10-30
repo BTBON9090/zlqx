@@ -124,7 +124,7 @@ function TemplateSheet({ template, onClose }: { template: MessageTemplate | null
   const { templates, toggleTemplate } = useApp();
   const [editOpen, setEditOpen] = useState(false);
   const live = template ? templates.find((t) => t.id === template.id) ?? template : null;
-  if (!live) return <Sheet open={false} onOpenChange={onClose}><div /></Sheet>;
+  if (!live) return <Sheet open={false} onOpenChange={onClose} title="消息模板"><div /></Sheet>;
   const sampleEmail = live.emailBody
     .replace(/\{\{candidate_name\}\}/g, "周予安")
     .replace(/\{\{company\}\}/g, "澄明科技")
@@ -150,7 +150,7 @@ function TemplateSheet({ template, onClose }: { template: MessageTemplate | null
 
   return (
     <>
-      <Sheet open={!!template} onOpenChange={(v) => !v && onClose()} width="560px">
+      <Sheet open={!!template} onOpenChange={(v) => !v && onClose()} width="560px" title="消息模板">
         <div className="flex h-full flex-col bg-paper">
           <div className="border-b border-line bg-surface px-6 py-6">
             <div className="pr-8">

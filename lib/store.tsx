@@ -131,12 +131,12 @@ interface AppActions {
     name: string;
     email: string;
     phone: string;
-    departmentId: string;
+    departmentIds: string[];
     title: string;
     roleIds: string[];
   }) => Employee;
   updateEmployee: (id: string, patch: Partial<Employee>) => void;
-  addDepartment: (name: string, parentId: string | null) => Department;
+  addDepartment: (name: string, parentId: string | null, headId?: string) => Department;
   updateDepartment: (id: string, patch: Partial<Department>) => void;
   addRole: (input: { name: string; description: string; color: string }) => Role;
   duplicateRole: (roleId: string) => Role | undefined;
@@ -500,7 +500,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       name: input.name,
       email: input.email,
       phone: input.phone,
-      departmentId: input.departmentId,
+      departmentId: input.departmentIds[0],
+      departmentIds: input.departmentIds,
       title: input.title,
       roleIds: input.roleIds,
       status: "invited",
@@ -518,9 +519,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
-  const addDepartment = useCallback<AppActions["addDepartment"]>((name, parentId) => {
-    const dept: Department = { id: uid("dept"), name, parentId, color: "#4b7c66" };
-    setState((prev) => ({ ...prev, departments: [...prev.departments, dept] }));
+  const addDepartment = useCallback<AppActions["addDepartment"]>((name, parentId, headId) => {
+    const dept: Department = { id: uid("dept"), name, parentId, headId, color: "#4b7c66" };
+    setState((prev) => ({
+      ...prev,
+      departments: [...prev.departments, dept],
+      employees: headId
+        ? prev.employees.map((e) => e.id === headId
+          ? {
+              ...e,
+              departmentIds: Array.from(new Set([...(e.departmentIds ?? []), dept.id])),
+              roleIds: Array.from(new Set([...e.roleIds, "r5"])),
+            }
+          : e)
+        : prev.employees,
+    }));
     return dept;
   }, []);
 
@@ -528,6 +541,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setState((prev) => ({
       ...prev,
       departments: prev.departments.map((d) => (d.id === id ? { ...d, ...patch } : d)),
+      employees: patch.headId
+        ? prev.employees.map((e) => e.id === patch.headId
+          ? {
+              ...e,
+              departmentIds: Array.from(new Set([...(e.departmentIds ?? []), id])),
+              roleIds: Array.from(new Set([...e.roleIds, "r5"])),
+            }
+          : e)
+        : prev.employees,
     }));
   }, []);
 

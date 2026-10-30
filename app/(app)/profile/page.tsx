@@ -30,12 +30,13 @@ import { Switch } from "@/components/ui/toggle";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useApp } from "@/lib/store";
 import { permissionModules } from "@/lib/data";
-import { cn } from "@/lib/utils";
+import { cn, employeeDepartmentIds } from "@/lib/utils";
 
 export default function ProfilePage() {
   const { employees, roles, departments, updateEmployee, settings } = useApp();
   const me = employees.find((e) => e.id === "emp-1") ?? employees[0];
   const myRoles = roles.filter((r) => me.roleIds.includes(r.id));
+  const deptNames = employeeDepartmentIds(me).map((id) => departments.find((d) => d.id === id)?.name).filter(Boolean);
   const dept = departments.find((d) => d.id === me.departmentId);
   const [name, setName] = useState(me.name);
   const [phone, setPhone] = useState(me.phone);
@@ -63,7 +64,7 @@ export default function ProfilePage() {
           <Avatar name={me.name} size={72} ring />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2"><h2 className="text-[23px] font-semibold tracking-[-0.03em]">{me.name}</h2><Badge className="bg-white/10 text-white">{myRoles[0]?.name ?? "成员"}</Badge></div>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-white/60"><span>{me.title}</span><span className="flex items-center gap-1"><Building2 className="size-3" /> {dept?.name}</span><span className="flex items-center gap-1"><MapPin className="size-3" /> 北京</span><span className="flex items-center gap-1"><Mail className="size-3" /> {me.email}</span></div>
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-white/60"><span>{me.title}</span><span className="flex items-center gap-1"><Building2 className="size-3" /> {(deptNames.length ? deptNames.join(" / ") : dept?.name) ?? ""}</span><span className="flex items-center gap-1"><MapPin className="size-3" /> 北京</span><span className="flex items-center gap-1"><Mail className="size-3" /> {me.email}</span></div>
             <div className="mt-3 flex flex-wrap gap-1.5">{myRoles.map((r) => <span key={r.id} className="rounded-md border border-white/12 bg-white/6 px-2 py-1 text-[12px] text-white/80">{r.name}</span>)}</div>
           </div>
           <div className="flex gap-2">
@@ -89,7 +90,7 @@ export default function ProfilePage() {
               <Field label="工作邮箱"><Input value={me.email} disabled /></Field>
               <Field label="手机号"><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></Field>
               <Field label="职位"><Input value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
-              <Field label="所属部门"><Input value={dept?.name ?? ""} disabled /></Field>
+              <Field label="所属部门"><Input value={deptNames.join(" / ")} disabled /></Field>
               <Field label="直属上级"><Input value={employees.find((e) => e.id === me.managerId)?.name ?? "—"} disabled /></Field>
               <Field label="个人简介" className="sm:col-span-2"><Textarea value={bio} onChange={(e) => setBio(e.target.value)} className="min-h-[90px]" /></Field>
             </div>

@@ -38,6 +38,7 @@ import { Sheet, Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScheduleInterviewDialog } from "@/components/interviews/schedule-dialog";
 import { useApp } from "@/lib/store";
+import { useConfirm } from "@/components/ui/confirm";
 import { cn, formatDateWithWeek, interviewTypeMeta } from "@/lib/utils";
 import type { Interview, InterviewType } from "@/lib/types";
 
@@ -181,18 +182,19 @@ function InterviewDetailSheet({
   onReschedule: (i: Interview) => void;
 }) {
   const { interviews, candidates, jobs, employees, updateInterview } = useApp();
+  const confirm = useConfirm();
   const interview = interviews.find((i) => i.id === interviewId);
   const candidate = candidates.find((c) => c.id === interview?.candidateId);
   const job = jobs.find((j) => j.id === interview?.jobId);
   const [tab, setTab] = useState("overview");
   useEffect(() => { if (interviewId) setTab("overview"); }, [interviewId]);
-  if (!interview || !candidate) return <Sheet open={false} onOpenChange={onClose}><div /></Sheet>;
+  if (!interview || !candidate) return <Sheet open={false} onOpenChange={onClose} title="面试详情"><div /></Sheet>;
   const type = interviewTypeMeta[interview.type];
   const status = statusMeta[interview.status];
   const names = interview.interviewers.map((id) => (id.startsWith("AI") ? id : employees.find((e) => e.id === id)?.name ?? id));
 
   return (
-    <Sheet open={!!interviewId} onOpenChange={(v) => !v && onClose()} width="640px">
+    <Sheet open={!!interviewId} onOpenChange={(v) => !v && onClose()} width="640px" title="面试详情">
       <div className="flex h-full flex-col bg-paper">
         <div className="border-b border-line bg-surface px-6 pb-0 pt-6">
           <div className="pr-8">
@@ -213,7 +215,7 @@ function InterviewDetailSheet({
                   <DropdownMenuItem onClick={() => toast.success("提醒已发送")}><BellIcon /> 发送提醒</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => toast.success("会议链接已复制")}><Copy /> 复制会议链接</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem danger onClick={() => { updateInterview(interview.id, { status: "cancelled" }); toast.success("面试已取消"); onClose(); }}><X /> 取消面试</DropdownMenuItem>
+                  <DropdownMenuItem danger onClick={async () => { const ok = await confirm({ title: "取消这场面试？", description: "取消后会通知候选人与面试官，已提交的反馈会保留。", confirmText: "取消面试", tone: "danger" }); if (!ok) return; updateInterview(interview.id, { status: "cancelled" }); toast.success("面试已取消"); onClose(); }}><X /> 取消面试</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -384,6 +386,7 @@ function TargetIcon() {
 function InterviewsContent() {
   const searchParams = useSearchParams();
   const { interviews, candidates, jobs, employees, updateInterview } = useApp();
+  const confirm = useConfirm();
   const [range, setRange] = useState("today");
   const [query, setQuery] = useState("");
   const [jobFilter, setJobFilter] = useState("all");
@@ -579,7 +582,7 @@ function InterviewsContent() {
                             <DropdownMenuItem onClick={() => toast.success("提醒已发送给候选人与面试官")}><BellIcon /> 发送提醒</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => toast.success("会议链接已复制")}><Copy /> 复制会议链接</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem danger onClick={() => { updateInterview(iv.id, { status: "cancelled" }); toast.success("面试已取消"); }}><X /> 取消面试</DropdownMenuItem>
+                            <DropdownMenuItem danger onClick={async () => { const ok = await confirm({ title: "取消这场面试？", description: "取消后会通知候选人与面试官，已提交的反馈会保留。", confirmText: "取消面试", tone: "danger" }); if (!ok) return; updateInterview(iv.id, { status: "cancelled" }); toast.success("面试已取消"); }}><X /> 取消面试</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>

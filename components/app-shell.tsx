@@ -477,7 +477,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {mobileOpen ? (
           <div className="fixed inset-0 z-50 lg:hidden">
-            <button aria-label="关闭菜单" className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+            <button aria-label="关闭菜单" className="absolute inset-0 bg-black/45" onClick={() => setMobileOpen(false)} />
             <aside className="relative h-full w-[264px] bg-pine-deep shadow-pop animate-[sheetIn_.25s_ease-out]">
               <SidebarContent onNavigate={() => setMobileOpen(false)} />
               <button onClick={() => setMobileOpen(false)} aria-label="关闭菜单" className="absolute right-3 top-4 flex size-8 items-center justify-center rounded-lg text-[var(--rail-muted)] hover:bg-white/10 hover:text-white">

@@ -29,6 +29,7 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@
 import { Field, Input, Textarea } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useApp } from "@/lib/store";
+import { useConfirm } from "@/components/ui/confirm";
 import { cn, offerStatusMeta } from "@/lib/utils";
 import type { Offer } from "@/lib/types";
 
@@ -87,7 +88,8 @@ function NewOfferDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (
 
 function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => void }) {
   const { candidates, jobs, employees, updateOffer } = useApp();
-  if (!offer) return <Sheet open={false} onOpenChange={onClose}><div /></Sheet>;
+  const confirm = useConfirm();
+  if (!offer) return <Sheet open={false} onOpenChange={onClose} title="Offer 详情"><div /></Sheet>;
   const candidate = candidates.find((c) => c.id === offer.candidateId);
   const job = jobs.find((j) => j.id === offer.jobId);
   const approver = employees.find((e) => e.id === offer.approverId);
@@ -100,7 +102,7 @@ function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => v
   };
 
   return (
-    <Sheet open={!!offer} onOpenChange={(v) => !v && onClose()} width="620px">
+    <Sheet open={!!offer} onOpenChange={(v) => !v && onClose()} width="620px" title="Offer 详情">
       <div className="flex h-full flex-col bg-paper">
         <div className="border-b border-line bg-surface px-6 py-6">
           <div className="pr-8">
@@ -120,7 +122,7 @@ function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => v
               {offer.status === "approving" || offer.status === "draft" ? (
                 <>
                   <Button size="sm" onClick={approve}><Check /> 审批通过并发送</Button>
-                  <Button size="sm" variant="secondary" onClick={() => { updateOffer(offer.id, { status: "declined" }); toast.success("Offer 已拒绝"); onClose(); }}><X /> 拒绝</Button>
+                  <Button size="sm" variant="secondary" onClick={async () => { const ok = await confirm({ title: "拒绝这份 Offer？", description: "拒绝后 Offer 将作废，候选人会收到通知。该操作不可撤销。", confirmText: "拒绝 Offer", tone: "danger" }); if (!ok) return; updateOffer(offer.id, { status: "declined" }); toast.success("Offer 已拒绝"); onClose(); }}><X /> 拒绝</Button>
                 </>
               ) : null}
               {offer.status === "sent" ? <Button size="sm" onClick={() => { updateOffer(offer.id, { status: "accepted" }); toast.success("已标记为接受"); onClose(); }}><ThumbsUp /> 标记已接受</Button> : null}

@@ -31,6 +31,7 @@ import { UploadResumeDialog } from "@/components/candidates/upload-dialog";
 import { AddCandidateDialog } from "@/components/candidates/add-dialog";
 import { ScheduleInterviewDialog } from "@/components/interviews/schedule-dialog";
 import { useApp } from "@/lib/store";
+import { useConfirm } from "@/components/ui/confirm";
 import { candidateStageMeta, cn, formatRelativeDate, interviewTypeMeta, scoreTone } from "@/lib/utils";
 import type { CandidateStage } from "@/lib/types";
 
@@ -47,6 +48,7 @@ function CandidatesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { candidates, jobs, employees, interviews, advanceCandidate, departments } = useApp();
+  const confirm = useConfirm();
   const [stage, setStage] = useState<CandidateStage | "all">("all");
   const [query, setQuery] = useState("");
   const [jobFilter, setJobFilter] = useState("all");
@@ -166,7 +168,9 @@ function CandidatesContent() {
             <button className="text-pine hover:underline" onClick={() => toast.success("已批量发送消息")}>发送消息</button>
             <button
               className="text-pine hover:underline"
-              onClick={() => {
+              onClick={async () => {
+                const ok = await confirm({ title: `归档 ${selected.length} 位候选人？`, description: "归档后候选人会保留在「已归档」中，不再出现在默认流程视图。", confirmText: "批量归档", tone: "danger" });
+                if (!ok) return;
                 selected.forEach((id) => advanceCandidate(id, "archived", "批量归档"));
                 setSelected([]);
                 toast.success("已批量归档");
@@ -280,7 +284,7 @@ function CandidatesContent() {
                           <DropdownMenuContent>
                             <DropdownMenuItem onClick={() => setScheduleCandidate(c.id)}><CalendarClock /> 安排面试</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => toast.success("消息已发送")}><Send /> 发送消息</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { advanceCandidate(c.id, "archived", "手动归档"); toast.success("已归档"); }}><Archive /> 归档</DropdownMenuItem>
+                            <DropdownMenuItem onClick={async () => { const ok = await confirm({ title: "归档该候选人？", description: `确定归档「${c.name}」吗？归档后可在已归档中找回。`, confirmText: "归档", tone: "danger" }); if (!ok) return; advanceCandidate(c.id, "archived", "手动归档"); toast.success("已归档"); }}><Archive /> 归档</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
@@ -336,7 +340,7 @@ function CandidatesContent() {
         </div>
       </div>
 
-      <CandidateDrawer candidateId={selectedCandidate} onClose={() => setSelectedCandidate(null)} />
+      <CandidateDrawer candidateId={selectedCandidate} onClose={() => setSelectedCandidate(null)} onNavigate={setSelectedCandidate} />
       <UploadResumeDialog open={uploadOpen} onOpenChange={setUploadOpen} />
       <AddCandidateDialog open={addOpen} onOpenChange={setAddOpen} defaultJobId={jobFilter !== "all" ? jobFilter : undefined} onCreated={(id) => setSelectedCandidate(id)} />
       <ScheduleInterviewDialog open={!!scheduleCandidate} onOpenChange={(v) => !v && setScheduleCandidate(null)} defaultCandidateId={scheduleCandidate ?? undefined} />
