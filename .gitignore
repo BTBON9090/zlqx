@@ -9,3 +9,6 @@ dist
 .shots
 .figma
 AGENTS.md
+
+# Local Netlify folder
+.netlify
