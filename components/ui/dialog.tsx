@@ -125,8 +125,8 @@ export function Sheet({
             <div className="flex h-14 shrink-0 items-center gap-2 border-b border-line bg-surface px-4 md:px-5">
               <span className="min-w-0 truncate text-[14px] font-semibold tracking-[-0.01em] text-ink">{title}</span>
               <div className="ml-auto flex items-center gap-1">
-                {onPrevious ? <button onClick={onPrevious} aria-label="上一个" className="flex size-8 items-center justify-center rounded-lg border border-line bg-surface text-ink-soft transition-colors hover:bg-[#eef1ec] hover:text-ink"><ChevronLeft className="size-4" /></button> : null}
-                {onNext ? <button onClick={onNext} aria-label="下一个" className="flex size-8 items-center justify-center rounded-lg border border-line bg-surface text-ink-soft transition-colors hover:bg-[#eef1ec] hover:text-ink"><ChevronRight className="size-4" /></button> : null}
+                {onPrevious ? <button onClick={onPrevious} aria-label="上一个" className="flex h-8 items-center gap-1 rounded-lg px-2 text-[11.5px] text-ink-soft transition-colors hover:bg-[#eef1ec] hover:text-ink"><ChevronLeft className="size-3.5" /> 上一个</button> : null}
+                {onNext ? <button onClick={onNext} aria-label="下一个" className="flex h-8 items-center gap-1 rounded-lg px-2 text-[11.5px] text-ink-soft transition-colors hover:bg-[#eef1ec] hover:text-ink">下一个 <ChevronRight className="size-3.5" /></button> : null}
                 {headerActions}
                 <DialogPrimitive.Close
                   aria-label="关闭"

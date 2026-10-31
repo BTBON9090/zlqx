@@ -249,7 +249,8 @@ export default function MessagesPage() {
         ))}
       </div>
 
-      <div className="surface overflow-hidden">
+      <div className="surface overflow-visible">
+        <div className="sticky top-[60px] z-20 bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 pt-2">
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="border-b-0">
@@ -272,11 +273,12 @@ export default function MessagesPage() {
           )}
           <span className="ml-auto text-[12.5px] text-muted">共 <span className="num font-medium text-ink">{tab === "templates" ? filteredTemplates.length : filteredRecords.length}</span> 条</span>
         </div>
+        </div>
 
         {tab === "templates" ? (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto xl:overflow-visible">
             <table className="w-full min-w-[960px] border-collapse text-left">
-              <thead><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
+              <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[173px] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]"><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="min-w-[240px] py-2.5 pl-5 font-medium">模板名称</th>
                 <th className="w-[110px] py-2.5 pr-4 font-medium">业务场景</th>
                 <th className="w-[90px] py-2.5 pr-4 font-medium">发送对象</th>
@@ -301,9 +303,9 @@ export default function MessagesPage() {
             </table>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto xl:overflow-visible">
             <table className="w-full min-w-[1000px] border-collapse text-left">
-              <thead><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
+              <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[173px] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]"><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="min-w-[170px] py-2.5 pl-5 font-medium">发送对象</th>
                 <th className="w-[100px] py-2.5 pr-4 font-medium">业务场景</th>
                 <th className="min-w-[150px] py-2.5 pr-4 font-medium">应聘职位</th>

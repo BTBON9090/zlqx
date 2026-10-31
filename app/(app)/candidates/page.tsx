@@ -107,7 +107,7 @@ function CandidatesContent() {
         }
       />
 
-      <div className="surface grid grid-cols-2 overflow-hidden sm:grid-cols-3 lg:grid-cols-6">
+      <div className="surface sticky top-[60px] z-20 grid grid-cols-2 overflow-hidden sm:grid-cols-3 lg:grid-cols-6">
         {stageTabs.map((t, i) => (
           <button
             key={t.key}
@@ -128,8 +128,8 @@ function CandidatesContent() {
         ))}
       </div>
 
-      <div className="surface overflow-hidden">
-        <div className="flex flex-wrap items-center gap-2 border-b border-line bg-[#fcfcf9] px-4 py-3">
+      <div className="surface overflow-visible">
+        <div className="sticky top-[132px] z-20 flex flex-wrap items-center gap-2 border-b border-line bg-[#fcfcf9] px-4 py-3">
           <SearchInput placeholder="搜索姓名、公司、手机号" value={query} onChange={(e) => setQuery(e.target.value)} className="w-full sm:w-[240px]" />
           <Select value={jobFilter} onValueChange={setJobFilter}>
             <SelectTrigger className="w-[168px]"><SelectValue placeholder="全部职位" /></SelectTrigger>
@@ -182,9 +182,9 @@ function CandidatesContent() {
           </div>
         ) : null}
 
-        <div className="hidden overflow-x-auto md:block">
+        <div className="hidden overflow-x-auto md:block xl:overflow-visible">
           <table className="w-full min-w-[1040px] border-collapse text-left">
-            <thead>
+            <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[197px] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]">
               <tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="w-[40px] px-4 py-2.5">
                   <Checkbox checked={allSelected} onCheckedChange={(v) => setSelected(v ? filtered.map((c) => c.id) : [])} aria-label="全选" />

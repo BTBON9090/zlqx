@@ -476,7 +476,8 @@ function InterviewsContent() {
         ))}
       </div>
 
-      <div className="surface overflow-hidden">
+      <div className="surface overflow-visible">
+        <div className="sticky top-[60px] z-20 bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 pt-2">
           <div className="flex flex-wrap gap-1">
             {ranges.map((r) => (
@@ -517,10 +518,11 @@ function InterviewsContent() {
           </Select>
           <span className="ml-auto text-[12.5px] text-muted">共 <span className="num font-medium text-ink">{filtered.length}</span> 场</span>
         </div>
+        </div>
 
-        <div className="hidden overflow-x-auto md:block">
+        <div className="hidden overflow-x-auto md:block xl:overflow-visible">
           <table className="w-full min-w-[1000px] border-collapse text-left">
-            <thead>
+            <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[170px] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]">
               <tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="w-[112px] py-2.5 pl-5 font-medium">时间</th>
                 <th className="min-w-[180px] py-2.5 pr-4 font-medium">候选人</th>

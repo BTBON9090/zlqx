@@ -17,6 +17,7 @@ import {
   Edit3,
   ExternalLink,
   FileText,
+  LayoutDashboard,
   GitBranch,
   MapPin,
   MoreHorizontal,
@@ -39,6 +40,7 @@ import { Switch } from "@/components/ui/toggle";
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Field, Input, Textarea } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PersonSelect } from "@/components/ui/person-select";
 import { RadarChart } from "@/components/charts";
 import { useApp } from "@/lib/store";
 import { candidateStageMeta, cn, jobStatusMeta, scoreTone } from "@/lib/utils";
@@ -101,7 +103,7 @@ function EditJobDialog({
             <Field label="工作地点"><Input value={location} onChange={(e) => setLocation(e.target.value)} /></Field>
             <Field label="薪资范围"><Input value={salary} onChange={(e) => setSalary(e.target.value)} /></Field>
             <Field label="招聘人数"><Input type="number" min={1} value={headcount} onChange={(e) => setHeadcount(Number(e.target.value))} /></Field>
-            <Field label="负责人"><Select value={ownerId} onValueChange={setOwnerId}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{employees.filter((e) => ["emp-1", "emp-2", "emp-3", "emp-4"].includes(e.id)).map((e) => <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>)}</SelectContent></Select></Field>
+            <Field label="负责人"><PersonSelect employees={employees.filter((e) => e.status === "active")} departments={departments} value={ownerId} onChange={setOwnerId} placeholder="搜索并选择负责人" /></Field>
             <Field label="职位状态"><Select value={status} onValueChange={(v) => setStatus(v as Job["status"])}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="active">招聘中</SelectItem><SelectItem value="paused">已暂停</SelectItem><SelectItem value="reviewing">审核中</SelectItem><SelectItem value="draft">未开始</SelectItem><SelectItem value="closed">已结束</SelectItem></SelectContent></Select></Field>
             <Field label="优先级"><div className="flex rounded-[10px] border border-line bg-[#f7f8f4] p-1">{[["normal", "常规"], ["high", "急招"]].map(([k, l]) => <button key={k} onClick={() => setPriority(k as Job["priority"])} className={cn("flex-1 rounded-md py-1.5 text-[13px] font-medium transition-colors", priority === k ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{l}</button>)}</div></Field>
             <Field label="职位简介" className="sm:col-span-2"><Textarea value={summary} onChange={(e) => setSummary(e.target.value)} className="min-h-[80px]" /></Field>
@@ -218,13 +220,21 @@ export default function JobDetailPage() {
         </div>
 
         <Tabs value={tab} onValueChange={setTab}>
-          <div className="border-t border-line px-4 md:px-6">
-            <TabsList className="border-b-0">
-              <TabsTrigger value="overview">概览</TabsTrigger>
-              <TabsTrigger value="candidates">候选人 <span className="rounded bg-[#eef1ec] px-1.5 py-0.5 text-[12px] text-muted">{jobCandidates.length}</span></TabsTrigger>
-              <TabsTrigger value="profile">AI 岗位画像</TabsTrigger>
-              <TabsTrigger value="flow">招聘流程</TabsTrigger>
-              <TabsTrigger value="activity">动态</TabsTrigger>
+          <div className="border-t border-line px-4 py-3 md:px-6">
+            <TabsList className="h-auto w-fit max-w-full gap-1 rounded-xl border-b-0 bg-[#f1f4ef] p-1">
+              {[
+                { value: "overview", label: "概览", icon: LayoutDashboard },
+                { value: "candidates", label: "候选人", icon: Users, count: jobCandidates.length },
+                { value: "profile", label: "AI 岗位画像", icon: Sparkles },
+                { value: "flow", label: "招聘流程", icon: GitBranch },
+                { value: "activity", label: "动态", icon: Clock3 },
+              ].map((item) => (
+                <TabsTrigger key={item.value} value={item.value} className="h-8 gap-1.5 rounded-lg border-b-0 px-3 text-[12.5px] data-[state=active]:border-transparent data-[state=active]:bg-white data-[state=active]:text-pine data-[state=active]:shadow-sm">
+                  <item.icon className="size-3.5" />
+                  {item.label}
+                  {item.count !== undefined ? <span className="rounded-full bg-[#eef1ec] px-1.5 py-0.5 text-[10px] text-muted">{item.count}</span> : null}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </div>
 

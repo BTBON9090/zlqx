@@ -198,8 +198,8 @@ export default function OffersPage() {
         ))}
       </div>
 
-      <div className="surface overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 pt-2">
+      <div className="surface overflow-visible">
+        <div className="sticky top-[60px] z-20 flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 pt-2">
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <TabsList className="border-b-0">
               <TabsTrigger value="all">全部 <span className="num text-[12.5px] text-muted">{offers.length}</span></TabsTrigger>
@@ -213,9 +213,9 @@ export default function OffersPage() {
             <Button size="sm" variant="secondary" asChild><Link href="/messages">Offer 模板</Link></Button>
           </div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto xl:overflow-visible">
           <table className="w-full min-w-[940px] border-collapse text-left">
-            <thead><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
+            <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[109px] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]"><tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
               <th className="min-w-[190px] py-2.5 pl-5 font-medium">候选人</th>
               <th className="min-w-[160px] py-2.5 pr-4 font-medium">职位</th>
               <th className="w-[150px] py-2.5 pr-4 font-medium">薪资方案</th>

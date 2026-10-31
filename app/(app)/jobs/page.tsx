@@ -84,7 +84,8 @@ export default function JobsPage() {
         }
       />
 
-      <div className="surface overflow-hidden">
+      <div className="surface overflow-visible">
+        <div className="sticky top-[60px] z-20 bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 pt-3">
           <div className="flex flex-wrap gap-1">
             {tabs.map((t) => {
@@ -134,6 +135,7 @@ export default function JobsPage() {
             共 <span className="num font-medium text-ink">{filtered.length}</span> 个职位
           </div>
         </div>
+        </div>
 
         {selected.length > 0 ? (
           <div className="flex items-center gap-3 border-b border-line bg-pine-soft/60 px-5 py-2.5 text-[13px]">
@@ -144,9 +146,9 @@ export default function JobsPage() {
           </div>
         ) : null}
 
-        <div className="hidden overflow-x-auto md:block">
+        <div className="hidden overflow-x-auto md:block xl:overflow-visible">
           <table className="w-full min-w-[1000px] border-collapse text-left">
-            <thead>
+            <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[179px] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]">
               <tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="w-[42px] px-4 py-2.5">
                   <Checkbox

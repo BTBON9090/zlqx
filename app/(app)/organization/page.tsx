@@ -26,6 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { SearchInput, Field, Input } from "@/components/ui/input";
 import { MultiPicker } from "@/components/ui/multi-picker";
+import { OrgTreeSelect } from "@/components/ui/org-tree-select";
 import { OverflowTags } from "@/components/ui/tag-overflow";
 import { useConfirm } from "@/components/ui/confirm";
 import { InfoTip } from "@/components/ui/info-tip";
@@ -56,6 +57,7 @@ function EditMemberDialog({
   const { departments, roles, updateEmployee } = useApp();
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [departmentIds, setDepartmentIds] = useState<string[]>(["dept-11"]);
   const [roleIds, setRoleIds] = useState<string[]>([]);
@@ -65,6 +67,7 @@ function EditMemberDialog({
     if (open && employee) {
       setName(employee.name);
       setTitle(employee.title);
+      setEmail(employee.email);
       setPhone(employee.phone);
       setDepartmentIds(employeeDepartmentIds(employee));
       setRoleIds(employee.roleIds);
@@ -74,11 +77,11 @@ function EditMemberDialog({
 
   if (!employee) return null;
   const save = () => {
-    if (!name.trim()) {
-      toast.error("姓名不能为空");
+    if (!name.trim() || !email.trim()) {
+      toast.error("请填写姓名与工作邮箱");
       return;
     }
-    updateEmployee(employee.id, { name, title, phone, departmentId: departmentIds[0] ?? employee.departmentId, departmentIds, roleIds, status });
+    updateEmployee(employee.id, { name, email, title, phone, departmentId: departmentIds[0] ?? employee.departmentId, departmentIds, roleIds, status });
     toast.success("成员信息已更新");
     onOpenChange(false);
   };
@@ -90,10 +93,11 @@ function EditMemberDialog({
         <DialogBody className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="姓名" required><Input value={name} onChange={(e) => setName(e.target.value)} /></Field>
-            <Field label="职位"><Input value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
+            <Field label="工作邮箱" required><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
             <Field label="手机号"><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></Field>
-            <Field label="所属部门" hint="可多选"><MultiPicker items={departmentPickerItems(departments)} value={departmentIds} onChange={setDepartmentIds} placeholder="选择部门" searchPlaceholder="搜索部门" maxVisible={2} /></Field>
+            <Field label="职位"><Input value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
             <Field label="账号状态"><Select value={status} onValueChange={(v) => setStatus(v as Employee["status"])}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="active">正常</SelectItem><SelectItem value="invited">待激活</SelectItem><SelectItem value="disabled">已停用</SelectItem></SelectContent></Select></Field>
+            <Field label="所属部门" hint="可多选" className="sm:col-span-2"><OrgTreeSelect departments={departments} value={departmentIds} onChange={setDepartmentIds} placeholder="选择部门" maxVisible={3} /></Field>
           </div>
           <Field label="角色" hint="可多选">
             <MultiPicker items={roles.map((r) => ({ id: r.id, name: r.name, description: r.description }))} value={roleIds} onChange={setRoleIds} placeholder="选择角色" searchPlaceholder="搜索角色" maxVisible={2} />
@@ -289,16 +293,11 @@ export default function OrganizationPage() {
 
         <div className="surface col-span-12 overflow-visible xl:col-span-9">
           <div className="flex flex-wrap items-center gap-2 rounded-t-[17px] border-b border-line bg-[#fcfcf9] px-4 py-3 xl:sticky xl:top-[60px] xl:z-20">
-            <div className="mr-1 hidden items-center gap-2 lg:flex">
-              <span className="text-[13px] font-medium text-ink">{selectedName}</span>
-              <span className="rounded bg-[#eef1ec] px-1.5 py-0.5 text-[12px] text-muted">共 {visibleEmployees.length} 人</span>
-              {selectedDept !== "all" ? <span className="text-[12px] text-muted">负责人：{employees.find((e) => e.id === departments.find((d) => d.id === selectedDept)?.headId)?.name ?? "未设置"}</span> : null}
-            </div>
             <SearchInput placeholder="搜索姓名、邮箱、职位" value={memberQuery} onChange={(e) => setMemberQuery(e.target.value)} className="w-full sm:w-[240px]" />
             <Select value={roleFilter} onValueChange={setRoleFilter}><SelectTrigger className="w-[130px]"><SelectValue placeholder="全部角色" /></SelectTrigger><SelectContent><SelectItem value="all">全部角色</SelectItem>{roles.map((r) => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}</SelectContent></Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}><SelectTrigger className="w-[124px]"><SelectValue placeholder="全部状态" /></SelectTrigger><SelectContent><SelectItem value="all">全部状态</SelectItem><SelectItem value="active">正常</SelectItem><SelectItem value="invited">待激活</SelectItem><SelectItem value="disabled">已停用</SelectItem></SelectContent></Select>
             <label className="flex items-center gap-1.5 text-[12px] text-muted">包含子部门 <Switch checked={includeSub} onCheckedChange={setIncludeSub} /></label>
-            <span className="ml-auto text-[12px] text-muted lg:hidden">{visibleEmployees.length} 人</span>
+            <span className="ml-auto text-[12px] text-muted">共 <span className="num font-medium text-ink">{visibleEmployees.length}</span> 人</span>
           </div>
 
           <div className="hidden overflow-x-auto md:block 2xl:overflow-visible">
@@ -367,7 +366,7 @@ export default function OrganizationPage() {
               <Field label="工作邮箱" required><Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="name@chengming.ai" /></Field>
               <Field label="手机号"><Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="138 0000 0000" /></Field>
               <Field label="职位"><Input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="例如：产品经理" /></Field>
-              <Field label="所属部门" hint="可多选"><MultiPicker items={departmentPickerItems(departments)} value={newDeptIds} onChange={setNewDeptIds} placeholder="选择部门" searchPlaceholder="搜索部门" maxVisible={2} /></Field>
+              <Field label="所属部门" hint="可多选" className="sm:col-span-2"><OrgTreeSelect departments={departments} value={newDeptIds} onChange={setNewDeptIds} placeholder="选择部门" maxVisible={3} /></Field>
             </div>
             <Field label="分配角色" hint="可多选">
               <MultiPicker items={roles.map((r) => ({ id: r.id, name: r.name, description: r.description }))} value={newRoles} onChange={setNewRoles} placeholder="选择角色" searchPlaceholder="搜索角色" maxVisible={2} />

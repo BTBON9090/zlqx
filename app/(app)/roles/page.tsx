@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Check,
   ChevronRight,
@@ -19,17 +18,19 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
-import { SectionTitle, EmptyState } from "@/components/ui/misc";
+import { SectionTitle, EmptyState, InfoLine } from "@/components/ui/misc";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { SearchInput, Field, Input, Textarea } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/toggle";
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import { Sheet, Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown";
 import { useApp } from "@/lib/store";
 import { InfoTip } from "@/components/ui/info-tip";
 import { MultiPicker } from "@/components/ui/multi-picker";
+import { OrgTreeSelect } from "@/components/ui/org-tree-select";
 import { permissionActionLabels, permissionGroups, permissionModules } from "@/lib/data";
 import { cn, departmentPickerItems, employeeDepartmentIds } from "@/lib/utils";
 import { OverflowTags } from "@/components/ui/tag-overflow";
@@ -281,7 +282,7 @@ function ScopeDialog({
           ))}
           {scope === "custom" ? (
             <Field label="可查看的部门">
-              <MultiPicker items={departmentPickerItems(departments)} value={departmentIds} onChange={setDepartmentIds} placeholder="选择部门" searchPlaceholder="搜索部门" maxVisible={3} />
+              <OrgTreeSelect departments={departments} value={departmentIds} onChange={setDepartmentIds} placeholder="选择部门" maxVisible={3} />
             </Field>
           ) : null}
           <div className="rounded-xl bg-[#fafbf8] p-3 text-[11.5px] leading-5 text-muted">数据范围按角色生效，成员的实际可见数据同时受所属部门与角色范围约束。精确范围：{scopeText({ ...role, dataScope: scope, dataScopeDepartments: departmentIds }, departments)}</div>
@@ -295,12 +296,88 @@ function ScopeDialog({
   );
 }
 
+function RoleMemberSheet({
+  employeeId,
+  onClose,
+  onPrevious,
+  onNext,
+}: {
+  employeeId: string | null;
+  onClose: () => void;
+  onPrevious?: () => void;
+  onNext?: () => void;
+}) {
+  const { employees, departments, roles, updateEmployee } = useApp();
+  const confirm = useConfirm();
+  const employee = employees.find((e) => e.id === employeeId);
+  if (!employee) return <Sheet open={false} onOpenChange={onClose} title="成员详情"><div /></Sheet>;
+  const deptNames = employeeDepartmentIds(employee).map((id) => departments.find((d) => d.id === id)?.name ?? id);
+  const assignedRoles = employee.roleIds.map((id) => roles.find((r) => r.id === id)).filter(Boolean);
+  const isDisabled = employee.status === "disabled";
+
+  return (
+    <Sheet open={!!employeeId} onOpenChange={(open) => !open && onClose()} width="540px" title="成员详情" onPrevious={onPrevious} onNext={onNext}>
+      <div className="flex h-full flex-col bg-paper">
+        <div className="border-b border-line bg-surface px-6 py-5">
+          <div className="flex items-start gap-3.5">
+            <Avatar name={employee.name} size={48} />
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-[18px] font-semibold tracking-[-0.02em] text-ink">{employee.name}</h2>
+                <Badge tone={employee.status === "active" ? "pine" : employee.status === "invited" ? "amber" : "neutral"}>{employee.status === "active" ? "正常" : employee.status === "invited" ? "待激活" : "已停用"}</Badge>
+              </div>
+              <div className="mt-1 text-[12px] text-muted">{employee.title} · {deptNames.join(" / ")}</div>
+              <div className="mt-2 flex flex-wrap gap-1">
+                {assignedRoles.map((role) => role ? <span key={role.id} className="rounded-md bg-pine-soft px-1.5 py-0.5 text-[11.5px] text-pine">{role.name}</span> : null)}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <Tabs defaultValue="profile">
+            <div className="sticky top-0 z-10 border-b border-line bg-surface px-5">
+              <TabsList className="border-b-0"><TabsTrigger value="profile">基本信息</TabsTrigger><TabsTrigger value="permissions">角色与权限</TabsTrigger></TabsList>
+            </div>
+            <TabsContent value="profile" className="p-5">
+              <div className="surface p-4">
+                <InfoLine label="工作邮箱">{employee.email}</InfoLine>
+                <InfoLine label="手机号">{employee.phone}</InfoLine>
+                <div className="flex flex-col gap-1 py-2.5"><span className="text-[11.5px] text-muted">所属部门</span><OverflowTags items={deptNames} max={2} tooltipLabel="所属部门" /></div>
+                <InfoLine label="直属上级">{employees.find((e) => e.id === employee.managerId)?.name ?? "—"}</InfoLine>
+                <InfoLine label="负责部门">{departments.filter((d) => d.headId === employee.id).map((d) => d.name).join("、") || "—"}</InfoLine>
+                <InfoLine label="入职日期">{employee.joinedAt}</InfoLine>
+                <InfoLine label="最后活跃">{employee.lastActive}</InfoLine>
+              </div>
+              <div className="mt-4 flex gap-2">
+                <Button size="sm" variant="ghost" onClick={async () => {
+                  if (!isDisabled) {
+                    const ok = await confirm({ title: "停用该成员？", description: "停用后该成员将无法登录企业工作台，但历史数据会保留。", confirmText: "停用账号", tone: "danger" });
+                    if (!ok) return;
+                  }
+                  updateEmployee(employee.id, { status: isDisabled ? "active" : "disabled" });
+                  toast.success(isDisabled ? "账号已启用" : "账号已停用");
+                  onClose();
+                }}>{isDisabled ? "启用账号" : "停用账号"}</Button>
+              </div>
+            </TabsContent>
+            <TabsContent value="permissions" className="space-y-3 p-5">
+              <SectionTitle title="角色与权限范围" description="来自所分配角色的合并权限" icon={<ShieldCheck />} />
+              {assignedRoles.map((role) => role ? <div key={role.id} className="surface p-4"><div className="flex items-center justify-between gap-2"><span className="text-[13px] font-medium text-ink">{role.name}</span>{role.system ? <Badge tone="amber">系统角色</Badge> : null}</div><p className="mt-1 text-[12px] leading-5 text-muted">{role.description}</p></div> : null)}
+              {assignedRoles.length === 0 ? <div className="surface p-6 text-center text-[12px] text-muted">暂未分配角色</div> : null}
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </Sheet>
+  );
+}
+
 export default function RolesPage() {
   const { roles, employees, departments, addRole, duplicateRole, updateRoleMembers, updateRoleMeta, deleteRole } = useApp();
   const confirm = useConfirm();
-  const router = useRouter();
   const [selectedId, setSelectedId] = useState("r1");
   const [scopeOpen, setScopeOpen] = useState(false);
+  const [memberDetailId, setMemberDetailId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [permOpen, setPermOpen] = useState(false);
   const [addMemberOpen, setAddMemberOpen] = useState(false);
@@ -393,8 +470,8 @@ export default function RolesPage() {
         </div>
 
         <div className="col-span-12 space-y-4 xl:col-span-9">
-          <div className="surface overflow-hidden">
-            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line p-5">
+          <div className="surface overflow-visible">
+            <div className="sticky top-[60px] z-20 flex flex-wrap items-start justify-between gap-4 border-b border-line bg-surface p-4">
               <div className="flex items-start gap-3">
                 <div className="flex size-11 items-center justify-center rounded-xl" style={{ background: `${role.color}16`, color: role.color }}>{role.system ? <Crown className="size-5" /> : <ShieldCheck className="size-5" />}</div>
                 <div>
@@ -409,17 +486,9 @@ export default function RolesPage() {
                 <DropdownMenu><DropdownMenuTrigger asChild><button className="flex size-8 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-4" /></button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={() => { const copy = duplicateRole(role.id); if (copy) { setSelectedId(copy.id); toast.success("角色已复制"); } }}><Copy /> 复制角色</DropdownMenuItem><DropdownMenuItem onClick={() => { setEditRoleName(role.name); setEditRoleDesc(role.description); setEditRoleColor(role.color); setEditRoleOpen(true); }}><ShieldCheck /> 编辑角色</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem danger onClick={async () => { if (role.system) { toast.info("系统角色不可删除"); return; } const ok = await confirm({ title: "删除该角色？", description: `删除「${role.name}」后，该角色会从所有成员身上移除，此操作不可撤销。`, confirmText: "删除角色", tone: "danger" }); if (!ok) return; deleteRole(role.id); setSelectedId("r1"); toast.success("角色已删除"); }}><Trash2 /> 删除角色</DropdownMenuItem></DropdownMenuContent></DropdownMenu>
               </div>
             </div>
-
-          </div>
-
-          <div className="surface overflow-hidden">
-            <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
-              <SectionTitle title="角色成员" description={`${members.length} 位成员拥有此角色`} icon={<Users />} />
-              <div className="flex items-center gap-2"><Button size="sm" variant="secondary" onClick={() => setAddMemberOpen(true)}><UserPlus /> 管理成员</Button></div>
-            </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto xl:overflow-visible">
               <table className="w-full min-w-[760px] border-collapse text-left">
-                <thead><tr className="border-y border-line bg-[#fafbf8] text-[12.5px] text-muted">
+                <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[171px] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]"><tr className="border-y border-line bg-[#fafbf8] text-[12.5px] text-muted">
                   <th className="min-w-[180px] py-2.5 pl-5 font-medium">姓名</th>
                   <th className="min-w-[170px] py-2.5 pr-4 font-medium">工作邮箱</th>
                   <th className="min-w-[130px] py-2.5 pr-4 font-medium">所属部门</th>
@@ -429,13 +498,13 @@ export default function RolesPage() {
                 </tr></thead>
                 <tbody>
                   {members.map((e) => (
-                    <tr key={e.id} className="border-b border-line/70 last:border-0 hover:bg-[#fafbf8]">
+                    <tr key={e.id} className="cursor-pointer border-b border-line/70 last:border-0 hover:bg-[#fafbf8]" onClick={() => setMemberDetailId(e.id)}>
                       <td className="py-3 pl-5 pr-4"><div className="flex items-center gap-2.5"><Avatar name={e.name} size={28} /><div><div className="text-[12.5px] font-medium text-ink">{e.name}</div><div className="mt-0.5 text-[11.5px] text-muted">{e.title}</div></div></div></td>
                       <td className="py-3 pr-4 text-[12px] text-ink-soft">{e.email}</td>
                       <td className="py-3 pr-4"><OverflowTags items={employeeDepartmentIds(e).map((id) => departments.find((d) => d.id === id)?.name ?? id)} max={1} tooltipLabel="所属部门" /></td>
                       <td className="py-3 pr-4 text-[12px] text-muted"><span title={scopeText(role, departments)}>{scopeShort(role)}</span></td>
                       <td className="py-3 pr-4"><span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", e.status === "active" ? "bg-pine-soft text-pine" : e.status === "invited" ? "bg-amber-soft text-amber-deep" : "bg-[#eef1ec] text-muted")}>{e.status === "active" ? "正常" : e.status === "invited" ? "待激活" : "已停用"}</span></td>
-                      <td className="px-4 py-3 text-right"><div className="flex justify-end gap-1"><Button size="sm" variant="ghost" className="h-7 px-2 text-[12px]" onClick={() => router.push(`/organization?employee=${e.id}`)}>详情</Button><button onClick={async () => { const ok = await confirm({ title: "移出该成员？", description: `确定将「${e.name}」从「${role.name}」中移除吗？`, confirmText: "移出角色", tone: "danger" }); if (!ok) return; updateRoleMembers(role.id, role.memberIds.filter((id) => id !== e.id)); toast.success("成员已移出角色"); }} className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-signal" aria-label="移除角色"><UserMinus className="size-3.5" /></button></div></td>
+                      <td className="px-4 py-3 text-right" onClick={(event) => event.stopPropagation()}><div className="flex justify-end gap-1"><button onClick={async () => { const ok = await confirm({ title: "移出该成员？", description: `确定将「${e.name}」从「${role.name}」中移除吗？`, confirmText: "移出角色", tone: "danger" }); if (!ok) return; updateRoleMembers(role.id, role.memberIds.filter((id) => id !== e.id)); toast.success("成员已移出角色"); }} className="flex size-7 items-center justify-center rounded-lg text-muted hover:bg-signal-soft hover:text-signal" aria-label="移除角色"><UserMinus className="size-3.5" /></button></div></td>
                     </tr>
                   ))}
                 </tbody>
@@ -449,6 +518,7 @@ export default function RolesPage() {
 
       <PermissionDialog role={role} open={permOpen} onOpenChange={setPermOpen} readOnly={!!role.system} />
       <ScopeDialog role={role} open={scopeOpen} onOpenChange={setScopeOpen} />
+      <RoleMemberSheet employeeId={memberDetailId} onClose={() => setMemberDetailId(null)} onPrevious={memberDetailId && members.findIndex((e) => e.id === memberDetailId) > 0 ? () => { const i = members.findIndex((e) => e.id === memberDetailId); setMemberDetailId(members[i - 1].id); } : undefined} onNext={memberDetailId && members.findIndex((e) => e.id === memberDetailId) < members.length - 1 ? () => { const i = members.findIndex((e) => e.id === memberDetailId); setMemberDetailId(members[i + 1].id); } : undefined} />
       <AddMemberDialog role={role} open={addMemberOpen} onOpenChange={setAddMemberOpen} />
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent size="sm" className="p-0">

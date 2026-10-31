@@ -24,6 +24,8 @@ import { toast } from "sonner";
 import { PageHeader, SectionTitle } from "@/components/ui/misc";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Label, Textarea } from "@/components/ui/input";
+import { ComboInput, NumberStepper } from "@/components/ui/number-stepper";
+import { PersonSelect } from "@/components/ui/person-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/toggle";
 import { useApp } from "@/lib/store";
@@ -258,13 +260,18 @@ export default function NewJobPage() {
                   </Select>
                 </Field>
                 <Field label="招聘人数">
-                  <Input type="number" min={1} max={99} value={headcount} onChange={(e) => setHeadcount(Number(e.target.value))} />
+                  <NumberStepper value={headcount} onChange={setHeadcount} />
                 </Field>
                 <Field label="薪资范围" required error={errors.salary}>
-                  <Input value={salary} onChange={(e) => setSalary(e.target.value)} placeholder="例如：30–45K · 14薪" />
+                  <Select value={salary} onValueChange={setSalary}>
+                    <SelectTrigger><SelectValue placeholder="选择薪资范围" /></SelectTrigger>
+                    <SelectContent>
+                      {["8–12K · 13薪", "10–15K · 13薪", "12–18K · 13薪", "15–20K · 14薪", "18–25K · 14薪", "20–30K · 14薪", "25–35K · 14薪", "30–45K · 14薪", "35–50K · 14薪", "40–55K · 15薪", "45–65K · 16薪", "50–70K · 16薪", "60–80K · 16薪", "80K以上 · 面议"].map((range) => <SelectItem key={range} value={range}>{range}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </Field>
-                <Field label="经验要求">
-                  <Input value={experience} onChange={(e) => setExperience(e.target.value)} />
+                <Field label="经验要求" hint="可选择或直接输入">
+                  <ComboInput value={experience} onChange={setExperience} options={["应届 / 1 年以内", "1–3 年", "3–5 年", "5–8 年", "8–10 年", "10 年以上"]} placeholder="选择或输入经验要求" />
                 </Field>
                 <Field label="学历要求">
                   <Select value={education} onValueChange={setEducation}>
@@ -278,12 +285,7 @@ export default function NewJobPage() {
                   </Select>
                 </Field>
                 <Field label="招聘负责人">
-                  <Select value={ownerId} onValueChange={setOwnerId}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {employees.filter((e) => ["emp-1", "emp-2", "emp-3", "emp-4"].includes(e.id)).map((e) => <SelectItem key={e.id} value={e.id}>{e.name} · {e.title}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <PersonSelect employees={employees.filter((e) => e.status === "active")} departments={departments} value={ownerId} onChange={setOwnerId} placeholder="搜索并选择负责人" />
                 </Field>
                 <Field label="优先级">
                   <div className="flex rounded-[10px] border border-line bg-[#f7f8f4] p-1">
