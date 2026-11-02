@@ -74,7 +74,6 @@ export default function DashboardPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="10月30日 · 周五"
         title="早上好，林岚"
         description="今天有 5 场面试，2 位候选人进入决策窗口。招聘业务授权还需要你确认。"
         actions={
@@ -343,7 +342,7 @@ export default function DashboardPage() {
                       </td>
                       <td className="py-3 text-[13px] text-ink-soft">{job?.title}</td>
                       <td className="py-3">
-                        <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12.5px]", stage.tone)}>
+                        <span className={cn("inline-flex items-center whitespace-nowrap gap-1.5 rounded-md px-2 py-1 text-[12.5px]", stage.tone)}>
                           <span className={cn("size-1.5 rounded-full", stage.dot)} />
                           {stage.label}
                         </span>

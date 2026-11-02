@@ -2,13 +2,11 @@ import * as React from "react";
 import { cn, scoreTone } from "@/lib/utils";
 
 export function PageHeader({
-  kicker,
   title,
   description,
   actions,
   className,
 }: {
-  kicker?: string;
   title: string;
   description?: string;
   actions?: React.ReactNode;
@@ -17,12 +15,6 @@ export function PageHeader({
   return (
     <header className={cn("flex flex-wrap items-end justify-between gap-x-6 gap-y-4", className)}>
       <div className="min-w-0">
-        {kicker ? (
-          <div className="mb-2 flex items-center gap-2 text-[13px] font-medium text-pine">
-            <span className="inline-block h-px w-4 bg-pine/50" />
-            {kicker}
-          </div>
-        ) : null}
         <h1 className="text-balance text-[26px] font-semibold leading-[1.2] tracking-[-0.035em] text-ink">{title}</h1>
         {description ? <p className="mt-2 max-w-2xl text-[14px] leading-6 text-muted">{description}</p> : null}
       </div>

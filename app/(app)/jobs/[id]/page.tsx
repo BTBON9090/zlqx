@@ -170,7 +170,7 @@ export default function JobDetailPage() {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-[23px] font-semibold tracking-[-0.03em] text-ink">{job.title}</h1>
-                  <span className={cn("inline-flex h-[22px] items-center gap-1.5 rounded-md px-2 text-[12.5px] font-medium", status.tone)}>
+                  <span className={cn("inline-flex h-[22px] items-center whitespace-nowrap gap-1.5 rounded-md px-2 text-[12.5px] font-medium", status.tone)}>
                     <span className={cn("size-1.5 rounded-full", status.dot)} /> {status.label}
                   </span>
                   {job.priority === "high" ? <Badge tone="signal">急招</Badge> : null}

@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, SectionTitle, EmptyState } from "@/components/ui/misc";
+import { MetricCard } from "@/components/ui/metric-card";
 import { Button } from "@/components/ui/button";
 import { SearchInput, Field, Textarea } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -200,7 +201,7 @@ function InterviewDetailSheet({
           <div className="pr-8">
             <div className="flex flex-wrap items-center gap-2">
               <span className={cn("rounded px-2 py-1 text-[12.5px] font-medium", type.tone)}>{type.label}</span>
-              <span className={cn("inline-flex items-center gap-1.5 rounded px-2 py-1 text-[12.5px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
+              <span className={cn("inline-flex items-center whitespace-nowrap gap-1.5 rounded px-2 py-1 text-[12.5px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
               <span className="text-[12.5px] text-muted">{interview.round}</span>
             </div>
             <h2 className="mt-3 text-[21px] font-semibold tracking-[-0.03em] text-ink">{candidate.name} · {interview.round}</h2>
@@ -445,7 +446,6 @@ function InterviewsContent() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="招聘业务"
         title="面试安排"
         description="把每一场面试安排清楚：时间、面试官、候选人和反馈，都在一个视图里。"
         actions={
@@ -457,27 +457,14 @@ function InterviewsContent() {
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {[
-          ["今日面试", todayCount, "场", "下一场 10:00", "pine"],
-          ["待确认", pendingCount, "场", "需要提醒候选人", "amber"],
-          ["待反馈", needFeedback, "场", "面试官尚未提交", "signal"],
-          ["本周总计", ranges[2].count, "场", "含数字人面试 2 场", "blue"],
-        ].map(([label, value, suffix, note, tone]) => (
-          <div key={String(label)} className="surface flex items-center justify-between gap-3 p-4">
-            <div>
-              <div className="text-[12.5px] text-muted">{label}</div>
-              <div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div>
-              <div className="mt-1 text-[12px] text-muted">{note}</div>
-            </div>
-            <span className={cn("flex size-9 items-center justify-center rounded-xl", tone === "pine" ? "bg-pine-soft text-pine" : tone === "amber" ? "bg-amber-soft text-amber-deep" : tone === "signal" ? "bg-signal-soft text-signal" : "bg-info-soft text-info-ink")}>
-              <CalendarClock className="size-4" />
-            </span>
-          </div>
-        ))}
+        <MetricCard label="今日面试" value={todayCount} suffix="场" icon={CalendarDays} tone="pine" tip="今天安排的全部面试，下一场 10:00 开始" />
+        <MetricCard label="待确认" value={pendingCount} suffix="场" icon={Clock3} tone="amber" tip="邀约已发出、候选人尚未确认的面试，需要及时提醒" />
+        <MetricCard label="待反馈" value={needFeedback} suffix="场" icon={MessageSquare} tone="signal" tip="面试已经结束、面试官尚未提交评价" />
+        <MetricCard label="本周总计" value={ranges[2].count} suffix="场" icon={CalendarClock} tone="blue" tip="本周已安排的面试总量，其中包含 2 场数字人面试" />
       </div>
 
       <div className="surface overflow-visible">
-        <div className="sticky top-[60px] z-20 bg-surface">
+        <div className="sticky top-[60px] z-20 rounded-t-[17px] bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 pt-2">
           <div className="flex flex-wrap gap-1">
             {ranges.map((r) => (
@@ -561,10 +548,10 @@ function InterviewsContent() {
                     <td className="py-3.5 pr-4"><div className="text-[12.5px] text-ink-soft">{job?.title}</div><div className="mt-0.5 text-[12px] text-muted">{job?.location}</div></td>
                     <td className="py-3.5 pr-4">
                       <div className="text-[12.5px] font-medium text-ink">{iv.round}</div>
-                      <span className={cn("mt-1 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11.5px]", type.tone)}><span className="[&_svg]:size-2.5">{typeIcons[iv.type]}</span>{type.label}</span>
+                      <span className={cn("mt-1 inline-flex items-center whitespace-nowrap gap-1 rounded px-1.5 py-0.5 text-[11.5px]", type.tone)}><span className="[&_svg]:size-2.5">{typeIcons[iv.type]}</span>{type.label}</span>
                     </td>
                     <td className="py-3.5 pr-4"><div className="flex items-center gap-1.5"><AvatarGroup names={names} size={22} max={2} /><span className="max-w-[70px] truncate text-[12px] text-muted">{names[0]}</span></div></td>
-                    <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center gap-1.5 rounded px-1.5 py-1 text-[12px] font-medium", st.tone)}><span className={cn("size-1.5 rounded-full", st.dot)} />{st.label}</span></td>
+                    <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center whitespace-nowrap gap-1.5 rounded px-1.5 py-1 text-[12px] font-medium", st.tone)}><span className={cn("size-1.5 rounded-full", st.dot)} />{st.label}</span></td>
                     <td className="py-3.5 pr-4">
                       {iv.feedback ? (
                         <div className="flex items-center gap-0.5">{Array.from({ length: iv.feedback.rating }).map((_, i) => <Star key={i} className="size-2.5 fill-amber text-amber" />)}</div>
@@ -615,7 +602,7 @@ function InterviewsContent() {
                     <div className="mt-0.5 truncate text-[12px] text-muted">{job?.title} · {iv.round}</div>
                     <div className="mt-1.5 flex items-center gap-1.5"><AvatarGroup names={names} size={18} max={3} /><span className="truncate text-[11.5px] text-muted">{names.join("、")}</span></div>
                   </div>
-                  <span className={cn("inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-1 text-[11.5px] font-medium", st.tone)}><span className={cn("size-1.5 rounded-full", st.dot)} />{st.label}</span>
+                  <span className={cn("inline-flex shrink-0 items-center whitespace-nowrap gap-1 rounded px-1.5 py-1 text-[11.5px] font-medium", st.tone)}><span className={cn("size-1.5 rounded-full", st.dot)} />{st.label}</span>
                 </div>
                 <div className="mt-2.5 flex items-center justify-between border-t border-line/70 pt-2 text-[11.5px] text-muted"><span>{iv.start}–{iv.end}</span><span>{iv.feedback ? "已提交反馈" : iv.status === "done" ? "待填写反馈" : "查看面试详情"}</span></div>
               </button>

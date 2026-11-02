@@ -4,6 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
+  Bot,
+  BriefcaseBusiness,
+  FileCheck2,
   ArrowUpRight,
   Check,
   ChevronRight,
@@ -21,6 +24,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, SectionTitle } from "@/components/ui/misc";
+import { MetricCard } from "@/components/ui/metric-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/toggle";
@@ -180,25 +184,16 @@ export default function PipelinePage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="招聘业务"
         title="招聘流程"
         description="把招聘变成可复用的流程：面试轮次、数字人初试、Offer 审批与职位模板。"
         actions={<Button onClick={() => setCreateOpen(true)}><Plus /> 新建流程模板</Button>}
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {[
-          ["流程模板", flows.length, "个", "覆盖全部在招职位", "pine"],
-          ["数字人面试", flows.filter((f) => f.aiEnabled).length, "个", "已开启 AI 初试", "blue"],
-          ["在招职位", jobs.filter((j) => j.status === "active").length, "个", "使用流程模板", "amber"],
-          ["Offer 待审批", 1, "个", "平均 1.2 天完成", "signal"],
-        ].map(([label, value, suffix, note, tone]) => (
-          <div key={String(label)} className="surface p-4">
-            <div className="text-[12.5px] text-muted">{label}</div>
-            <div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div>
-            <div className="mt-1 flex items-center gap-1.5 text-[12px] text-muted"><span className={cn("size-1.5 rounded-full", tone === "pine" ? "bg-pine" : tone === "blue" ? "bg-info-ink" : tone === "amber" ? "bg-amber" : "bg-signal")} />{note}</div>
-          </div>
-        ))}
+        <MetricCard label="流程模板" value={flows.length} suffix="个" icon={Workflow} tone="pine" tip="已创建的招聘流程模板，覆盖全部在招职位" />
+        <MetricCard label="数字人面试" value={flows.filter((f) => f.aiEnabled).length} suffix="个" icon={Bot} tone="blue" tip="已开启 AI 初试的流程模板数量" />
+        <MetricCard label="在招职位" value={jobs.filter((j) => j.status === "active").length} suffix="个" icon={BriefcaseBusiness} tone="amber" tip="当前招聘中的职位，均使用流程模板" />
+        <MetricCard label="Offer 审批" value={1} suffix="个" icon={FileCheck2} tone="signal" tip="等待审批的 Offer，平均 1.2 天完成" />
       </div>
 
       <Tabs defaultValue="interview">

@@ -69,7 +69,6 @@ export default function JobsPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="招聘业务"
         title="职位管理"
         description="从需求到入职，管理每一个在招职位的节奏、候选人与健康度。"
         actions={
@@ -85,7 +84,7 @@ export default function JobsPage() {
       />
 
       <div className="surface overflow-visible">
-        <div className="sticky top-[60px] z-20 bg-surface">
+        <div className="sticky top-[60px] z-20 rounded-t-[17px] bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 pt-3">
           <div className="flex flex-wrap gap-1">
             {tabs.map((t) => {
@@ -200,14 +199,14 @@ export default function JobsPage() {
                       <div className="mt-0.5 text-[12px] text-muted">{job.location}</div>
                     </td>
                     <td className="py-3.5 pr-4">
-                      <span className={cn("inline-flex h-[22px] items-center gap-1.5 rounded-md px-2 text-[12.5px] font-medium", status.tone)}>
+                      <span className={cn("inline-flex h-[22px] items-center whitespace-nowrap gap-1.5 rounded-md px-2 text-[12.5px] font-medium", status.tone)}>
                         <span className={cn("size-1.5 rounded-full", status.dot)} /> {status.label}
                       </span>
                     </td>
                     <td className="py-3.5 pr-4">
                       <div className="flex items-center gap-1.5">
                         <Avatar name={ownerObj?.name ?? "负责人"} size={22} />
-                        <span className="text-[12.5px] text-ink-soft">{ownerObj?.name}</span>
+                        <span className="whitespace-nowrap text-[12.5px] text-ink-soft">{ownerObj?.name}</span>
                       </div>
                     </td>
                     <td className="py-3.5 pr-4">
@@ -281,10 +280,10 @@ export default function JobsPage() {
                     </div>
                     <div className="mt-1 text-[12px] text-muted">{job.code} · {deptObj?.name} · {job.location}</div>
                   </div>
-                  <span className={cn("inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
+                  <span className={cn("inline-flex shrink-0 items-center whitespace-nowrap gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
-                  <div className="flex items-center gap-1.5"><Avatar name={ownerObj?.name ?? "负责人"} size={20} /><span className="text-[12px] text-muted">{ownerObj?.name}</span></div>
+                  <div className="flex items-center gap-1.5"><Avatar name={ownerObj?.name ?? "负责人"} size={20} /><span className="whitespace-nowrap text-[12px] text-muted">{ownerObj?.name}</span></div>
                   <span className="text-[12px] text-muted">·</span>
                   <span className="text-[12px] text-muted">{job.candidateCount} 份简历</span>
                   <div className="ml-auto flex items-center gap-2">

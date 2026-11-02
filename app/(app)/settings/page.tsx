@@ -78,7 +78,6 @@ export default function SettingsPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="企业"
         title="企业设置"
         description="维护企业身份、招聘偏好、渠道授权与文件存储策略。认证信息仅管理员可见。"
       />

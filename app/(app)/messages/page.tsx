@@ -10,16 +10,19 @@ import {
   Copy,
   Eye,
   Mail,
+  MailCheck,
   MessageSquare,
   MoreHorizontal,
   Pencil,
   Plus,
+  Send,
   Settings2,
   Smartphone,
   Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, SectionTitle, EmptyState } from "@/components/ui/misc";
+import { MetricCard } from "@/components/ui/metric-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SearchInput, Field, Input, Textarea } from "@/components/ui/input";
@@ -232,25 +235,20 @@ export default function MessagesPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="企业"
         title="消息管理"
         description="统一管理面试邀约、Offer 与入职通知：模板、渠道、发送状态与失败重试。"
         actions={<Button onClick={() => setCreateOpen(true)}><Plus /> 新建模板</Button>}
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {[
-          ["本月发送", "1,284", "条", "较上月 +12%"],
-          ["送达率", "98.2", "%", "邮件 + 短信"],
-          ["打开 / 阅读率", "64", "%", "打开邮件或阅读短信"],
-          ["发送失败", String(notifications.filter((n) => n.status === "failed").length), "条", "需要人工处理"],
-        ].map(([label, value, suffix, note]) => (
-          <div key={label} className="surface p-4"><div className="text-[12.5px] text-muted">{label}</div><div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div><div className="mt-1 text-[12px] text-muted">{note}</div></div>
-        ))}
+        <MetricCard label="本月发送" value="1,284" suffix="条" icon={Send} tone="pine" tip="本月通过邮件、短信与站内信发送的消息总量，较上月增加 12%" />
+        <MetricCard label="送达率" value="98.2" suffix="%" icon={MailCheck} tone="blue" tip="邮件与短信成功送达的比例" />
+        <MetricCard label="打开/阅读" value="64" suffix="%" icon={Eye} tone="amber" tip="邮件被打开或短信被阅读的比例" />
+        <MetricCard label="发送失败" value={notifications.filter((n) => n.status === "failed").length} suffix="条" icon={CircleAlert} tone="signal" tip="发送失败、需要人工重试的消息数量" />
       </div>
 
       <div className="surface overflow-visible">
-        <div className="sticky top-[60px] z-20 bg-surface">
+        <div className="sticky top-[60px] z-20 rounded-t-[17px] bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 pt-2">
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="border-b-0">
@@ -327,7 +325,7 @@ export default function MessagesPage() {
                       <td className="py-3.5 pr-4 text-[12.5px] text-ink-soft">{job?.title}</td>
                       <td className="py-3.5 pr-4"><div className="max-w-[150px] truncate text-[12.5px] text-ink-soft">{template?.name}</div><div className="mt-0.5 text-[11.5px] text-muted">{template?.code}</div></td>
                       <td className="py-3.5 pr-4"><span className="flex items-center gap-1 text-[12px] text-muted">{n.channel === "email" ? <Mail className="size-3" /> : <Smartphone className="size-3" />}{n.channel === "email" ? "邮件" : "短信"}</span></td>
-                      <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center gap-1.5 rounded px-1.5 py-1 text-[12px]", n.status === "failed" ? "bg-signal-soft text-signal" : n.status === "read" ? "bg-pine-soft text-pine" : n.status === "delivered" ? "bg-[#eef1ec] text-ink-soft" : "bg-amber-soft text-amber-deep")}><span className="size-1.5 rounded-full bg-current" />{n.status === "failed" ? "发送失败" : n.status === "read" ? "已读" : n.status === "delivered" ? "已送达" : "待发送"}</span></td>
+                      <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center whitespace-nowrap gap-1.5 rounded px-1.5 py-1 text-[12px]", n.status === "failed" ? "bg-signal-soft text-signal" : n.status === "read" ? "bg-pine-soft text-pine" : n.status === "delivered" ? "bg-[#eef1ec] text-ink-soft" : "bg-amber-soft text-amber-deep")}><span className="size-1.5 rounded-full bg-current" />{n.status === "failed" ? "发送失败" : n.status === "read" ? "已读" : n.status === "delivered" ? "已送达" : "待发送"}</span></td>
                       <td className="py-3.5 pr-4 text-[12px] text-muted">{n.sentAt}</td>
                       <td className="py-3.5 pr-4"><div className="flex items-center gap-1.5"><Avatar name={n.operator} size={20} /><span className="text-[12px] text-ink-soft">{n.operator}</span></div></td>
                       <td className="px-4 py-3.5 text-right">{n.status === "failed" ? <button onClick={() => { retryNotification(n.id); toast.success("已重新发送"); }} className="text-[12px] font-medium text-signal hover:underline">重发</button> : <button onClick={() => toast.info(n.error ?? "消息已送达")} className="text-[13.5px] text-muted hover:text-ink">···</button>}</td>

@@ -124,11 +124,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <ChevronDown className="size-3.5 text-[var(--rail-muted)]" />
       </div>
 
-      <nav className="mt-5 flex-1 overflow-y-auto px-3 pb-4 scroll-none">
+      <nav className="mt-4 flex-1 overflow-y-auto px-3 pb-2 scroll-none">
         {navGroups.map((group, gi) => (
-          <div key={group.label ?? "main"} className={cn(gi > 0 && "mt-5")}>
+          <div key={group.label ?? "main"} className={cn(gi > 0 && "mt-4")}>
             {group.label ? (
-              <div className="mb-1.5 px-2.5 text-[12.5px] font-medium tracking-[0.06em] text-[var(--rail-icon)]">{group.label}</div>
+              <div className="mb-1 px-2.5 text-[12.5px] font-medium tracking-[0.06em] text-[var(--rail-icon)]">{group.label}</div>
             ) : null}
             <div className="space-y-0.5">
               {group.items.map((item) => {
@@ -140,7 +140,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     href={item.href}
                     onClick={onNavigate}
                     className={cn(
-                      "group relative flex h-[36px] items-center gap-2.5 rounded-[9px] px-2.5 text-[13.5px] font-medium transition-colors",
+                      "group relative flex h-[35px] items-center gap-2.5 rounded-[9px] px-2.5 text-[13.5px] font-medium transition-colors",
                       active ? "bg-white/[0.09] text-white" : "text-[var(--rail-muted)] hover:bg-white/[0.05] hover:text-[var(--rail-text)]"
                     )}
                   >
@@ -161,7 +161,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="rail-ai-card mx-3 mb-3 rounded-xl border border-white/8 p-3">
+      <div className="rail-ai-card mx-3 mb-3 rounded-xl border border-white/8 p-2.5">
         <div className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--rail-text)]">
           <Sparkles className="size-3.5 text-[var(--rail-accent)]" />
           小聘 · AI 助手
@@ -175,18 +175,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         </button>
       </div>
 
-      <div className="flex items-center justify-between border-t border-white/8 px-4 py-3">
-        <Link href="/profile" onClick={onNavigate} className="flex min-w-0 items-center gap-2">
-          <Avatar name="林岚" size={28} />
-          <div className="min-w-0">
-            <div className="truncate text-[13px] font-medium text-[var(--rail-text)]">林岚</div>
-            <div className="truncate text-[12px] text-[var(--rail-muted)]">招聘负责人</div>
-          </div>
-        </Link>
-        <Link href="/settings" onClick={onNavigate} aria-label="企业设置" className="flex size-7 items-center justify-center rounded-lg text-[var(--rail-muted)] transition-colors hover:bg-white/8 hover:text-white">
-          <Settings className="size-3.5" />
-        </Link>
-      </div>
     </div>
   );
 }
@@ -637,6 +625,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => router.push("/roles")}>
                     <ShieldCheck /> 我的权限
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    <Settings /> 企业设置
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setHelpOpen(true)}>
                     <HelpCircle /> 帮助与反馈

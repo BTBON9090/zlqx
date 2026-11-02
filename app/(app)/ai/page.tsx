@@ -309,7 +309,6 @@ export default function AiCenterPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="小聘 · 招聘智能体"
         title="AI 中心"
         description="把重复的招聘工作交给 AI，把判断留给人。所有生成内容可追溯、可编辑，并在发布前由你确认。"
         actions={

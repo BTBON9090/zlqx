@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -57,6 +57,26 @@ function CandidatesContent() {
   const [selected, setSelected] = useState<string[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
+  const [stickyOffsets, setStickyOffsets] = useState({ stage: 78, filter: 65 });
+
+  useEffect(() => {
+    const update = () => {
+      const stageHeight = stageRef.current?.offsetHeight ?? 78;
+      const filterHeight = filterRef.current?.offsetHeight ?? 65;
+      setStickyOffsets((prev) => (prev.stage === stageHeight && prev.filter === filterHeight ? prev : { stage: stageHeight, filter: filterHeight }));
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    if (stageRef.current) observer.observe(stageRef.current);
+    if (filterRef.current) observer.observe(filterRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const filterStickyTop = 60 + stickyOffsets.stage;
+  const headerStickyTop = 60 + stickyOffsets.stage + stickyOffsets.filter;
+
   const [addOpen, setAddOpen] = useState(false);
   const [scheduleCandidate, setScheduleCandidate] = useState<string | null>(null);
 
@@ -96,7 +116,6 @@ function CandidatesContent() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="招聘业务"
         title="候选人"
         description="所有候选人都在这里：从简历解析、AI 匹配，到面试推进与 Offer 发放。"
         actions={
@@ -107,7 +126,7 @@ function CandidatesContent() {
         }
       />
 
-      <div className="surface sticky top-[60px] z-20 grid grid-cols-2 overflow-hidden sm:grid-cols-3 lg:grid-cols-6">
+      <div ref={stageRef} className="surface sticky top-[60px] z-20 grid grid-cols-2 overflow-hidden sm:grid-cols-3 lg:grid-cols-6">
         {stageTabs.map((t, i) => (
           <button
             key={t.key}
@@ -129,7 +148,7 @@ function CandidatesContent() {
       </div>
 
       <div className="surface overflow-visible">
-        <div className="sticky top-[132px] z-20 flex flex-wrap items-center gap-2 border-b border-line bg-[#fcfcf9] px-4 py-3">
+        <div ref={filterRef} style={{ top: filterStickyTop }} className="sticky z-20 flex flex-wrap items-center gap-2 rounded-t-[17px] border-b border-line bg-[#fcfcf9] px-4 py-3">
           <SearchInput placeholder="搜索姓名、公司、手机号" value={query} onChange={(e) => setQuery(e.target.value)} className="w-full sm:w-[240px]" />
           <Select value={jobFilter} onValueChange={setJobFilter}>
             <SelectTrigger className="w-[168px]"><SelectValue placeholder="全部职位" /></SelectTrigger>
@@ -183,8 +202,8 @@ function CandidatesContent() {
         ) : null}
 
         <div className="hidden overflow-x-auto md:block xl:overflow-visible">
-          <table className="w-full min-w-[1040px] border-collapse text-left">
-            <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[197px] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]">
+          <table style={{ "--cand-header-top": `${headerStickyTop}px` } as React.CSSProperties} className="w-full min-w-[1040px] border-collapse text-left">
+            <thead className="bg-[#fafbf8] xl:[&>tr>th]:sticky xl:[&>tr>th]:top-[var(--cand-header-top)] xl:[&>tr>th]:z-10 xl:[&>tr>th]:bg-[#fafbf8]">
               <tr className="border-b border-line bg-[#fafbf8] text-[12.5px] text-muted">
                 <th className="w-[40px] px-4 py-2.5">
                   <Checkbox checked={allSelected} onCheckedChange={(v) => setSelected(v ? filtered.map((c) => c.id) : [])} aria-label="全选" />
@@ -235,7 +254,7 @@ function CandidatesContent() {
                       <div className="mt-0.5 text-[12px] text-muted">{job ? departments.find((d) => d.id === job.departmentId)?.name : ""}</div>
                     </td>
                     <td className="py-3.5 pr-4">
-                      <span className={cn("inline-flex h-[22px] items-center gap-1.5 rounded-md px-2 text-[12px] font-medium", stageMeta.tone)}>
+                      <span className={cn("inline-flex h-[22px] items-center whitespace-nowrap gap-1.5 rounded-md px-2 text-[12px] font-medium", stageMeta.tone)}>
                         <span className={cn("size-1.5 rounded-full", stageMeta.dot)} /> {stageMeta.label}
                       </span>
                     </td>
@@ -316,7 +335,7 @@ function CandidatesContent() {
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-2 border-t border-line/70 pt-2.5">
                   <div className="min-w-0"><div className="truncate text-[12.5px] text-ink-soft">{job?.title}</div><div className="mt-0.5 text-[11.5px] text-muted">{nextInterview ? `${formatRelativeDate(nextInterview.date)} ${nextInterview.start} · ${interviewTypeMeta[nextInterview.type].label}` : "暂无面试安排"}</div></div>
-                  <span className={cn("inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-1 text-[11.5px] font-medium", stageMeta.tone)}><span className={cn("size-1.5 rounded-full", stageMeta.dot)} />{stageMeta.label}</span>
+                  <span className={cn("inline-flex shrink-0 items-center whitespace-nowrap gap-1 rounded px-1.5 py-1 text-[11.5px] font-medium", stageMeta.tone)}><span className={cn("size-1.5 rounded-full", stageMeta.dot)} />{stageMeta.label}</span>
                 </div>
               </button>
             );

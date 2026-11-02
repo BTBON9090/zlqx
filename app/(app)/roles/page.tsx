@@ -471,13 +471,13 @@ export default function RolesPage() {
 
         <div className="col-span-12 space-y-4 xl:col-span-9">
           <div className="surface overflow-visible">
-            <div className="sticky top-[60px] z-20 flex flex-wrap items-start justify-between gap-4 border-b border-line bg-surface p-4">
+            <div className="sticky top-[60px] z-20 flex flex-wrap items-start justify-between gap-4 rounded-t-[17px] border-b border-line bg-surface p-4">
               <div className="flex items-start gap-3">
                 <div className="flex size-11 items-center justify-center rounded-xl" style={{ background: `${role.color}16`, color: role.color }}>{role.system ? <Crown className="size-5" /> : <ShieldCheck className="size-5" />}</div>
                 <div>
                   <div className="flex flex-wrap items-center gap-2"><h2 className="text-[17px] font-semibold tracking-[-0.02em] text-ink">{role.name}</h2>{role.system ? <Badge tone="amber" dot>系统角色</Badge> : <Badge tone="pine" dot>自定义角色</Badge>}</div>
                   <p className="mt-1.5 line-clamp-2 max-w-[520px] text-[12.5px] leading-5 text-muted" title={role.description}>{role.description}</p>
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-[12px] text-muted"><span>{members.length} 位成员</span><span className="size-0.5 rounded-full bg-muted" /><span>{totalPermissions} 项权限</span><span className="size-0.5 rounded-full bg-muted" /><button onClick={() => setScopeOpen(true)} className="inline-flex items-center gap-1 text-pine hover:underline">数据范围：{scopeText(role, departments)} <Pencil className="size-3" /></button></div>
+                  <div className="mt-2 flex flex-wrap items-center gap-3 text-[12px] text-muted"><span>{members.length} 位成员</span><span className="size-0.5 rounded-full bg-muted" /><span>{totalPermissions} 项权限</span><span className="size-0.5 rounded-full bg-muted" /><button onClick={() => setScopeOpen(true)} className="inline-flex items-center whitespace-nowrap gap-1 text-pine hover:underline">数据范围：{scopeText(role, departments)} <Pencil className="size-3" /></button></div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">

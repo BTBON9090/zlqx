@@ -56,7 +56,7 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-5">
-      <PageHeader kicker="个人" title="个人中心" description="管理你的账号、安全设置与通知偏好。" />
+      <PageHeader title="个人中心" description="管理你的账号、安全设置与通知偏好。" />
 
       <div className="relative overflow-hidden rounded-[22px] bg-pine-deep p-6 text-white md:p-7">
         <div className="signal-grid absolute inset-0 opacity-40" />

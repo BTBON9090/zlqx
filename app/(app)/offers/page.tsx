@@ -7,7 +7,9 @@ import {
   ArrowUpRight,
   Check,
   ChevronRight,
+  CheckCircle2,
   CircleAlert,
+  Clock3,
   FileText,
   Plus,
   Send,
@@ -16,10 +18,12 @@ import {
   ThumbsDown,
   ThumbsUp,
   Timer,
+  TrendingUp,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, SectionTitle, EmptyState } from "@/components/ui/misc";
+import { MetricCard } from "@/components/ui/metric-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
@@ -107,7 +111,7 @@ function OfferDetail({ offer, onClose }: { offer: Offer | null; onClose: () => v
         <div className="border-b border-line bg-surface px-6 py-6">
           <div className="pr-8">
             <div className="flex items-center gap-2">
-              <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12.5px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
+              <span className={cn("inline-flex items-center whitespace-nowrap gap-1.5 rounded-md px-2 py-1 text-[12.5px] font-medium", status.tone)}><span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}</span>
               <span className="text-[12.5px] text-muted">创建于 {offer.createdAt}</span>
             </div>
             <div className="mt-4 flex items-center gap-3">
@@ -181,25 +185,20 @@ export default function OffersPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        kicker="招聘业务"
         title="Offer 管理"
         description="从一个薪资方案，到候选人正式接受：审批、发放与入职进度都在这里。"
         actions={<Button onClick={() => setCreateOpen(true)}><Plus /> 创建 Offer</Button>}
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {[
-          ["本月 Offer", offers.length, "份", "较上月 +2"],
-          ["待审批", offers.filter((o) => o.status === "approving").length, "份", "平均 1.2 天"],
-          ["已接受", offers.filter((o) => o.status === "accepted").length, "份", "等待入职"],
-          ["接受率", "86", "%", "近 90 天"],
-        ].map(([label, value, suffix, note]) => (
-          <div key={String(label)} className="surface p-4"><div className="text-[12.5px] text-muted">{label}</div><div className="mt-1 flex items-baseline gap-1"><span className="num text-[23px] font-semibold tracking-[-0.04em] text-ink">{value}</span><span className="text-[12.5px] text-muted">{suffix}</span></div><div className="mt-1 text-[12px] text-muted">{note}</div></div>
-        ))}
+        <MetricCard label="本月 Offer" value={offers.length} suffix="份" icon={FileText} tone="pine" tip="本月创建的全部 Offer，较上月增加 2 份" />
+        <MetricCard label="待审批" value={offers.filter((o) => o.status === "approving").length} suffix="份" icon={Clock3} tone="amber" tip="正在等待审批的 Offer，平均 1.2 天完成" />
+        <MetricCard label="已接受" value={offers.filter((o) => o.status === "accepted").length} suffix="份" icon={CheckCircle2} tone="blue" tip="候选人已接受、正在等待入职的 Offer" />
+        <MetricCard label="接受率" value="86" suffix="%" icon={TrendingUp} tone="signal" tip="近 90 天发出 Offer 的接受比例" />
       </div>
 
       <div className="surface overflow-visible">
-        <div className="sticky top-[60px] z-20 flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 pt-2">
+        <div className="sticky top-[60px] z-20 flex flex-wrap items-center justify-between gap-3 rounded-t-[17px] border-b border-line bg-surface px-4 pt-2">
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <TabsList className="border-b-0">
               <TabsTrigger value="all">全部 <span className="num text-[12.5px] text-muted">{offers.length}</span></TabsTrigger>
@@ -236,7 +235,7 @@ export default function OffersPage() {
                     <td className="py-3.5 pl-5 pr-4"><div className="flex items-center gap-2.5"><Avatar name={c?.name ?? "候选人"} size={30} /><div><div className="text-[13px] font-medium text-ink group-hover:text-pine">{c?.name}</div><div className="mt-0.5 text-[12px] text-muted">{c?.currentTitle}</div></div></div></td>
                     <td className="py-3.5 pr-4"><div className="text-[12.5px] text-ink-soft">{j?.title}</div><div className="mt-0.5 text-[12px] text-muted">{j?.location}</div></td>
                     <td className="py-3.5 pr-4"><div className="text-[12.5px] font-medium text-ink">{o.salary}</div><div className="mt-0.5 text-[12px] text-muted">{o.bonus}</div></td>
-                    <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium", st.tone)}><span className={cn("size-1.5 rounded-full", st.dot)} />{st.label}</span></td>
+                    <td className="py-3.5 pr-4"><span className={cn("inline-flex items-center whitespace-nowrap gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium", st.tone)}><span className={cn("size-1.5 rounded-full", st.dot)} />{st.label}</span></td>
                     <td className="py-3.5 pr-4"><span className="text-[12.5px] text-ink-soft">{approver?.name}</span></td>
                     <td className="py-3.5 pr-4 text-[12.5px] text-ink-soft">{o.startDate.slice(5)}</td>
                     <td className="py-3.5 pr-4 text-[12.5px] text-muted">{o.deadline.slice(5)}</td>

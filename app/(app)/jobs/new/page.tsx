@@ -188,7 +188,6 @@ export default function NewJobPage() {
       </div>
 
       <PageHeader
-        kicker="发布新职位"
         title="把用人需求，变成一个清晰的招聘信号。"
         description="填写职位信息后，AI 会帮助你校准岗位画像，并自动生成职位描述草稿。"
         actions={
@@ -323,7 +322,7 @@ export default function NewJobPage() {
                 <Field label="关键技能标签" hint="按 Enter 添加">
                   <div className="flex flex-wrap gap-1.5 rounded-[10px] border border-line bg-surface p-2">
                     {skills.map((s) => (
-                      <span key={s} className="inline-flex items-center gap-1 rounded-md bg-pine-soft px-2 py-1 text-[12.5px] text-pine">
+                      <span key={s} className="inline-flex items-center whitespace-nowrap gap-1 rounded-md bg-pine-soft px-2 py-1 text-[12.5px] text-pine">
                         {s}
                         <button onClick={() => setSkills((prev) => prev.filter((x) => x !== s))} aria-label={`移除${s}`} className="text-pine/60 hover:text-pine"><X className="size-3" /></button>
                       </span>
