@@ -26,62 +26,6 @@ function clampHex(hex: string) {
   return DEFAULT_COLOR;
 }
 
-function hexToHsl(hex: string) {
-  const normalized = clampHex(hex);
-  const r = parseInt(normalized.slice(1, 3), 16) / 255;
-  const g = parseInt(normalized.slice(3, 5), 16) / 255;
-  const b = parseInt(normalized.slice(5, 7), 16) / 255;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h = 0;
-  let s = 0;
-  const l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      default:
-        h = (r - g) / d + 4;
-    }
-    h /= 6;
-  }
-  return { h: h * 360, s: s * 100, l: l * 100 };
-}
-
-function hslToHex(h: number, s: number, l: number) {
-  const sat = s / 100;
-  const light = l / 100;
-  const c = (1 - Math.abs(2 * light - 1)) * sat;
-  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-  const m = light - c / 2;
-  let r = 0;
-  let g = 0;
-  let b = 0;
-  if (h < 60) [r, g, b] = [c, x, 0];
-  else if (h < 120) [r, g, b] = [x, c, 0];
-  else if (h < 180) [r, g, b] = [0, c, x];
-  else if (h < 240) [r, g, b] = [0, x, c];
-  else if (h < 300) [r, g, b] = [x, 0, c];
-  else [r, g, b] = [c, 0, x];
-  const toHex = (v: number) => Math.round((v + m) * 255).toString(16).padStart(2, "0");
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-
-/** Keep custom brand colors dark enough for white button labels. */
-export function normalizeThemeColor(hex: string) {
-  const safe = clampHex(hex);
-  const { h, s, l } = hexToHsl(safe);
-  if (l > 46) return hslToHex(h, Math.min(s, 82), 44);
-  if (l < 16) return hslToHex(h, s, 22);
-  return safe;
-}
-
 function applyTheme(state: ThemeState) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
@@ -133,7 +77,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     () => ({
       ...state,
       setMode: (mode) => setState((prev) => ({ ...prev, mode })),
-      setCustomColor: (hex) => setState({ mode: "custom", customColor: normalizeThemeColor(hex) }),
+      setCustomColor: (hex) => setState({ mode: "custom", customColor: clampHex(hex) }),
       resetTheme: () => setState({ mode: "mono", customColor: DEFAULT_COLOR }),
     }),
     [state]

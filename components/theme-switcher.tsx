@@ -16,6 +16,7 @@ export function ThemeSwitcher() {
   const [draft, setDraft] = useState(customColor);
 
   useEffect(() => setDraft(customColor), [customColor]);
+  const previewColor = /^#?[0-9a-fA-F]{6}$/.test(draft.trim()) ? (draft.trim().startsWith("#") ? draft.trim() : `#${draft.trim()}`) : customColor;
 
   const applyHex = () => {
     const value = draft.trim();
@@ -76,7 +77,7 @@ export function ThemeSwitcher() {
           <div className={cn("rounded-xl border p-2.5 transition-colors", mode === "custom" ? "border-pine/35 bg-pine-soft/45" : "border-line")}>
             <button onClick={() => setMode("custom")} className="flex w-full items-center gap-3 text-left">
               <span className="flex -space-x-1.5">
-                <span className="size-6 rounded-full border-2 border-white shadow-sm" style={{ background: customColor }} />
+                <span className="size-6 rounded-full border-2 border-white shadow-sm" style={{ background: previewColor }} />
                 <span className="size-6 rounded-full border-2 border-white bg-white shadow-sm" />
               </span>
               <span className="min-w-0 flex-1">
@@ -88,12 +89,12 @@ export function ThemeSwitcher() {
             <div className="mt-2.5 flex items-center gap-2">
               <label
                 className="relative flex size-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-line"
-                style={{ background: customColor }}
+                style={{ background: previewColor }}
                 title="选择颜色"
               >
                 <input
                   type="color"
-                  value={customColor}
+                  value={previewColor}
                   onChange={(e) => setCustomColor(e.target.value)}
                   className="absolute inset-0 cursor-pointer opacity-0"
                   aria-label="选择自定义主题色"

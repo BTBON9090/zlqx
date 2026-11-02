@@ -25,6 +25,10 @@ import { PageHeader, SectionTitle } from "@/components/ui/misc";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Label, Textarea } from "@/components/ui/input";
 import { ComboInput, NumberStepper } from "@/components/ui/number-stepper";
+import { JobTitlePicker } from "@/components/jobs/job-title-picker";
+import { AiTextarea } from "@/components/jobs/ai-textarea";
+import { MultiPicker } from "@/components/ui/multi-picker";
+import { useConfirm } from "@/components/ui/confirm";
 import { PersonSelect } from "@/components/ui/person-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/toggle";
@@ -40,6 +44,7 @@ const stepDefs = [
 export default function NewJobPage() {
   const router = useRouter();
   const { departments, employees, addJob } = useApp();
+  const confirm = useConfirm();
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState("");
   const [departmentId, setDepartmentId] = useState("dept-11");
@@ -51,6 +56,7 @@ export default function NewJobPage() {
   const [experience, setExperience] = useState("3–5 年");
   const [education, setEducation] = useState("本科及以上");
   const [ownerId, setOwnerId] = useState("emp-1");
+  const [assistantIds, setAssistantIds] = useState<string[]>([]);
   const [priority, setPriority] = useState<"high" | "normal">("normal");
   const [summary, setSummary] = useState("");
   const [responsibilitiesText, setResponsibilitiesText] = useState("");
@@ -68,6 +74,48 @@ export default function NewJobPage() {
   const owner = employees.find((e) => e.id === ownerId);
   const responsibilities = responsibilitiesText.split("\n").map((s) => s.trim()).filter(Boolean);
   const requirements = requirementsText.split("\n").map((s) => s.trim()).filter(Boolean);
+
+  const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const generateSummaryText = async () => {
+    await pause(650);
+    const role = title.trim() || "该岗位";
+    return `负责${role}的核心业务规划与落地，围绕${dept?.name ?? "团队"}的业务目标，推动从需求洞察到结果复盘的完整闭环，持续提升候选人体验与招聘效率。`;
+  };
+
+  const generateResponsibilitiesText = async () => {
+    await pause(750);
+    const role = title.trim() || "该岗位";
+    return [
+      `负责${role}相关业务目标的拆解、规划与落地，制定清晰的阶段计划`,
+      "深入理解候选人、面试官与业务团队的真实需求，持续优化流程与体验",
+      "协同产品、算法、设计与研发团队推进关键项目，确保交付质量与节奏",
+      "建立数据指标体系，通过复盘持续提升转化效率与业务结果",
+    ].join("\n");
+  };
+
+  const generateRequirementsText = async () => {
+    await pause(750);
+    const skillText = skills.slice(0, 2).join("、");
+    return [
+      `${experience || "相关领域"}以上经验${skillText ? `，有${skillText}经验优先` : ""}`,
+      "具备从问题定义到方案落地的完整能力，能在复杂场景中做出判断",
+      "良好的跨团队沟通与推动能力，能够协同多方达成目标",
+      "对 AI 与数字化工具保持敏感，愿意持续学习和迭代工作方式",
+    ].join("\n");
+  };
+
+  const polishDraft = async (text: string) => {
+    await pause(700);
+    const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+    if (lines.length <= 1) {
+      return `${text.replace(/[。.!！]+$/, "")}，并通过持续复盘与跨团队协同，把想法稳定转化为可衡量的业务结果。`;
+    }
+    return lines.map((line, index) => {
+      const polished = line.replace(/^负责/, index % 2 === 0 ? "主导" : "负责");
+      return /[。.!！；;]$/.test(polished) ? polished : `${polished}。`;
+    }).join("\n");
+  };
 
   const completeness = useMemo(() => {
     let n = 0;
@@ -96,6 +144,15 @@ export default function NewJobPage() {
   };
 
   const generateJd = async () => {
+    if (summary.trim() || responsibilitiesText.trim() || requirementsText.trim()) {
+      const ok = await confirm({
+        title: "用 AI 重新补齐整页内容？",
+        description: "职位简介、工作职责与任职要求都会被重新生成，当前已填写的内容将被覆盖。只想优化表达时，请使用各字段旁的「润色」。",
+        confirmText: "覆盖并生成",
+        tone: "danger",
+      });
+      if (!ok) return;
+    }
     setAiLoading(true);
     await new Promise((r) => setTimeout(r, 900));
     if (!title) setTitle("高级产品经理");
@@ -143,6 +200,7 @@ export default function NewJobPage() {
       skills,
       status: "active",
       ownerId,
+      assistantIds,
       priority,
     });
     setPublishing(false);
@@ -173,6 +231,7 @@ export default function NewJobPage() {
       skills,
       status: "draft",
       ownerId,
+      assistantIds,
       priority,
     });
     toast.success("职位草稿已保存");
@@ -224,8 +283,8 @@ export default function NewJobPage() {
             <div className="surface p-5 md:p-6">
               <SectionTitle title="基本信息" description="这些信息会展示在职位卡片与候选人投递页。" icon={<BriefcaseBusiness />} />
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                <Field label="职位名称" required error={errors.title} className="sm:col-span-2">
-                  <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例如：高级产品经理" className="h-11 text-[14px]" />
+                <Field label="职位名称" required error={errors.title} hint="支持从标准职位库搜索选择，也可手动输入" className="sm:col-span-2">
+                  <JobTitlePicker value={title} onChange={(e) => { setTitle(e); if (errors.title) setErrors((prev) => ({ ...prev, title: "" })); }} invalid={!!errors.title} />
                 </Field>
                 <Field label="所属部门" required>
                   <Select value={departmentId} onValueChange={setDepartmentId}>
@@ -286,6 +345,16 @@ export default function NewJobPage() {
                 <Field label="招聘负责人">
                   <PersonSelect employees={employees.filter((e) => e.status === "active")} departments={departments} value={ownerId} onChange={setOwnerId} placeholder="搜索并选择负责人" />
                 </Field>
+                <Field label="协助人" hint="可多选">
+                  <MultiPicker
+                    items={employees.filter((e) => e.status === "active").map((e) => ({ id: e.id, name: e.name, description: [e.email, departments.find((d) => d.id === e.departmentId)?.name].filter(Boolean).join(" · ") }))}
+                    value={assistantIds}
+                    onChange={setAssistantIds}
+                    placeholder="搜索并添加协助人"
+                    searchPlaceholder="搜索姓名、邮箱或部门"
+                    maxVisible={2}
+                  />
+                </Field>
                 <Field label="优先级">
                   <div className="flex rounded-[10px] border border-line bg-[#f7f8f4] p-1">
                     {([["normal", "常规"], ["high", "急招"]] as const).map(([k, label]) => (
@@ -293,9 +362,18 @@ export default function NewJobPage() {
                     ))}
                   </div>
                 </Field>
-                <Field label="职位简介" hint="一句话说明这个岗位的价值" className="sm:col-span-2">
-                  <Textarea value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="例如：负责企业级 AI 招聘产品的规划与落地…" className="min-h-[100px]" />
-                </Field>
+                <div className="sm:col-span-2">
+                  <AiTextarea
+                    label="职位简介"
+                    hint="一句话说明这个岗位的价值"
+                    value={summary}
+                    onChange={setSummary}
+                    placeholder="例如：负责企业级 AI 招聘产品的规划与落地…"
+                    minHeight="min-h-[100px]"
+                    generate={generateSummaryText}
+                    polish={polishDraft}
+                  />
+                </div>
               </div>
               <div className="mt-6 flex items-center justify-between border-t border-line pt-5">
                 <span className="flex items-center gap-1.5 text-[12.5px] text-muted"><CircleAlert className="size-3" /> 带 * 为必填项</span>
@@ -313,12 +391,26 @@ export default function NewJobPage() {
                 </Button>
               </div>
               <div className="mt-6 space-y-5">
-                <Field label="工作职责" hint="每行一条，建议 4–6 条">
-                  <Textarea value={responsibilitiesText} onChange={(e) => setResponsibilitiesText(e.target.value)} placeholder={"负责…\n协同…\n推动…"} className="min-h-[140px]" />
-                </Field>
-                <Field label="任职要求" hint="每行一条，区分硬性要求与加分项">
-                  <Textarea value={requirementsText} onChange={(e) => setRequirementsText(e.target.value)} placeholder={"5 年以上相关经验…\n熟悉…\n具备…"} className="min-h-[140px]" />
-                </Field>
+                <AiTextarea
+                  label="工作职责"
+                  hint="每行一条，建议 4–6 条"
+                  value={responsibilitiesText}
+                  onChange={setResponsibilitiesText}
+                  placeholder={"负责…\n协同…\n推动…"}
+                  minHeight="min-h-[140px]"
+                  generate={generateResponsibilitiesText}
+                  polish={polishDraft}
+                />
+                <AiTextarea
+                  label="任职要求"
+                  hint="每行一条，区分硬性要求与加分项"
+                  value={requirementsText}
+                  onChange={setRequirementsText}
+                  placeholder={"5 年以上相关经验…\n熟悉…\n具备…"}
+                  minHeight="min-h-[140px]"
+                  generate={generateRequirementsText}
+                  polish={polishDraft}
+                />
                 <Field label="关键技能标签" hint="按 Enter 添加">
                   <div className="flex flex-wrap gap-1.5 rounded-[10px] border border-line bg-surface p-2">
                     {skills.map((s) => (

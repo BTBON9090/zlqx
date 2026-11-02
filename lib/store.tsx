@@ -84,6 +84,7 @@ interface AppActions {
     skills: string[];
     status: Job["status"];
     ownerId: string;
+    assistantIds?: string[];
     priority: Job["priority"];
   }) => Job;
   updateJob: (id: string, patch: Partial<Job>) => void;
@@ -207,6 +208,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       employment: input.employment,
       status: input.status,
       ownerId: input.ownerId,
+      assistantIds: input.assistantIds ?? [],
       createdAt: "2026-10-30",
       updatedAt: "2026-10-30",
       headcount: input.headcount,

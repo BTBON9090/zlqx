@@ -41,6 +41,7 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@
 import { Field, Input, Textarea } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PersonSelect } from "@/components/ui/person-select";
+import { MultiPicker } from "@/components/ui/multi-picker";
 import { RadarChart } from "@/components/charts";
 import { useApp } from "@/lib/store";
 import { candidateStageMeta, cn, jobStatusMeta, scoreTone } from "@/lib/utils";
@@ -64,6 +65,7 @@ function EditJobDialog({
   const [salary, setSalary] = useState(job.salary);
   const [headcount, setHeadcount] = useState(job.headcount);
   const [ownerId, setOwnerId] = useState(job.ownerId);
+  const [assistantIds, setAssistantIds] = useState<string[]>(job.assistantIds ?? []);
   const [status, setStatus] = useState(job.status);
   const [priority, setPriority] = useState(job.priority);
   const [summary, setSummary] = useState(job.summary);
@@ -76,6 +78,7 @@ function EditJobDialog({
       setSalary(job.salary);
       setHeadcount(job.headcount);
       setOwnerId(job.ownerId);
+      setAssistantIds(job.assistantIds ?? []);
       setStatus(job.status);
       setPriority(job.priority);
       setSummary(job.summary);
@@ -87,7 +90,7 @@ function EditJobDialog({
       toast.error("职位名称不能为空");
       return;
     }
-    updateJob(job.id, { title, departmentId, location, salary, headcount, ownerId, status, priority, summary });
+    updateJob(job.id, { title, departmentId, location, salary, headcount, ownerId, assistantIds, status, priority, summary });
     toast.success("职位信息已更新");
     onOpenChange(false);
   };
@@ -104,6 +107,16 @@ function EditJobDialog({
             <Field label="薪资范围"><Input value={salary} onChange={(e) => setSalary(e.target.value)} /></Field>
             <Field label="招聘人数"><Input type="number" min={1} value={headcount} onChange={(e) => setHeadcount(Number(e.target.value))} /></Field>
             <Field label="负责人"><PersonSelect employees={employees.filter((e) => e.status === "active")} departments={departments} value={ownerId} onChange={setOwnerId} placeholder="搜索并选择负责人" /></Field>
+            <Field label="协助人" hint="可多选" className="sm:col-span-2">
+              <MultiPicker
+                items={employees.filter((e) => e.status === "active").map((e) => ({ id: e.id, name: e.name, description: [e.email, departments.find((d) => d.id === e.departmentId)?.name].filter(Boolean).join(" · ") }))}
+                value={assistantIds}
+                onChange={setAssistantIds}
+                placeholder="搜索并添加协助人"
+                searchPlaceholder="搜索姓名、邮箱或部门"
+                maxVisible={3}
+              />
+            </Field>
             <Field label="职位状态"><Select value={status} onValueChange={(v) => setStatus(v as Job["status"])}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="active">招聘中</SelectItem><SelectItem value="paused">已暂停</SelectItem><SelectItem value="reviewing">审核中</SelectItem><SelectItem value="draft">未开始</SelectItem><SelectItem value="closed">已结束</SelectItem></SelectContent></Select></Field>
             <Field label="优先级"><div className="flex rounded-[10px] border border-line bg-[#f7f8f4] p-1">{[["normal", "常规"], ["high", "急招"]].map(([k, l]) => <button key={k} onClick={() => setPriority(k as Job["priority"])} className={cn("flex-1 rounded-md py-1.5 text-[13px] font-medium transition-colors", priority === k ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{l}</button>)}</div></Field>
             <Field label="职位简介" className="sm:col-span-2"><Textarea value={summary} onChange={(e) => setSummary(e.target.value)} className="min-h-[80px]" /></Field>
@@ -132,6 +145,7 @@ export default function JobDetailPage() {
   const jobCandidates = useMemo(() => candidates.filter((c) => c.jobId === id).sort((a, b) => b.score - a.score), [candidates, id]);
   const dept = departments.find((d) => d.id === job?.departmentId);
   const owner = employees.find((e) => e.id === job?.ownerId);
+  const assistants = (job?.assistantIds ?? []).map((employeeId) => employees.find((e) => e.id === employeeId)?.name).filter(Boolean) as string[];
   const jobInterviews = interviews.filter((i) => i.jobId === id);
 
   if (!job) {
@@ -307,6 +321,12 @@ export default function JobDetailPage() {
                     <div className="min-w-0 flex-1"><div className="text-[13px] font-medium text-ink">{owner?.name} · 招聘负责人</div><div className="mt-0.5 text-[12px] text-muted">负责职位与候选人推进</div></div>
                     <span className="size-1.5 rounded-full bg-success" />
                   </div>
+                  {assistants.length ? (
+                    <div className="mt-2.5 flex items-start gap-2.5 rounded-xl bg-[#f7f8f4] p-3">
+                      <AvatarGroup names={assistants} size={26} max={3} />
+                      <div className="min-w-0 flex-1"><div className="text-[13px] font-medium text-ink">协助人</div><div className="mt-0.5 truncate text-[12px] text-muted">{assistants.join(" · ")}</div></div>
+                    </div>
+                  ) : null}
                   <div className="mt-2.5 flex items-center gap-2.5 rounded-xl bg-[#f7f8f4] p-3">
                     <AvatarGroup names={["陈墨", "林岚", "赵珩"]} size={26} />
                     <div className="min-w-0 flex-1"><div className="text-[13px] font-medium text-ink">3 位面试官</div><div className="mt-0.5 text-[12px] text-muted">陈墨 · 林岚 · 赵珩</div></div>

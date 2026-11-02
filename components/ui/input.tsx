@@ -39,6 +39,7 @@ export function Field({
   hint,
   required,
   error,
+  action,
   className,
   children,
 }: {
@@ -46,18 +47,22 @@ export function Field({
   hint?: string;
   required?: boolean;
   error?: string;
+  action?: React.ReactNode;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className={cn("min-w-0", className)}>
       {label ? (
-        <div className="mb-2 flex items-baseline justify-between gap-3">
+        <div className="mb-2 flex items-center justify-between gap-3">
           <Label className="mb-0">
             {label}
             {required ? <span className="ml-1 text-signal">*</span> : null}
           </Label>
-          {hint ? <span className="text-[13px] text-muted">{hint}</span> : null}
+          <div className="flex min-w-0 items-center gap-2">
+            {hint ? <span className="truncate text-[13px] text-muted">{hint}</span> : null}
+            {action}
+          </div>
         </div>
       ) : null}
       {children}

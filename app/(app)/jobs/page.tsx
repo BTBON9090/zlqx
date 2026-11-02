@@ -235,7 +235,7 @@ export default function JobsPage() {
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
-                            <DropdownMenuItem onClick={() => { const copy = addJob({ title: `${job.title} 副本`, departmentId: job.departmentId, location: job.location, workMode: job.workMode, employment: job.employment, salary: job.salary, experience: job.experience, education: job.education, headcount: job.headcount, summary: job.summary, responsibilities: job.responsibilities, requirements: job.requirements, skills: job.skills, status: "draft", ownerId: job.ownerId, priority: job.priority }); toast.success("已复制为新职位草稿"); router.push(`/jobs/${copy.id}`); }}>
+                            <DropdownMenuItem onClick={() => { const copy = addJob({ title: `${job.title} 副本`, departmentId: job.departmentId, location: job.location, workMode: job.workMode, employment: job.employment, salary: job.salary, experience: job.experience, education: job.education, headcount: job.headcount, summary: job.summary, responsibilities: job.responsibilities, requirements: job.requirements, skills: job.skills, status: "draft", ownerId: job.ownerId, assistantIds: job.assistantIds, priority: job.priority }); toast.success("已复制为新职位草稿"); router.push(`/jobs/${copy.id}`); }}>
                               <Copy /> 复制职位
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push(`/jobs/${job.id}?edit=1`)}>

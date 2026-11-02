@@ -387,3 +387,8 @@ button:not(:disabled),
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Netlify's injected badge iframe overlaps the in-app assistant launcher. */
+#nl-badge-frame {
+  display: none !important;
+}

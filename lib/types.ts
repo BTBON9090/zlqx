@@ -31,6 +31,7 @@ export interface Job {
   employment: "fulltime" | "intern" | "contract";
   status: JobStatus;
   ownerId: string;
+  assistantIds?: string[];
   createdAt: string;
   updatedAt: string;
   headcount: number;

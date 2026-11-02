@@ -115,16 +115,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         </Link>
       </div>
 
-      <div className="mx-3 flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.045] px-2.5 py-2">
-        <CompanyMark name="澄明科技" size={28} />
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-[13.5px] font-medium text-[var(--rail-text)]">澄明科技</div>
-          <div className="mt-0.5 truncate text-[12.5px] text-[var(--rail-muted)]">企业版 · 华东区</div>
-        </div>
-        <ChevronDown className="size-3.5 text-[var(--rail-muted)]" />
-      </div>
-
-      <nav className="mt-4 flex-1 overflow-y-auto px-3 pb-2 scroll-none">
+      <nav className="mt-5 flex-1 overflow-y-auto px-3 pb-2 scroll-none">
         {navGroups.map((group, gi) => (
           <div key={group.label ?? "main"} className={cn(gi > 0 && "mt-4")}>
             {group.label ? (
