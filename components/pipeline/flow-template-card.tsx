@@ -43,7 +43,7 @@ export function FlowTemplateCard({
   );
 
   const steps = (
-    <div className={cn("flex flex-wrap items-center gap-1.5", grid && "mt-3")}>
+    <div className="mt-3 flex flex-wrap items-center gap-1.5">
       {visibleSteps.map((step, index) => (
         <div key={`${template.id}-${step.id}`} className="flex items-center gap-1.5">
           <span className={cn("rounded-md border px-2 py-1 text-[11.5px] font-medium", flowStepMeta[step.type].chipClass)}>{step.name}</span>
@@ -71,7 +71,7 @@ export function FlowTemplateCard({
           </div>
           {menu}
         </div>
-        <p className="mt-2.5 line-clamp-2 min-h-[40px] text-[12px] leading-5 text-muted">{template.description}</p>
+        <p className="mt-2 line-clamp-2 text-[12.5px] leading-5 text-muted">{template.description}</p>
         {steps}
         <div className="mt-auto flex items-center justify-between gap-2 border-t border-line pt-3">
           <label className="flex items-center gap-1.5 text-[11.5px] text-muted">数字人初试 <Switch checked={hasAiStep(template)} onCheckedChange={onToggleAi} /></label>
@@ -92,7 +92,7 @@ export function FlowTemplateCard({
               {template.isDefault ? <Badge tone="pine" dot>默认流程</Badge> : null}
               {!template.enabled ? <Badge tone="neutral">已停用</Badge> : null}
             </div>
-            <p className="mt-1.5 max-w-[520px] text-[12.5px] leading-5 text-muted">{template.description}</p>
+            <p className="mt-2 max-w-[520px] text-[12.5px] leading-5 text-muted">{template.description}</p>
             {steps}
           </div>
         </div>
