@@ -36,18 +36,29 @@ import { Avatar, AvatarGroup } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown";
-import { Switch } from "@/components/ui/toggle";
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Field, Input, Textarea } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PersonSelect } from "@/components/ui/person-select";
 import { MultiPicker } from "@/components/ui/multi-picker";
+import { FlowTemplateSelect } from "@/components/pipeline/flow-template-select";
+import { countInterviewRounds, flowStepMeta, flowTemplateToStages } from "@/lib/flow";
+import { useConfirm } from "@/components/ui/confirm";
+import { FlowTemplateDialog } from "@/components/pipeline/flow-template-dialog";
+import { MatchThresholdDialog } from "@/components/jobs/match-threshold-dialog";
 import { RadarChart } from "@/components/charts";
 import { useApp } from "@/lib/store";
-import { candidateStageMeta, cn, jobStatusMeta, scoreTone } from "@/lib/utils";
-import type { CandidateStage, Job } from "@/lib/types";
+import { candidateStageMeta, cn, getMatchThresholds, jobStatusMeta, scoreTone } from "@/lib/utils";
+import type { CandidateStage, FlowStep, FlowTemplate, Job, JobStage } from "@/lib/types";
 
 const stageOrder: CandidateStage[] = ["screening", "interview", "offer", "hired"];
+
+function stagesToFlowSteps(stages: JobStage[]): FlowStep[] {
+  return stages.map((stage) => {
+    const type = stage.type === "screen" ? "screen" : stage.type === "offer" ? "offer" : stage.aiEnabled ? "ai" : "business";
+    return { id: stage.key, type, name: stage.name };
+  });
+}
 
 function EditJobDialog({
   job,
@@ -58,7 +69,7 @@ function EditJobDialog({
   open: boolean;
   onOpenChange: (v: boolean) => void;
 }) {
-  const { departments, employees, updateJob } = useApp();
+  const { departments, employees, flowTemplates, updateJob } = useApp();
   const [title, setTitle] = useState(job.title);
   const [departmentId, setDepartmentId] = useState(job.departmentId);
   const [location, setLocation] = useState(job.location);
@@ -69,6 +80,10 @@ function EditJobDialog({
   const [status, setStatus] = useState(job.status);
   const [priority, setPriority] = useState(job.priority);
   const [summary, setSummary] = useState(job.summary);
+  const [responsibilitiesText, setResponsibilitiesText] = useState(job.responsibilities.join("\n"));
+  const [requirementsText, setRequirementsText] = useState(job.requirements.join("\n"));
+  const [skillsText, setSkillsText] = useState(job.skills.join("、"));
+  const [flowTemplateId, setFlowTemplateId] = useState(job.flowTemplateId ?? "");
 
   useEffect(() => {
     if (open) {
@@ -82,6 +97,10 @@ function EditJobDialog({
       setStatus(job.status);
       setPriority(job.priority);
       setSummary(job.summary);
+      setResponsibilitiesText(job.responsibilities.join("\n"));
+      setRequirementsText(job.requirements.join("\n"));
+      setSkillsText(job.skills.join("、"));
+      setFlowTemplateId(job.flowTemplateId ?? "");
     }
   }, [open, job]);
 
@@ -90,37 +109,97 @@ function EditJobDialog({
       toast.error("职位名称不能为空");
       return;
     }
-    updateJob(job.id, { title, departmentId, location, salary, headcount, ownerId, assistantIds, status, priority, summary });
+    const selectedFlow = flowTemplates.find((flow) => flow.id === flowTemplateId);
+    const flowChanged = (job.flowTemplateId ?? "") !== flowTemplateId;
+    updateJob(job.id, {
+      title,
+      departmentId,
+      location,
+      salary,
+      headcount,
+      ownerId,
+      assistantIds,
+      status,
+      priority,
+      summary,
+      responsibilities: responsibilitiesText.split("\n").map((line) => line.trim()).filter(Boolean),
+      requirements: requirementsText.split("\n").map((line) => line.trim()).filter(Boolean),
+      skills: skillsText.split(/[、,，\n]/).map((line) => line.trim()).filter(Boolean),
+      flowTemplateId: selectedFlow?.id,
+      flowCustomized: flowChanged ? false : job.flowCustomized,
+      stages: flowChanged && selectedFlow ? flowTemplateToStages(selectedFlow) : job.stages,
+    });
     toast.success("职位信息已更新");
     onOpenChange(false);
   };
+
+  const selectedFlow = flowTemplates.find((flow) => flow.id === flowTemplateId);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent size="lg" className="p-0">
         <DialogHeader title="编辑职位" description="修改会同步到职位详情、候选人流程与招聘看板。" icon={<Edit3 />} />
-        <DialogBody className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="职位名称" required className="sm:col-span-2"><Input value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
-            <Field label="所属部门"><Select value={departmentId} onValueChange={setDepartmentId}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{departments.filter((d) => d.parentId).map((d) => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></Field>
-            <Field label="工作地点"><Input value={location} onChange={(e) => setLocation(e.target.value)} /></Field>
-            <Field label="薪资范围"><Input value={salary} onChange={(e) => setSalary(e.target.value)} /></Field>
-            <Field label="招聘人数"><Input type="number" min={1} value={headcount} onChange={(e) => setHeadcount(Number(e.target.value))} /></Field>
-            <Field label="负责人"><PersonSelect employees={employees.filter((e) => e.status === "active")} departments={departments} value={ownerId} onChange={setOwnerId} placeholder="搜索并选择负责人" /></Field>
-            <Field label="协助人" hint="可多选" className="sm:col-span-2">
-              <MultiPicker
-                items={employees.filter((e) => e.status === "active").map((e) => ({ id: e.id, name: e.name, description: [e.email, departments.find((d) => d.id === e.departmentId)?.name].filter(Boolean).join(" · ") }))}
-                value={assistantIds}
-                onChange={setAssistantIds}
-                placeholder="搜索并添加协助人"
-                searchPlaceholder="搜索姓名、邮箱或部门"
-                maxVisible={3}
-              />
-            </Field>
-            <Field label="职位状态"><Select value={status} onValueChange={(v) => setStatus(v as Job["status"])}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="active">招聘中</SelectItem><SelectItem value="paused">已暂停</SelectItem><SelectItem value="reviewing">审核中</SelectItem><SelectItem value="draft">未开始</SelectItem><SelectItem value="closed">已结束</SelectItem></SelectContent></Select></Field>
-            <Field label="优先级"><div className="flex rounded-[10px] border border-line bg-[#f7f8f4] p-1">{[["normal", "常规"], ["high", "急招"]].map(([k, l]) => <button key={k} onClick={() => setPriority(k as Job["priority"])} className={cn("flex-1 rounded-md py-1.5 text-[13px] font-medium transition-colors", priority === k ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{l}</button>)}</div></Field>
-            <Field label="职位简介" className="sm:col-span-2"><Textarea value={summary} onChange={(e) => setSummary(e.target.value)} className="min-h-[80px]" /></Field>
-          </div>
+        <DialogBody className="p-0">
+          <Tabs defaultValue="basic">
+            <div className="sticky top-0 z-10 border-b border-line bg-surface px-5 pt-2">
+              <TabsList className="border-b-0">
+                <TabsTrigger value="basic">基本信息</TabsTrigger>
+                <TabsTrigger value="requirements">岗位要求</TabsTrigger>
+                <TabsTrigger value="flow">招聘流程</TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="basic" className="mt-0 p-5">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="职位名称" required className="sm:col-span-2"><Input value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
+                <Field label="所属部门"><Select value={departmentId} onValueChange={setDepartmentId}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{departments.filter((d) => d.parentId).map((d) => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></Field>
+                <Field label="工作地点"><Input value={location} onChange={(e) => setLocation(e.target.value)} /></Field>
+                <Field label="薪资范围"><Input value={salary} onChange={(e) => setSalary(e.target.value)} /></Field>
+                <Field label="招聘人数"><Input type="number" min={1} value={headcount} onChange={(e) => setHeadcount(Number(e.target.value))} /></Field>
+                <Field label="负责人"><PersonSelect employees={employees.filter((e) => e.status === "active")} departments={departments} value={ownerId} onChange={setOwnerId} placeholder="搜索并选择负责人" /></Field>
+                <Field label="协助人" hint="可多选" className="sm:col-span-2">
+                  <MultiPicker
+                    items={employees.filter((e) => e.status === "active").map((e) => ({ id: e.id, name: e.name, description: [e.email, departments.find((d) => d.id === e.departmentId)?.name].filter(Boolean).join(" · ") }))}
+                    value={assistantIds}
+                    onChange={setAssistantIds}
+                    placeholder="搜索并添加协助人"
+                    searchPlaceholder="搜索姓名、邮箱或部门"
+                    maxVisible={3}
+                  />
+                </Field>
+                <Field label="职位状态"><Select value={status} onValueChange={(v) => setStatus(v as Job["status"])}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="active">招聘中</SelectItem><SelectItem value="paused">已暂停</SelectItem><SelectItem value="reviewing">审核中</SelectItem><SelectItem value="draft">未开始</SelectItem><SelectItem value="closed">已结束</SelectItem></SelectContent></Select></Field>
+                <Field label="优先级"><div className="flex rounded-[10px] border border-line bg-[#f7f8f4] p-1">{[["normal", "常规"], ["high", "急招"]].map(([k, l]) => <button key={k} onClick={() => setPriority(k as Job["priority"])} className={cn("flex-1 rounded-md py-1.5 text-[13px] font-medium transition-colors", priority === k ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{l}</button>)}</div></Field>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="requirements" className="mt-0 space-y-4 p-5">
+              <Field label="职位简介"><Textarea value={summary} onChange={(e) => setSummary(e.target.value)} className="min-h-[86px]" /></Field>
+              <Field label="工作职责" hint="每行一条"><Textarea value={responsibilitiesText} onChange={(e) => setResponsibilitiesText(e.target.value)} className="min-h-[130px]" /></Field>
+              <Field label="任职要求" hint="每行一条"><Textarea value={requirementsText} onChange={(e) => setRequirementsText(e.target.value)} className="min-h-[130px]" /></Field>
+              <Field label="关键技能标签" hint="用顿号或逗号分隔"><Input value={skillsText} onChange={(e) => setSkillsText(e.target.value)} placeholder="例如：B 端产品、AI 产品、数据分析" /></Field>
+            </TabsContent>
+
+            <TabsContent value="flow" className="mt-0 space-y-4 p-5">
+              <Field label="面试流程模板" hint="切换后会按新模板更新职位阶段">
+                <FlowTemplateSelect templates={flowTemplates.filter((flow) => flow.enabled || flow.id === job.flowTemplateId)} value={flowTemplateId} onChange={setFlowTemplateId} placeholder="选择面试流程模板" />
+              </Field>
+              <div className="rounded-xl border border-line bg-[#fafbf8] p-3.5">
+                <div className="flex items-center justify-between gap-2 text-[12.5px]">
+                  <span className="font-medium text-ink">{selectedFlow?.name ?? "当前职位自定义流程"}</span>
+                  <span className="text-muted">{selectedFlow ? `${countInterviewRounds(selectedFlow)} 轮面试 · ${selectedFlow.steps.length} 个环节` : `${job.stages.length} 个环节`}</span>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                  {(selectedFlow?.steps ?? job.stages.map((stage) => ({ id: stage.key, type: stage.type === "screen" ? "screen" as const : stage.type === "offer" ? "offer" as const : "business" as const, name: stage.name }))).map((step, index) => (
+                    <div key={step.id} className="flex items-center gap-1.5">
+                      <span className={cn("rounded-md border px-2 py-1 text-[11.5px] font-medium", flowStepMeta[step.type].chipClass)}>{step.name}</span>
+                      {index < (selectedFlow?.steps.length ?? job.stages.length) - 1 ? <ChevronRight className="size-3 text-[#b9c3ba]" /> : null}
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-2 text-[11.5px] leading-5 text-muted">保存后，新流程会用于后续候选人推进；已产生的面试记录不会被删除。</p>
+              </div>
+            </TabsContent>
+          </Tabs>
         </DialogBody>
         <DialogFooter><Button variant="secondary" onClick={() => onOpenChange(false)}>取消</Button><Button onClick={save}><Check /> 保存修改</Button></DialogFooter>
       </DialogContent>
@@ -132,11 +211,17 @@ function EditJobDialog({
 export default function JobDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { jobs, candidates, departments, employees, interviews, flowTemplates } = useApp();
+  const { jobs, candidates, departments, employees, interviews, flowTemplates, updateJob, addFlowTemplate, updateFlowTemplate } = useApp();
   const job = jobs.find((j) => j.id === id);
   const [tab, setTab] = useState("overview");
-  const [aiOn, setAiOn] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
+  const [flowEditOpen, setFlowEditOpen] = useState(false);
+  const [flowSaveOpen, setFlowSaveOpen] = useState(false);
+  const [flowSaveMode, setFlowSaveMode] = useState<"job" | "update" | "copy">("job");
+  const [pendingFlow, setPendingFlow] = useState<{ name: string; description: string; steps: FlowStep[]; enabled: boolean } | null>(null);
+  const [copyFlowName, setCopyFlowName] = useState("");
+  const [thresholdOpen, setThresholdOpen] = useState(false);
+  const confirm = useConfirm();
 
   useEffect(() => {
     if (window.location.search.includes("edit=1")) setEditOpen(true);
@@ -147,6 +232,19 @@ export default function JobDetailPage() {
   const owner = employees.find((e) => e.id === job?.ownerId);
   const assistants = (job?.assistantIds ?? []).map((employeeId) => employees.find((e) => e.id === employeeId)?.name).filter(Boolean) as string[];
   const flowTemplate = flowTemplates.find((item) => item.id === job?.flowTemplateId);
+  const flowSource = useMemo<FlowTemplate | null>(() => {
+    if (!job) return null;
+    if (flowTemplate) return flowTemplate;
+    return {
+      id: `job-${job.id}-custom`,
+      name: `${job.title} · 自定义流程`,
+      description: "当前职位自定义流程，尚未保存为共享模板。",
+      steps: stagesToFlowSteps(job.stages),
+      enabled: true,
+      linkedJobs: 1,
+      updatedAt: job.updatedAt,
+    };
+  }, [flowTemplate, job]);
   const jobInterviews = interviews.filter((i) => i.jobId === id);
 
   if (!job) {
@@ -161,11 +259,65 @@ export default function JobDetailPage() {
   }
 
   const status = jobStatusMeta[job.status];
+  const thresholds = getMatchThresholds(job);
   const stageCounts = stageOrder.map((s) => ({ stage: s, count: jobCandidates.filter((c) => c.stage === s).length }));
   const activities = jobCandidates
     .flatMap((c) => c.timeline.map((t) => ({ ...t, candidateName: c.name, candidateId: c.id })))
     .slice(-8)
     .reverse();
+
+  const switchFlow = async (templateId: string) => {
+    const template = flowTemplates.find((flow) => flow.id === templateId);
+    if (!template || template.id === job.flowTemplateId) return;
+    if (jobCandidates.length > 0) {
+      const ok = await confirm({
+        title: "切换面试流程？",
+        description: `该职位已有 ${jobCandidates.length} 位候选人。切换后，新流程会用于后续推进，历史面试记录不会删除。`,
+        confirmText: "切换流程",
+      });
+      if (!ok) return;
+    }
+    updateJob(job.id, { flowTemplateId: template.id, flowCustomized: false, stages: flowTemplateToStages(template) });
+    toast.success(`已切换到「${template.name}」`);
+  };
+
+  const handleFlowSaved = (payload: { name: string; description: string; steps: FlowStep[]; enabled: boolean }) => {
+    setPendingFlow(payload);
+    setCopyFlowName(`${payload.name} 副本`);
+    setFlowSaveMode("job");
+    setFlowEditOpen(false);
+    setFlowSaveOpen(true);
+  };
+
+  const confirmFlowSave = () => {
+    if (!pendingFlow) return;
+    const buildTemplate = (id: string, name = pendingFlow.name): FlowTemplate => ({
+      ...pendingFlow,
+      id,
+      name,
+      linkedJobs: 1,
+      updatedAt: job.updatedAt,
+    });
+    const jobStages = flowTemplateToStages(buildTemplate(flowTemplate?.id ?? `job-${job.id}-custom`));
+    if (flowSaveMode === "job") {
+      updateJob(job.id, { stages: jobStages, flowTemplateId: flowTemplate?.id, flowCustomized: true });
+      toast.success("流程已应用到当前职位，未修改共享模板");
+    } else if (flowSaveMode === "update" && flowTemplate) {
+      updateFlowTemplate(flowTemplate.id, pendingFlow);
+      updateJob(job.id, { stages: jobStages, flowTemplateId: flowTemplate.id, flowCustomized: false });
+      toast.success(`已更新模板「${flowTemplate.name}」`);
+    } else if (flowSaveMode === "copy") {
+      if (!copyFlowName.trim()) {
+        toast.error("请填写新模板名称");
+        return;
+      }
+      const created = addFlowTemplate({ ...pendingFlow, name: copyFlowName.trim() });
+      updateJob(job.id, { stages: flowTemplateToStages(created), flowTemplateId: created.id, flowCustomized: false });
+      toast.success(`已另存为模板「${created.name}」`);
+    }
+    setFlowSaveOpen(false);
+    setPendingFlow(null);
+  };
 
   return (
     <div className="space-y-5">
@@ -344,7 +496,7 @@ export default function JobDetailPage() {
                       ["薪资范围", job.salary],
                       ["经验要求", job.experience],
                       ["学历要求", job.education],
-                      ["流程模板", flowTemplate?.name ?? "未指定"],
+                      ["流程模板", flowTemplate ? `${flowTemplate.name}${job.flowCustomized ? " · 已自定义" : ""}` : job.flowCustomized ? "职位自定义流程" : "未指定"],
                     ].map(([k, v]) => (
                       <div key={k} className="flex items-center justify-between gap-3 py-2"><span className="text-muted">{k}</span><span className="font-medium text-ink">{v}</span></div>
                     ))}
@@ -399,6 +551,13 @@ export default function JobDetailPage() {
           </TabsContent>
 
           <TabsContent value="profile" className="p-5 md:p-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-[#fafbf8] px-4 py-3">
+              <div>
+                <div className="text-[13px] font-medium text-ink">匹配基线</div>
+                <div className="mt-0.5 text-[12px] text-muted">建议通过 ≥{thresholds.pass} · 建议淘汰 <span className="num">&lt;{thresholds.reject}</span> · 用于候选人初筛建议</div>
+              </div>
+              <Button size="sm" variant="secondary" onClick={() => setThresholdOpen(true)}>调整阈值</Button>
+            </div>
             <div className="grid grid-cols-12 gap-5">
               <div className="col-span-12 xl:col-span-5">
                 <div className="rounded-[18px] border border-line bg-[#fcfdf9] p-5">
@@ -449,12 +608,20 @@ export default function JobDetailPage() {
 
           <TabsContent value="flow" className="p-5 md:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3">
-              <SectionTitle title="招聘流程" description="候选人从投递到入职的完整路径。" icon={<GitBranch />} />
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 rounded-lg border border-line px-2.5 py-1.5 text-[12.5px] text-muted"><span>数字人初试</span><Switch checked={aiOn} onCheckedChange={setAiOn} /></div>
-                <Button variant="secondary" size="sm" asChild><Link href="/pipeline">编辑流程</Link></Button>
+              <SectionTitle title="招聘流程" description="切换或编辑当前职位的面试推进路径，修改可仅用于本职位，也可沉淀为共享模板。" icon={<GitBranch />} />
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="w-[280px] max-w-full">
+                  <FlowTemplateSelect templates={flowTemplates.filter((flow) => flow.enabled || flow.id === job.flowTemplateId)} value={job.flowTemplateId ?? ""} onChange={switchFlow} placeholder="选择面试流程模板" />
+                </div>
+                <Button variant="secondary" size="sm" onClick={() => setFlowEditOpen(true)}><Edit3 /> 编辑当前流程</Button>
               </div>
             </div>
+            {job.flowCustomized ? (
+              <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber/20 bg-amber-soft/50 px-3.5 py-2.5 text-[12px] leading-5 text-amber-deep">
+                <CircleDot className="mt-0.5 size-3 shrink-0" />
+                当前职位在模板基础上做了自定义调整，尚未写回共享模板。
+              </div>
+            ) : null}
             <div className="mt-6 rounded-[18px] border border-line bg-[#fafbf8] p-5 md:p-7">
               <div className="flex flex-col gap-0 md:flex-row md:items-center">
                 {job.stages.map((s, i) => (
@@ -465,21 +632,12 @@ export default function JobDetailPage() {
                     </div>
                     <div className="pb-4 md:pb-0 md:pt-3">
                       <div className="text-[13px] font-medium text-ink">{s.name}</div>
-                      <div className="mt-0.5 text-[12px] text-muted">{s.type === "screen" ? "AI 简历筛选" : s.type === "offer" ? "Offer 审批与发放" : s.aiEnabled && aiOn ? "数字人 + 人工" : "人工面试"}</div>
-                      {s.type === "interview" && s.aiEnabled && aiOn ? <span className="mt-1 inline-flex rounded bg-pine-soft px-1.5 py-0.5 text-[11.5px] text-pine">AI 初筛</span> : null}
+                      <div className="mt-0.5 text-[12px] text-muted">{s.type === "screen" ? "AI 简历筛选" : s.type === "offer" ? "Offer 审批与发放" : s.aiEnabled ? "数字人 + 人工" : "人工面试"}</div>
+                      {s.type === "interview" && s.aiEnabled ? <span className="mt-1 inline-flex rounded bg-pine-soft px-1.5 py-0.5 text-[11.5px] text-pine">AI 初筛</span> : null}
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="mt-4 grid gap-4 sm:grid-cols-3">
-              {[
-                ["流程覆盖", `${job.candidateCount} 位候选人`, "当前进行中 " + jobCandidates.length + " 位"],
-                ["待安排面试", `${jobCandidates.filter((c) => c.stage === "interview").length} 位`, "建议 48 小时内完成排期"],
-                ["待反馈", `${jobInterviews.filter((i) => i.status === "done" && !i.feedback).length} 场`, "面试官需在 24 小时内提交"],
-              ].map(([t, v, n]) => (
-                <div key={t} className="surface p-4"><div className="text-[12.5px] text-muted">{t}</div><div className="mt-1 text-[14px] font-semibold text-ink">{v}</div><div className="mt-1 text-[12px] text-muted">{n}</div></div>
-              ))}
             </div>
           </TabsContent>
 
@@ -506,6 +664,60 @@ export default function JobDetailPage() {
         <Link href="/ai" className="flex items-center gap-1 font-medium text-pine hover:underline">让 AI 分析这个职位 <ArrowUpRight className="size-3" /></Link>
       </div>
       <EditJobDialog job={job} open={editOpen} onOpenChange={setEditOpen} />
+      <FlowTemplateDialog
+        open={flowEditOpen}
+        onOpenChange={setFlowEditOpen}
+        template={flowSource}
+        departments={departments}
+        employees={employees}
+        onSave={handleFlowSaved}
+      />
+      <MatchThresholdDialog
+        open={thresholdOpen}
+        onOpenChange={setThresholdOpen}
+        jobs={[job]}
+        initialJobId={job.id}
+        lockJob
+        onSave={(_jobId, nextThresholds) => { updateJob(job.id, { matchThresholds: nextThresholds }); toast.success("匹配基线已更新"); }}
+      />
+      <Dialog open={flowSaveOpen} onOpenChange={(open) => { setFlowSaveOpen(open); if (!open) setPendingFlow(null); }}>
+        <DialogContent size="md" className="p-0">
+          <DialogHeader title="保存流程修改" description="可以只应用到当前职位，也可以更新或另存为共享模板。" icon={<GitBranch />} />
+          <DialogBody className="space-y-2.5">
+            {[
+              { value: "job" as const, title: "仅应用到当前职位", desc: "不修改共享模板，该职位会标记为已自定义流程。" },
+              ...(flowTemplate ? [{ value: "update" as const, title: "更新当前模板", desc: `写回「${flowTemplate.name}」，后续选择该模板的职位会使用新流程。` }] : []),
+              { value: "copy" as const, title: "另存为新模板", desc: "保留现有模板不变，用新的名称沉淀一套可复用流程。" },
+            ].map((option) => {
+              const active = flowSaveMode === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setFlowSaveMode(option.value)}
+                  className={cn("flex w-full items-start gap-3 rounded-xl border p-3 text-left transition-colors", active ? "border-pine bg-pine-soft/35" : "border-line hover:bg-[#fafbf8]")}
+                >
+                  <span className={cn("mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border", active ? "border-pine bg-pine text-white" : "border-line bg-white text-transparent")}><Check className="size-3" /></span>
+                  <span className="min-w-0">
+                    <span className={cn("block text-[13px] font-medium", active ? "text-pine" : "text-ink")}>{option.title}</span>
+                    <span className="mt-0.5 block text-[11.5px] leading-5 text-muted">{option.desc}</span>
+                  </span>
+                </button>
+              );
+            })}
+            {flowSaveMode === "copy" ? (
+              <Field label="新模板名称" required>
+                <Input value={copyFlowName} onChange={(event) => setCopyFlowName(event.target.value)} placeholder="例如：高级产品经理专用流程" />
+              </Field>
+            ) : null}
+            {pendingFlow ? <div className="rounded-lg bg-[#fafbf8] px-3 py-2 text-[11.5px] text-muted">待保存：{pendingFlow.steps.length} 个环节 · 当前职位已有 {jobCandidates.length} 位候选人，历史面试记录会保留。</div> : null}
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => { setFlowSaveOpen(false); setPendingFlow(null); }}>取消</Button>
+            <Button onClick={confirmFlowSave}><Check /> 确认保存</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

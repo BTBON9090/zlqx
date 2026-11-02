@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -228,12 +229,13 @@ function InterviewDocument({ job, candidate }: { job: Job; candidate: Candidate 
 }
 
 export default function AiCenterPage() {
-  const { jobs, candidates, generations, addGeneration } = useApp();
+  const { jobs, candidates, generations, addGeneration, addJob, updateJob, updateCandidate, addInterview } = useApp();
   const [studioOpen, setStudioOpen] = useState(false);
   const [mode, setMode] = useState<Mode>("jd");
   const [prompt, setPrompt] = useState("");
   const [studioJobId, setStudioJobId] = useState(jobs[0].id);
   const [studioCandidateId, setStudioCandidateId] = useState(candidates[0].id);
+  const router = useRouter();
   const [generating, setGenerating] = useState(false);
   const [doneStep, setDoneStep] = useState(0);
   const [result, setResult] = useState(false);
@@ -304,6 +306,89 @@ export default function AiCenterPage() {
     } catch {
       toast.error("复制失败，请手动选择文本");
     }
+  };
+
+  const actionLabel = mode === "jd" ? "发布职位" : mode === "profile" ? "提交画像" : mode === "report" ? "批量生成报告" : "创建数字人初试";
+
+  const applyResult = () => {
+    saveGeneration();
+    if (mode === "jd") {
+      const created = addJob({
+        title: studioJob.title,
+        departmentId: studioJob.departmentId,
+        location: studioJob.location,
+        workMode: studioJob.workMode,
+        employment: studioJob.employment,
+        salary: studioJob.salary,
+        experience: studioJob.experience,
+        education: studioJob.education,
+        headcount: studioJob.headcount,
+        summary: studioJob.summary,
+        responsibilities: studioJob.responsibilities,
+        requirements: studioJob.requirements,
+        skills: studioJob.skills,
+        status: "active",
+        ownerId: studioJob.ownerId,
+        assistantIds: studioJob.assistantIds,
+        flowTemplateId: studioJob.flowTemplateId,
+        stages: studioJob.stages,
+        priority: studioJob.priority,
+      });
+      setStudioOpen(false);
+      toast.success("职位已发布，可在职位管理中继续完善");
+      router.push(`/jobs/${created.id}`);
+      return;
+    }
+    if (mode === "profile") {
+      updateJob(studioJob.id, {
+        aiProfile: {
+          ...studioJob.aiProfile,
+          radar: studioJob.aiProfile.radar.map((item) => ({ ...item, value: Math.min(99, item.value + 1) })),
+          teamStyle: "以结果为导向的小团队，强调主动性与高质量协作，偏好能独立拆解问题并持续复盘的人。",
+          successProfile: "入职 6 个月内独立负责核心模块，交付可量化结果，并形成可复用的方法。",
+        },
+      });
+      setStudioOpen(false);
+      toast.success("岗位画像已提交到职位，将用于后续候选人匹配");
+      return;
+    }
+    if (mode === "report") {
+      const scoped = candidates.filter((candidate) => candidate.jobId === studioJob.id);
+      if (scoped.length === 0) {
+        toast.error("该职位还没有候选人");
+        return;
+      }
+      scoped.forEach((candidate, index) => {
+        addGeneration({
+          type: "report",
+          title: `${candidate.name} · 推荐报告`,
+          subtitle: `${studioJob.title} · 匹配度 ${candidate.score}%`,
+          status: "ready",
+          jobId: studioJob.id,
+          candidateId: candidate.id,
+        });
+        updateCandidate(candidate.id, {
+          timeline: [...candidate.timeline, { id: `ai-report-${Date.now()}-${index}`, at: "刚刚", title: "AI 推荐报告已生成", note: "已同步到候选人 AI 评估", tone: "success" as const }],
+        });
+      });
+      setStudioOpen(false);
+      toast.success(`已为 ${scoped.length} 位候选人生成推荐报告`);
+      router.push("/candidates");
+      return;
+    }
+    addInterview({
+      candidateId: studioCandidate.id,
+      jobId: studioJob.id,
+      round: "AI 初试",
+      type: "ai",
+      date: "2026-11-03",
+      start: "10:00",
+      end: "10:30",
+      interviewers: ["AI 数字人"],
+    });
+    setStudioOpen(false);
+    toast.success("数字人初试已创建，候选人可异步完成");
+    router.push("/interviews");
   };
 
   return (
@@ -685,6 +770,7 @@ export default function AiCenterPage() {
                     <div className="flex items-center gap-1.5">
                       <Button variant="ghost" size="sm" onClick={copyResult}><Copy /> 复制</Button>
                       <Button variant="secondary" size="sm" onClick={saveGeneration}><Check /> 保存</Button>
+                      <Button size="sm" onClick={applyResult}><Check /> {actionLabel}</Button>
                     </div>
                   </div>
                   {mode === "jd" ? <JdDocument job={studioJob} /> : null}

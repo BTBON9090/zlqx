@@ -13,6 +13,8 @@ import {
   CircleDot,
   Copy,
   GitBranch,
+  LayoutGrid,
+  List,
   MoreHorizontal,
   Plus,
   Rocket,
@@ -33,6 +35,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown";
 import { useApp } from "@/lib/store";
 import { FlowTemplateDialog } from "@/components/pipeline/flow-template-dialog";
+import { FlowTemplateCard } from "@/components/pipeline/flow-template-card";
 import { countInterviewRounds, flowStepMeta, hasAiStep, newFlowStep } from "@/lib/flow";
 import type { FlowTemplate } from "@/lib/types";
 import { useConfirm } from "@/components/ui/confirm";
@@ -53,6 +56,7 @@ export default function PipelinePage() {
   const [offerFlows, setOfferFlows] = useState(initialOfferFlows);
   const [flowDialogOpen, setFlowDialogOpen] = useState(false);
   const [editingFlow, setEditingFlow] = useState<FlowTemplate | null>(null);
+  const [flowView, setFlowView] = useState<"list" | "grid">("grid");
   const [editOffer, setEditOffer] = useState<OfferFlow | null>(null);
   const [editOfferSteps, setEditOfferSteps] = useState<string[]>([]);
   const [newOfferOpen, setNewOfferOpen] = useState(false);
@@ -108,59 +112,30 @@ export default function PipelinePage() {
         </TabsList>
 
         <TabsContent value="interview" className="mt-4 space-y-3">
-          <div className="flex items-start gap-2 rounded-xl border border-line bg-[#fafbf8] px-3.5 py-3 text-[12px] leading-5 text-muted">
-            <Workflow className="mt-0.5 size-3.5 shrink-0 text-pine" />
-            <span>这里配置的是<strong className="font-medium text-ink">面试推进流程</strong>。新建职位时只需选择一个面试流程模板；Offer 审批流程在发放 Offer 时独立应用，不会出现在职位创建表单中。</span>
-          </div>
           <div className="flex flex-wrap items-center justify-between gap-2 px-1">
             <p className="text-[12.5px] text-muted">共 {flowTemplates.length} 个流程模板 · 默认流程会自动应用到新职位</p>
-            <button onClick={openCreateFlow} className="flex items-center gap-1 text-[12.5px] font-medium text-pine hover:underline"><Plus className="size-3" /> 新建模板</button>
-          </div>
-          {flowTemplates.map((flow) => (
-            <div key={flow.id} className="surface overflow-hidden">
-              <div className="flex flex-col gap-4 p-5 lg:flex-row lg:items-start">
-                <div className="flex min-w-0 flex-1 items-start gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine"><Workflow className="size-4.5" /></div>
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-[14px] font-semibold text-ink">{flow.name}</h3>
-                      {flow.isDefault ? <Badge tone="pine" dot>默认流程</Badge> : null}
-                      {!flow.enabled ? <Badge tone="neutral">已停用</Badge> : null}
-                    </div>
-                    <p className="mt-1.5 max-w-[520px] text-[12.5px] leading-5 text-muted">{flow.description}</p>
-                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                      {flow.steps.map((s, i) => (
-                        <div key={`${flow.id}-${s.id}`} className="flex items-center gap-1.5">
-                          <span className={cn("rounded-md border px-2 py-1 text-[12px] font-medium", flowStepMeta[s.type].chipClass)}>
-                            {s.name}
-                          </span>
-                          {i < flow.steps.length - 1 ? <ChevronRight className="size-2.5 text-[#b9c3ba]" /> : null}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex shrink-0 flex-wrap items-center gap-4 lg:flex-col lg:items-end">
-                  <div className="flex items-center gap-2 text-[12.5px] text-muted">
-                    <span>{countInterviewRounds(flow)} 轮面试</span><span className="size-0.5 rounded-full bg-muted" /><span>{flow.linkedJobs} 个职位</span><span className="size-0.5 rounded-full bg-muted" /><span>更新 {flow.updatedAt.slice(5)}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-1.5 text-[12px] text-muted">数字人初试 <Switch checked={hasAiStep(flow)} onCheckedChange={() => toggleAi(flow)} /></label>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild><button className="flex size-7 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-3.5" /></button></DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => { setEditingFlow(flow); setFlowDialogOpen(true); }}><Settings2 /> 编辑流程</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => { addFlowTemplate({ name: `${flow.name} 副本`, description: flow.description, enabled: flow.enabled, steps: flow.steps.map((step) => ({ ...step, id: uid("step") })) }); toast.success("流程模板已复制"); }}><Copy /> 复制模板</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => { setDefaultFlowTemplate(flow.id); toast.success("已设为默认流程"); }}><Check /> 设为默认</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem danger onClick={async () => { const ok = await confirm({ title: "删除该流程模板？", description: `删除「${flow.name}」不会影响已经使用该流程的在途候选人，但新职位将无法再选择它。`, confirmText: "删除模板", tone: "danger" }); if (!ok) return; deleteFlowTemplate(flow.id); toast.success("流程模板已删除"); }}><XIcon /> 删除模板</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center rounded-lg border border-line bg-surface p-0.5" role="group" aria-label="流程模板视图">
+                <button type="button" aria-label="列表视图" onClick={() => setFlowView("list")} className={cn("flex size-7 items-center justify-center rounded-md transition-colors", flowView === "list" ? "bg-pine-soft text-pine" : "text-muted hover:text-ink")}><List className="size-3.5" /></button>
+                <button type="button" aria-label="宫格视图" onClick={() => setFlowView("grid")} className={cn("flex size-7 items-center justify-center rounded-md transition-colors", flowView === "grid" ? "bg-pine-soft text-pine" : "text-muted hover:text-ink")}><LayoutGrid className="size-3.5" /></button>
               </div>
+              <button onClick={openCreateFlow} className="flex items-center gap-1 text-[12.5px] font-medium text-pine hover:underline"><Plus className="size-3" /> 新建模板</button>
             </div>
-          ))}
+          </div>
+          <div className={flowView === "grid" ? "grid gap-3 md:grid-cols-2 2xl:grid-cols-3" : "space-y-3"}>
+            {flowTemplates.map((flow) => (
+              <FlowTemplateCard
+                key={flow.id}
+                template={flow}
+                view={flowView}
+                onEdit={() => { setEditingFlow(flow); setFlowDialogOpen(true); }}
+                onToggleAi={() => toggleAi(flow)}
+                onCopy={() => { addFlowTemplate({ name: `${flow.name} 副本`, description: flow.description, enabled: flow.enabled, steps: flow.steps.map((step) => ({ ...step, id: uid("step") })) }); toast.success("流程模板已复制"); }}
+                onSetDefault={() => { setDefaultFlowTemplate(flow.id); toast.success("已设为默认流程"); }}
+                onDelete={async () => { const ok = await confirm({ title: "删除该流程模板？", description: `删除「${flow.name}」不会影响已经使用该流程的在途候选人，但新职位将无法再选择它。`, confirmText: "删除模板", tone: "danger" }); if (!ok) return; deleteFlowTemplate(flow.id); toast.success("流程模板已删除"); }}
+              />
+            ))}
+          </div>
         </TabsContent>
 
         <TabsContent value="offer" className="mt-4 space-y-3">
@@ -184,14 +159,14 @@ export default function PipelinePage() {
                   <Button variant="ghost" size="sm" onClick={() => { setEditOffer(flow); setEditOfferSteps(flow.steps); }}><Settings2 /> 配置</Button>
                 </div>
               </div>
-              <div className="mt-5 flex flex-col gap-0 sm:flex-row sm:items-center">
+              <div className="mt-5 flex flex-wrap items-center gap-1.5">
                 {flow.steps.map((s, i) => (
-                  <div key={`${flow.id}-${s}`} className="flex flex-1 items-center">
+                  <div key={`${flow.id}-${s}`} className="flex items-center gap-1.5">
                     <div className="flex items-center gap-2 rounded-lg border border-line bg-[#fcfcf9] px-2.5 py-2">
                       <span className="flex size-5 items-center justify-center rounded-full bg-pine-soft text-[11.5px] font-semibold text-pine">{i + 1}</span>
                       <span className="text-[12px] font-medium text-ink-soft">{s}</span>
                     </div>
-                    {i < flow.steps.length - 1 ? <ArrowRight className="mx-1 size-3 text-[#b9c3ba]" /> : null}
+                    {i < flow.steps.length - 1 ? <ArrowRight className="size-3 shrink-0 text-[#b9c3ba]" /> : null}
                   </div>
                 ))}
               </div>

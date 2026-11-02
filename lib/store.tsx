@@ -222,6 +222,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       ownerId: input.ownerId,
       assistantIds: input.assistantIds ?? [],
       flowTemplateId: input.flowTemplateId,
+      flowCustomized: false,
       createdAt: "2026-10-30",
       updatedAt: "2026-10-30",
       headcount: input.headcount,

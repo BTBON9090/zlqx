@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { CandidateStage, Employee, InterviewStatus, InterviewType, JobStatus, OfferStatus } from "./types";
+import type { CandidateStage, Employee, InterviewStatus, InterviewType, Job, JobStatus, OfferStatus } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -21,6 +21,18 @@ export const candidateStageMeta: Record<CandidateStage, { label: string; short: 
   hired: { label: "已入职", short: "入职", tone: "bg-pine-soft text-pine", dot: "bg-pine" },
   archived: { label: "已归档", short: "归档", tone: "bg-[#f0eeec] text-muted", dot: "bg-[#a9a39a]" },
 };
+
+export const defaultMatchThresholds = { pass: 85, reject: 65, preset: "medium" as const };
+
+export function getMatchThresholds(job?: Job) {
+  return job?.matchThresholds ?? defaultMatchThresholds;
+}
+
+export function matchSuggestion(score: number, thresholds: { pass: number; reject: number }) {
+  if (score >= thresholds.pass) return { label: "建议通过", tone: "text-pine" };
+  if (score < thresholds.reject) return { label: "建议淘汰", tone: "text-danger" };
+  return { label: "待定", tone: "text-amber-deep" };
+}
 
 export const interviewStatusMeta: Record<
   InterviewStatus,

@@ -85,11 +85,11 @@ export function DialogHeader({
 }
 
 export function DialogBody({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cn("max-h-[calc(92vh-150px)] overflow-y-auto px-6 py-5", className)}>{children}</div>;
+  return <div className={cn("max-h-[calc(92vh-200px)] overflow-y-auto px-6 py-5", className)}>{children}</div>;
 }
 
 export function DialogFooter({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cn("flex items-center justify-end gap-2 border-t border-line bg-[#fafbf8] px-6 py-4", className)}>{children}</div>;
+  return <div className={cn("flex shrink-0 items-center justify-end gap-2 border-t border-line bg-[#fafbf8] px-6 py-4", className)}>{children}</div>;
 }
 
 export function Sheet({

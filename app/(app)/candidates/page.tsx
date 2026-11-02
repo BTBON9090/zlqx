@@ -13,6 +13,7 @@ import {
   Plus,
   Search,
   Send,
+  SlidersHorizontal,
   Sparkles,
   Upload,
   UserPlus,
@@ -31,9 +32,10 @@ import { CandidateDrawer } from "@/components/candidates/candidate-drawer";
 import { UploadResumeDialog } from "@/components/candidates/upload-dialog";
 import { AddCandidateDialog } from "@/components/candidates/add-dialog";
 import { ScheduleInterviewDialog } from "@/components/interviews/schedule-dialog";
+import { MatchThresholdDialog } from "@/components/jobs/match-threshold-dialog";
 import { useApp } from "@/lib/store";
 import { useConfirm } from "@/components/ui/confirm";
-import { candidateStageMeta, cn, formatRelativeDate, interviewTypeMeta, scoreTone } from "@/lib/utils";
+import { candidateStageMeta, cn, formatRelativeDate, getMatchThresholds, interviewTypeMeta, matchSuggestion, scoreTone } from "@/lib/utils";
 import type { CandidateStage } from "@/lib/types";
 
 const stageTabs: { key: CandidateStage | "all"; label: string }[] = [
@@ -48,7 +50,7 @@ const stageTabs: { key: CandidateStage | "all"; label: string }[] = [
 function CandidatesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { candidates, jobs, employees, interviews, advanceCandidate, departments } = useApp();
+  const { candidates, jobs, employees, interviews, advanceCandidate, departments, updateJob } = useApp();
   const confirm = useConfirm();
   const [stage, setStage] = useState<CandidateStage | "all">("all");
   const [query, setQuery] = useState("");
@@ -58,6 +60,7 @@ function CandidatesContent() {
   const [selected, setSelected] = useState<string[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [thresholdOpen, setThresholdOpen] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
   const [stickyOffsets, setStickyOffsets] = useState({ stage: 78, filter: 65 });
@@ -121,6 +124,7 @@ function CandidatesContent() {
         description="所有候选人都在这里：从简历解析、AI 匹配，到面试推进与 Offer 发放。"
         actions={
           <>
+            <Button variant="secondary" onClick={() => setThresholdOpen(true)}><SlidersHorizontal /> 匹配基线</Button>
             <Button variant="secondary" onClick={() => setUploadOpen(true)}><Upload /> 上传简历</Button>
             <Button onClick={() => setAddOpen(true)}><UserPlus /> 添加候选人</Button>
           </>
@@ -223,6 +227,7 @@ function CandidatesContent() {
               {filtered.map((c) => {
                 const job = jobs.find((j) => j.id === c.jobId);
                 const owner = employees.find((e) => e.id === c.ownerId);
+                const suggestion = matchSuggestion(c.score, getMatchThresholds(job));
                 const nextInterview = interviews
                   .filter((i) => i.candidateId === c.id && i.status !== "done" && i.status !== "cancelled")
                   .sort((a, b) => `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`))[0];
@@ -259,7 +264,7 @@ function CandidatesContent() {
                         <span className={cn("size-1.5 rounded-full", stageMeta.dot)} /> {stageMeta.label}
                       </span>
                     </td>
-                    <td className="py-3.5 pr-4"><ScoreRing score={c.score} size={34} stroke={2.5} /></td>
+                    <td className="py-3.5 pr-4"><div className="flex flex-col items-start gap-0.5"><ScoreRing score={c.score} size={34} stroke={2.5} /><span className={cn("text-[10.5px] font-medium", suggestion.tone)}>{suggestion.label}</span></div></td>
                     <td className="py-3.5 pr-4">
                       {nextInterview ? (
                         <div>
@@ -364,6 +369,13 @@ function CandidatesContent() {
       <UploadResumeDialog open={uploadOpen} onOpenChange={setUploadOpen} />
       <AddCandidateDialog open={addOpen} onOpenChange={setAddOpen} defaultJobId={jobFilter !== "all" ? jobFilter : undefined} onCreated={(id) => setSelectedCandidate(id)} />
       <ScheduleInterviewDialog open={!!scheduleCandidate} onOpenChange={(v) => !v && setScheduleCandidate(null)} defaultCandidateId={scheduleCandidate ?? undefined} />
+      <MatchThresholdDialog
+        open={thresholdOpen}
+        onOpenChange={setThresholdOpen}
+        jobs={jobs}
+        initialJobId={jobFilter !== "all" ? jobFilter : jobs[0]?.id}
+        onSave={(jobId, thresholds) => { updateJob(jobId, { matchThresholds: thresholds }); toast.success("匹配基线已更新"); }}
+      />
     </div>
   );
 }

@@ -8,8 +8,10 @@ import {
   Check,
   CircleAlert,
   Link2,
+  Mail,
   MapPin,
   Phone,
+  Smartphone,
   Video,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -63,7 +65,7 @@ export function ScheduleInterviewDialog({
   defaultJobId?: string;
   onCreated?: (id: string) => void;
 }) {
-  const { candidates, jobs, employees, interviews, addInterview } = useApp();
+  const { candidates, jobs, employees, interviews, templates, addInterview } = useApp();
   const [candidateId, setCandidateId] = useState(defaultCandidateId ?? "");
   const [jobId, setJobId] = useState(defaultJobId ?? "");
   const [round, setRound] = useState("初试");
@@ -74,6 +76,9 @@ export function ScheduleInterviewDialog({
   const [interviewerIds, setInterviewerIds] = useState<string[]>(["emp-3"]);
   const [note, setNote] = useState("");
   const [sendInvite, setSendInvite] = useState(true);
+  const [inviteTemplateId, setInviteTemplateId] = useState("tpl-1");
+  const [inviteChannels, setInviteChannels] = useState<("email" | "sms")[]>(["email", "sms"]);
+  const [previewChannel, setPreviewChannel] = useState<"email" | "sms" | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -88,8 +93,12 @@ export function ScheduleInterviewDialog({
       setInterviewerIds(["emp-3"]);
       setNote("");
       setSendInvite(true);
+      const inviteTemplate = templates.find((template) => template.scenario === "面试邀约" && template.enabled);
+      setInviteTemplateId(inviteTemplate?.id ?? "");
+      setInviteChannels(inviteTemplate ? inviteTemplate.channels.filter((channel): channel is "email" | "sms" => channel === "email" || channel === "sms") : ["email", "sms"]);
+      setPreviewChannel(null);
     }
-  }, [open, defaultCandidateId, defaultJobId, candidates, jobs]);
+  }, [open, defaultCandidateId, defaultJobId, candidates, jobs, templates]);
 
   const job = jobs.find((j) => j.id === jobId);
   const scopedCandidates = useMemo(() => (jobId ? candidates.filter((c) => c.jobId === jobId) : candidates), [candidates, jobId]);
@@ -99,6 +108,19 @@ export function ScheduleInterviewDialog({
   const assistants = (job?.assistantIds ?? []).map((id) => employees.find((e) => e.id === id)).filter(Boolean);
   const participantIds = Array.from(new Set([job?.ownerId, ...(job?.assistantIds ?? []), ...interviewerIds].filter(Boolean) as string[]));
   const participantNames = participantIds.map((id) => employees.find((e) => e.id === id)?.name ?? id);
+  const inviteTemplates = templates.filter((template) => template.scenario === "面试邀约" && template.enabled);
+  const inviteTemplate = inviteTemplates.find((template) => template.id === inviteTemplateId) ?? inviteTemplates[0];
+  const inviteVariables: Record<string, string> = {
+    company: "澄明科技",
+    candidate_name: selectedCandidate?.name ?? "候选人",
+    job_title: job?.title ?? "应聘职位",
+    round,
+    interview_time: `${date} ${start}`,
+    interviewer: interviewerIds.map((id) => employees.find((e) => e.id === id)?.name ?? id).join("、") || "招聘团队",
+    meeting_link: type === "video" ? `meeting.chengming.ai/${candidateId || "preview"}` : type === "phone" ? "电话沟通" : "北京 · 朝阳区望京 SOHO T3 18F",
+    location: "北京 · 朝阳区望京 SOHO T3 18F",
+  };
+  const renderInvite = (text: string) => text.replace(/\{\{(\w+)\}\}/g, (_, key: string) => inviteVariables[key] ?? `{{${key}}}`);
 
   const slots = useMemo(() => {
     const durationMinutes = Number(duration);
@@ -144,6 +166,14 @@ export function ScheduleInterviewDialog({
       toast.error(`当前时段有冲突：${selectedSlot.busyNames.join("、")}忙碌`);
       return;
     }
+    if (sendInvite && !inviteTemplate) {
+      toast.error("请选择面试邀约模板");
+      return;
+    }
+    if (sendInvite && inviteChannels.length === 0) {
+      toast.error("请至少选择一个发送渠道");
+      return;
+    }
     const endMinutes = Number(start.split(":")[0]) * 60 + Number(start.split(":")[1]) + Number(duration);
     const end = `${String(Math.floor(endMinutes / 60) % 24).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
     const created = addInterview({
@@ -164,6 +194,7 @@ export function ScheduleInterviewDialog({
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent size="lg" className="p-0">
         <DialogHeader title="安排面试" description="选择面试形式与时间，系统会自动发送邀约并同步给面试官。" icon={<CalendarClock />} />
@@ -312,13 +343,64 @@ export function ScheduleInterviewDialog({
             <Textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="例如：重点验证候选人的 B 端产品判断与跨团队推动经验。" className="min-h-[72px]" />
           </Field>
 
-          <label className="flex cursor-pointer items-start gap-2.5 rounded-xl bg-[#f7f8f4] p-3">
-            <Checkbox checked={sendInvite} onCheckedChange={(v) => setSendInvite(!!v)} className="mt-0.5" />
-            <span>
-              <span className="block text-[13px] font-medium text-ink">自动发送面试邀约</span>
-              <span className="mt-0.5 block text-[12px] leading-4 text-muted">使用「面试邀约」模板，通过邮件与短信通知候选人。</span>
-            </span>
-          </label>
+          <div className="rounded-xl border border-line bg-[#f7f8f4] p-3">
+            <label className="flex cursor-pointer items-start gap-2.5">
+              <Checkbox checked={sendInvite} onCheckedChange={(v) => setSendInvite(!!v)} className="mt-0.5" />
+              <span>
+                <span className="block text-[13px] font-medium text-ink">自动发送面试邀约</span>
+                <span className="mt-0.5 block text-[12px] leading-4 text-muted">选择发送渠道，并可在发送前预览邮件与短信的实际样式。</span>
+              </span>
+            </label>
+            {sendInvite ? (
+              <div className="mt-3 space-y-3 border-t border-line pt-3">
+                <Field label="邀约模板">
+                  <Select
+                    value={inviteTemplate?.id ?? ""}
+                    onValueChange={(value) => {
+                      setInviteTemplateId(value);
+                      const template = inviteTemplates.find((item) => item.id === value);
+                      setInviteChannels(template ? template.channels.filter((channel): channel is "email" | "sms" => channel === "email" || channel === "sms") : []);
+                    }}
+                  >
+                    <SelectTrigger><SelectValue placeholder="选择邀约模板" /></SelectTrigger>
+                    <SelectContent>{inviteTemplates.map((template) => <SelectItem key={template.id} value={template.id}>{template.name}</SelectItem>)}</SelectContent>
+                  </Select>
+                </Field>
+                <div>
+                  <div className="mb-1.5 text-[12.5px] font-medium text-ink-soft">发送渠道</div>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {([
+                      { value: "email" as const, label: "邮件", icon: Mail, hint: "发送完整面试信息与会议链接" },
+                      { value: "sms" as const, label: "短信", icon: Smartphone, hint: "发送精简提醒与时间地点" },
+                    ]).map((channel) => {
+                      const supported = inviteTemplate?.channels.includes(channel.value) ?? false;
+                      const checked = inviteChannels.includes(channel.value);
+                      return (
+                        <button
+                          key={channel.value}
+                          type="button"
+                          disabled={!supported}
+                          onClick={() => setInviteChannels((prev) => checked ? prev.filter((item) => item !== channel.value) : [...prev, channel.value])}
+                          className={cn("flex items-start gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors", !supported ? "cursor-not-allowed border-line bg-[#f2f3ef] opacity-45" : checked ? "border-pine/40 bg-pine-soft/45" : "border-line bg-white hover:border-line-strong")}
+                        >
+                          <span className={cn("mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md", checked ? "bg-pine text-white" : "bg-[#eef1ec] text-muted")}><channel.icon className="size-3.5" /></span>
+                          <span className="min-w-0 flex-1">
+                            <span className="flex items-center gap-1.5 text-[12.5px] font-medium text-ink">{channel.label}{checked ? <Check className="size-3 text-pine" /> : null}</span>
+                            <span className="mt-0.5 block text-[11px] leading-4 text-muted">{channel.hint}</span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button type="button" variant="secondary" size="sm" disabled={!inviteTemplate?.channels.includes("email")} onClick={() => setPreviewChannel("email")}><Mail /> 预览邮件</Button>
+                  <Button type="button" variant="secondary" size="sm" disabled={!inviteTemplate?.channels.includes("sms")} onClick={() => setPreviewChannel("sms")}><Smartphone /> 预览短信</Button>
+                  <span className="text-[11px] text-muted">变量会自动替换为候选人、职位与面试信息</span>
+                </div>
+              </div>
+            ) : null}
+          </div>
         </DialogBody>
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>取消</Button>
@@ -326,5 +408,39 @@ export function ScheduleInterviewDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    <Dialog open={previewChannel !== null} onOpenChange={(next) => { if (!next) setPreviewChannel(null); }}>
+      <DialogContent size="lg" className="p-0">
+        <DialogHeader
+          title={previewChannel === "email" ? "邮件模板预览" : "短信模板预览"}
+          description={previewChannel === "email" ? "候选人收到的邮件样式，发送前可确认内容与变量替换。" : "候选人收到的短信样式，发送前可确认内容长度与关键信息。"}
+          icon={previewChannel === "email" ? <Mail /> : <Smartphone />}
+        />
+        <DialogBody>
+          {!inviteTemplate ? (
+            <div className="rounded-xl border border-dashed border-line bg-[#fafbf8] py-10 text-center text-[12.5px] text-muted">请选择面试邀约模板</div>
+          ) : previewChannel === "email" ? (
+            <div className="overflow-hidden rounded-xl border border-line">
+              <div className="space-y-1 border-b border-line bg-[#fafbf8] px-4 py-3 text-[12px]">
+                <div className="flex gap-2"><span className="w-12 shrink-0 text-muted">发件人</span><span className="font-medium text-ink">澄明科技招聘团队 &lt;hire@chengming.ai&gt;</span></div>
+                <div className="flex gap-2"><span className="w-12 shrink-0 text-muted">收件人</span><span className="font-medium text-ink">{selectedCandidate?.email ?? "candidate@example.com"}</span></div>
+                <div className="flex gap-2"><span className="w-12 shrink-0 text-muted">主题</span><span className="font-medium text-ink">{renderInvite(inviteTemplate.subject)}</span></div>
+              </div>
+              <div className="whitespace-pre-wrap bg-white px-5 py-4 text-[12.5px] leading-6 text-ink-soft">{renderInvite(inviteTemplate.emailBody)}</div>
+            </div>
+          ) : (
+            <div className="mx-auto max-w-[420px]">
+              <div className="rounded-[22px] border border-line bg-[#f7f8f4] p-3">
+                <div className="rounded-[16px] bg-white px-4 py-3 text-[12.5px] leading-6 text-ink-soft shadow-sm">{renderInvite(inviteTemplate.smsBody)}</div>
+                <div className="mt-2 flex items-center justify-between px-1 text-[10.5px] text-muted"><span>澄明科技</span><span>{renderInvite(inviteTemplate.smsBody).length} / 70 字</span></div>
+              </div>
+              <p className="mt-3 text-center text-[11px] text-muted">实际短信会按运营商规则拆分计费，建议关键信息保持在前 70 字内。</p>
+            </div>
+          )}
+        </DialogBody>
+        <DialogFooter><Button variant="secondary" onClick={() => setPreviewChannel(null)}>关闭</Button></DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }

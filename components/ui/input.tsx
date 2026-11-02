@@ -57,7 +57,7 @@ export function Field({
         <div className="mb-2 flex items-center justify-between gap-3">
           <Label className="mb-0">
             {label}
-            {required ? <span className="ml-1 text-signal">*</span> : null}
+            {required ? <span className="ml-1 text-danger">*</span> : null}
           </Label>
           <div className="flex min-w-0 items-center gap-2">
             {hint ? <span className="truncate text-[13px] text-muted">{hint}</span> : null}

@@ -46,7 +46,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScheduleInterviewDialog } from "@/components/interviews/schedule-dialog";
 import { useApp } from "@/lib/store";
 import { useConfirm } from "@/components/ui/confirm";
-import { candidateStageMeta, cn, formatDateWithWeek, interviewStatusMeta, interviewTypeMeta, scoreTone } from "@/lib/utils";
+import { candidateStageMeta, cn, formatDateWithWeek, getMatchThresholds, interviewStatusMeta, interviewTypeMeta, matchSuggestion, scoreTone } from "@/lib/utils";
 import { InfoTip } from "@/components/ui/info-tip";
 import type { Candidate, CandidateStage, Job } from "@/lib/types";
 
@@ -249,6 +249,8 @@ export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidat
 
   const stage = candidateStageMeta[candidate.stage];
   const tone = scoreTone(candidate.score);
+  const matchThresholds = getMatchThresholds(job);
+  const suggestion = matchSuggestion(candidate.score, matchThresholds);
 
   const advance = (next: CandidateStage) => {
     advanceCandidate(candidate.id, next, "通过候选人详情页操作");
@@ -300,6 +302,7 @@ export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidat
                 <div className="text-right">
                   <div className="flex items-center justify-end gap-1 text-[12px] text-muted">岗位匹配度 <InfoTip text="由 AI 根据岗位画像与简历计算：技能 35%、经验 25%、行业 20%、稳定性 10%、地点 10%。" /></div>
                   <div className={cn("num mt-0.5 text-[24px] font-semibold leading-none", tone.text)}>{candidate.score}<span className="text-[13px] text-muted">/100</span></div>
+                  <div className={cn("mt-1 text-[10.5px] font-medium", suggestion.tone)}>{suggestion.label} · ≥{matchThresholds.pass}</div>
                 </div>
                 <div className="flex gap-1">
                   <a href={`tel:${candidate.phone.replace(/\s/g, "")}`} aria-label="拨打电话" className="flex size-8 items-center justify-center rounded-lg border border-line text-muted transition-colors hover:border-pine/30 hover:text-pine"><Phone className="size-3.5" /></a>
@@ -432,6 +435,7 @@ export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidat
                     <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#f7f8f4] px-2.5 py-2">
                       <div className="flex-1 text-[12px] text-muted">匹配度</div>
                       <div className={cn("num text-[14px] font-semibold", tone.text)}>{candidate.score}</div>
+                      <span className={cn("text-[10.5px]", suggestion.tone)}>{suggestion.label}</span>
                     </div>
                     <div className="mt-3 space-y-1.5 text-[12px]">
                       <div className="flex justify-between gap-2"><span className="text-muted">负责人</span><span className="font-medium text-ink">{owner?.name}</span></div>

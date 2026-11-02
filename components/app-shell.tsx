@@ -127,12 +127,11 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
               {group.items.map((item) => {
                 const active = isActive(pathname, item.href);
                 const Icon = item.icon;
-                return (
+                const link = (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={onNavigate}
-                    title={collapsed ? item.label : undefined}
                     aria-label={collapsed ? item.label : undefined}
                     className={cn(
                       "group relative flex h-[35px] items-center rounded-[9px] text-[13.5px] font-medium transition-colors",
@@ -151,6 +150,13 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
                     ) : null}
                     {collapsed && item.live && todayCount > 0 ? <span className="absolute right-2 top-2 size-1.5 rounded-full bg-signal" /> : null}
                   </Link>
+                );
+                if (!collapsed) return link;
+                return (
+                  <Tooltip key={item.href}>
+                    <TooltipTrigger asChild>{link}</TooltipTrigger>
+                    <TooltipContent sideOffset={8} className="ml-1">{item.label}</TooltipContent>
+                  </Tooltip>
                 );
               })}
             </div>
@@ -484,7 +490,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <TooltipProvider delayDuration={300}>
       <div className="min-h-screen bg-paper">
-        <aside className={cn("fixed inset-y-0 left-0 z-40 hidden bg-pine-deep transition-[width] duration-200 lg:block", sidebarCollapsed ? "w-[76px]" : "w-[236px]")}>
+        <aside className={cn("fixed inset-y-0 left-0 z-40 hidden bg-pine-deep transition-[width] duration-200 lg:block", sidebarCollapsed ? "w-[68px]" : "w-[200px]")}>
           <SidebarContent collapsed={sidebarCollapsed} />
         </aside>
 
@@ -500,7 +506,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         ) : null}
 
-        <div className={cn("transition-[padding] duration-200", sidebarCollapsed ? "lg:pl-[76px]" : "lg:pl-[236px]")}>
+        <div className={cn("transition-[padding] duration-200", sidebarCollapsed ? "lg:pl-[68px]" : "lg:pl-[200px]")}>
           <header className="sticky top-0 z-30 flex h-[60px] items-center gap-3 border-b border-line bg-surface/85 px-4 backdrop-blur-xl md:px-6">
             <button className="flex size-9 items-center justify-center rounded-lg text-ink-soft hover:bg-[#eef0ec] lg:hidden" onClick={() => setMobileOpen(true)} aria-label="打开菜单">
               <Menu className="size-4.5" />

@@ -54,6 +54,8 @@ export interface Job {
   ownerId: string;
   assistantIds?: string[];
   flowTemplateId?: string;
+  flowCustomized?: boolean;
+  matchThresholds?: { pass: number; reject: number; preset: "strict" | "medium" | "loose" | "custom" };
   createdAt: string;
   updatedAt: string;
   headcount: number;

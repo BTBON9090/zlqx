@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Field, Input, Label, Textarea } from "@/components/ui/input";
 import { ComboInput, NumberStepper } from "@/components/ui/number-stepper";
 import { JobTitlePicker } from "@/components/jobs/job-title-picker";
+import { FlowTemplateSelect } from "@/components/pipeline/flow-template-select";
 import { AiTextarea } from "@/components/jobs/ai-textarea";
 import { MultiPicker } from "@/components/ui/multi-picker";
 import { useConfirm } from "@/components/ui/confirm";
@@ -461,33 +462,8 @@ export default function NewJobPage() {
                 <SectionTitle title="面试流程" description="选择一个面试流程模板，职位发布后候选人将按该流程推进。Offer 审批流程不在此选择。" icon={<Users />} />
                 <div className="mt-5">
                   <Field label="面试流程模板" required hint="Offer 审批流程在发放 Offer 时独立应用">
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {availableFlows.map((flow) => {
-                        const selected = selectedFlow?.id === flow.id;
-                        return (
-                          <button
-                            key={flow.id}
-                            type="button"
-                            onClick={() => setFlowTemplateId(flow.id)}
-                            className={cn(
-                              "rounded-xl border p-3 text-left transition-colors",
-                              selected ? "border-pine bg-pine-soft/35" : "border-line bg-surface hover:border-line-strong hover:bg-[#fafbf8]"
-                            )}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="min-w-0">
-                                <div className="flex flex-wrap items-center gap-1.5">
-                                  <span className={cn("text-[13px] font-medium", selected ? "text-pine" : "text-ink")}>{flow.name}</span>
-                                  {flow.isDefault ? <span className="rounded bg-pine-soft px-1.5 py-0.5 text-[10.5px] font-medium text-pine">默认</span> : null}
-                                </div>
-                                <div className="mt-1 text-[11.5px] text-muted">{countInterviewRounds(flow)} 轮面试 · {flow.steps.length} 个环节{hasAiStep(flow) ? " · 含数字人初试" : ""}</div>
-                              </div>
-                              <span className={cn("flex size-5 shrink-0 items-center justify-center rounded-full border", selected ? "border-pine bg-pine text-white" : "border-line bg-white text-transparent")}><Check className="size-3" /></span>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
+                    <FlowTemplateSelect templates={availableFlows} value={selectedFlow?.id ?? ""} onChange={setFlowTemplateId} invalid={!selectedFlow} />
+                    <p className="mt-1.5 text-[11.5px] text-muted">流程模板较多时，可输入名称搜索；模板在「招聘配置 → 面试流程」中统一维护。</p>
                   </Field>
                   {selectedFlow ? (
                     <div className="mt-3 rounded-xl border border-line bg-[#fafbf8] p-3.5">

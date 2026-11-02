@@ -43,6 +43,8 @@ export function FlowTemplateDialog({
   const [enabled, setEnabled] = useState(true);
   const [nameError, setNameError] = useState("");
   const dragIndex = useRef<number | null>(null);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -81,6 +83,8 @@ export function FlowTemplateDialog({
   const dropAt = (index: number) => {
     const from = dragIndex.current;
     dragIndex.current = null;
+    setDraggingIndex(null);
+    setDragOverIndex(null);
     if (from === null || from === index) return;
     setSteps((prev) => {
       const next = [...prev];
@@ -124,7 +128,7 @@ export function FlowTemplateDialog({
             <div className="flex flex-wrap items-end justify-between gap-2">
               <div>
                 <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-ink">招聘环节</h3>
-                <p className="mt-1 text-[12px] text-muted">按顺序执行，可拖动排序。每个环节可单独配置类型、部门与面试官。</p>
+                <p className="mt-1 flex items-center gap-1.5 text-[12px] text-muted"><GripVertical className="size-3 text-[#a8b2a9]" /> 按住左侧拖动手柄排序，每个环节可单独配置类型、部门与面试官。</p>
               </div>
               <span className="text-[11.5px] text-muted">共 {steps.length} 个环节</span>
             </div>
@@ -136,16 +140,21 @@ export function FlowTemplateDialog({
                 return (
                   <div
                     key={step.id}
-                    onDragOver={(event) => event.preventDefault()}
+                    onDragOver={(event) => { event.preventDefault(); setDragOverIndex(index); }}
+                    onDragLeave={() => setDragOverIndex((prev) => prev === index ? null : prev)}
                     onDrop={() => dropAt(index)}
-                    className="flex flex-col gap-2 rounded-xl border border-line bg-[#fcfcf9] p-2.5 transition-colors md:flex-row md:items-center"
+                    className={cn(
+                      "flex flex-col gap-2 rounded-xl border bg-[#fcfcf9] p-2.5 transition-all duration-150 md:flex-row md:items-center",
+                      draggingIndex === index ? "scale-[0.995] border-dashed border-pine/40 opacity-55 shadow-sm" : "border-line",
+                      dragOverIndex === index && draggingIndex !== index ? "border-pine/60 bg-pine-soft/20 ring-2 ring-pine/15" : ""
+                    )}
                   >
                     <div className="flex items-center gap-1.5">
                       <span
                         draggable
-                        onDragStart={() => { dragIndex.current = index; }}
-                        onDragEnd={() => { dragIndex.current = null; }}
-                        className="flex size-7 cursor-grab items-center justify-center rounded-md text-[#b1bbb2] hover:bg-white hover:text-muted active:cursor-grabbing"
+                        onDragStart={() => { dragIndex.current = index; setDraggingIndex(index); }}
+                        onDragEnd={() => { dragIndex.current = null; setDraggingIndex(null); setDragOverIndex(null); }}
+                        className="flex size-7 cursor-grab items-center justify-center rounded-md text-[#b1bbb2] transition-colors hover:bg-white hover:text-pine active:cursor-grabbing"
                         title="拖动排序"
                       >
                         <GripVertical className="size-4" />

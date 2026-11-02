@@ -10,12 +10,14 @@ export function NumberStepper({
   min = 1,
   max = 99,
   className,
+  ariaLabel = "招聘人数",
 }: {
   value: number;
   onChange: (value: number) => void;
   min?: number;
   max?: number;
   className?: string;
+  ariaLabel?: string;
 }) {
   return (
     <div className={cn("flex h-10 items-center rounded-[10px] border border-line bg-surface", className)}>
@@ -33,7 +35,7 @@ export function NumberStepper({
           onChange(Math.max(min, Math.min(max, next)));
         }}
         className="h-full min-w-0 flex-1 border-x border-line bg-transparent text-center text-[13px] font-medium text-ink outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-        aria-label="招聘人数"
+        aria-label={ariaLabel}
       />
       <button type="button" aria-label="增加" onClick={() => onChange(Math.min(max, value + 1))} className="flex h-full w-10 items-center justify-center rounded-r-[9px] text-muted transition-colors hover:bg-[#f2f4ee] hover:text-ink disabled:opacity-30" disabled={value >= max}>
         <Plus className="size-3.5" />
