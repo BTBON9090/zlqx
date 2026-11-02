@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import {
   AudioLines,
   CalendarClock,
+  CalendarDays,
   Check,
+  CircleAlert,
   Link2,
   MapPin,
   Phone,
@@ -28,6 +30,26 @@ const typeOptions: { value: InterviewType; label: string; icon: React.ReactNode;
   { value: "ai", label: "数字人面试", icon: <AudioLines />, desc: "候选人可异步完成" },
 ];
 
+const DURATION_OPTIONS = [30, 45, 60, 90];
+const WORK_START = 9 * 60;
+const WORK_END = 18 * 60;
+
+const MOCK_CALENDAR: Record<string, [string, string][]> = {
+  "emp-1": [["10:00", "11:00"], ["15:00", "15:30"]],
+  "emp-2": [["09:30", "10:00"], ["14:00", "14:30"]],
+  "emp-3": [["09:00", "10:00"], ["14:00", "15:00"]],
+  "emp-4": [["11:00", "12:00"], ["16:00", "17:00"]],
+  "emp-5": [["13:30", "14:30"]],
+  "emp-7": [["10:30", "11:30"], ["15:30", "16:30"]],
+  "emp-8": [["15:00", "16:00"]],
+  "emp-9": [["14:00", "15:00"]],
+  "emp-11": [["09:30", "10:30"]],
+};
+
+const toMinutes = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3, 5));
+const toTime = (minutes: number) => `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+const overlaps = (aStart: number, aEnd: number, bStart: number, bEnd: number) => aStart < bEnd && bStart < aEnd;
+
 export function ScheduleInterviewDialog({
   open,
   onOpenChange,
@@ -41,7 +63,7 @@ export function ScheduleInterviewDialog({
   defaultJobId?: string;
   onCreated?: (id: string) => void;
 }) {
-  const { candidates, jobs, employees, addInterview } = useApp();
+  const { candidates, jobs, employees, interviews, addInterview } = useApp();
   const [candidateId, setCandidateId] = useState(defaultCandidateId ?? "");
   const [jobId, setJobId] = useState(defaultJobId ?? "");
   const [round, setRound] = useState("初试");
@@ -73,6 +95,41 @@ export function ScheduleInterviewDialog({
   const scopedCandidates = useMemo(() => (jobId ? candidates.filter((c) => c.jobId === jobId) : candidates), [candidates, jobId]);
   const selectedCandidate = candidates.find((c) => c.id === candidateId);
   const interviewers = employees.filter((e) => ["emp-3", "emp-7", "emp-8", "emp-9", "emp-1", "emp-2", "emp-4", "emp-5", "emp-6", "emp-11"].includes(e.id));
+  const owner = employees.find((e) => e.id === job?.ownerId);
+  const assistants = (job?.assistantIds ?? []).map((id) => employees.find((e) => e.id === id)).filter(Boolean);
+  const participantIds = Array.from(new Set([job?.ownerId, ...(job?.assistantIds ?? []), ...interviewerIds].filter(Boolean) as string[]));
+  const participantNames = participantIds.map((id) => employees.find((e) => e.id === id)?.name ?? id);
+
+  const slots = useMemo(() => {
+    const durationMinutes = Number(duration);
+    const list: { start: string; end: string; work: boolean; busyNames: string[] }[] = [];
+    for (let minutes = 8 * 60; minutes + durationMinutes <= 20 * 60; minutes += 30) {
+      const start = toTime(minutes);
+      const end = toTime(minutes + durationMinutes);
+      const startMinutes = toMinutes(start);
+      const endMinutes = toMinutes(end);
+      const busyNames = participantIds.filter((id) => {
+        const fixedBusy = MOCK_CALENDAR[id] ?? [];
+        const scheduledBusy = interviews
+          .filter((iv) => iv.date === date && !["cancelled", "no_show", "expired"].includes(iv.status) && iv.interviewers.includes(id))
+          .map((iv) => [iv.start, iv.end] as [string, string]);
+        return [...fixedBusy, ...scheduledBusy].some(([busyStart, busyEnd]) => overlaps(startMinutes, endMinutes, toMinutes(busyStart), toMinutes(busyEnd)));
+      }).map((id) => employees.find((e) => e.id === id)?.name ?? id);
+      list.push({ start, end, work: startMinutes >= WORK_START && endMinutes <= WORK_END, busyNames });
+    }
+    return list;
+  }, [date, duration, participantIds.join(","), interviews, employees]);
+
+  const selectedSlot = slots.find((slot) => slot.start === start);
+  const nextAvailable = slots.find((slot) => slot.busyNames.length === 0 && slot.work) ?? slots.find((slot) => slot.busyNames.length === 0);
+
+  useEffect(() => {
+    if (!open) return;
+    setStart((prev) => {
+      const current = slots.find((slot) => slot.start === prev);
+      return current && current.busyNames.length === 0 ? prev : nextAvailable?.start ?? prev;
+    });
+  }, [open, slots, nextAvailable]);
 
   const submit = () => {
     if (!candidateId) {
@@ -81,6 +138,10 @@ export function ScheduleInterviewDialog({
     }
     if (!date || !start) {
       toast.error("请选择面试时间");
+      return;
+    }
+    if (selectedSlot && selectedSlot.busyNames.length > 0) {
+      toast.error(`当前时段有冲突：${selectedSlot.busyNames.join("、")}忙碌`);
       return;
     }
     const endMinutes = Number(start.split(":")[0]) * 60 + Number(start.split(":")[1]) + Number(duration);
@@ -106,7 +167,7 @@ export function ScheduleInterviewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent size="lg" className="p-0">
         <DialogHeader title="安排面试" description="选择面试形式与时间，系统会自动发送邀约并同步给面试官。" icon={<CalendarClock />} />
-        <DialogBody className="space-y-4">
+        <DialogBody className="max-h-[calc(92vh-190px)] space-y-4">
           <div className="rounded-xl border border-line bg-[#fafbf8] p-3">
             <div className="flex items-center gap-2 text-[12.5px] text-muted">
               <span className={cn("size-1.5 rounded-full", selectedCandidate ? "bg-pine" : "bg-[#c2cbc3]")} />
@@ -163,21 +224,72 @@ export function ScheduleInterviewDialog({
             </div>
           </Field>
 
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="开始时间" required><Input type="time" value={start} onChange={(e) => setStart(e.target.value)} /></Field>
-            <Field label="时长">
-              <Select value={duration} onValueChange={setDuration}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {[["30", "30 分钟"], ["45", "45 分钟"], ["60", "60 分钟"], ["90", "90 分钟"]].map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
-                </SelectContent>
-              </Select>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="面试时长" hint="仅支持预设时长" required>
+              <div className="flex h-10 items-center gap-1 rounded-[10px] border border-line bg-[#f7f8f4] p-1">
+                {DURATION_OPTIONS.map((minutes) => (
+                  <button key={minutes} type="button" onClick={() => setDuration(String(minutes))} className={cn("h-full flex-1 rounded-md text-[12px] font-medium transition-colors", duration === String(minutes) ? "bg-white text-pine shadow-sm" : "text-muted hover:text-ink")}>{minutes} 分钟</button>
+                ))}
+              </div>
             </Field>
             <Field label="会议 / 地点">
               <div className="flex h-10 items-center gap-1.5 rounded-[10px] border border-line bg-[#f7f8f4] px-3 text-[12.5px] text-muted">
                 {type === "onsite" ? <><MapPin className="size-3" /> 望京 SOHO T3 18F</> : type === "phone" ? <><Phone className="size-3" /> 使用候选人手机号</> : <><Link2 className="size-3" /> 自动生成会议链接</>}
               </div>
             </Field>
+          </div>
+
+          <div className="rounded-xl border border-line bg-[#fafbf8] p-3.5">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <div className="flex items-center gap-1.5 text-[13px] font-medium text-ink"><CalendarDays className="size-3.5 text-pine" /> 可安排时间</div>
+                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px] text-muted">
+                  <span>参考日历：{owner ? `${owner.name}（负责人）` : "未指定负责人"}</span>
+                  {assistants.length ? <span>· 协助人 {assistants.map((person) => person?.name).filter(Boolean).join("、")}</span> : null}
+                  <span>· 面试官 {interviewerIds.map((id) => employees.find((e) => e.id === id)?.name ?? id).join("、") || "未选择"}</span>
+                </div>
+              </div>
+              <span className="rounded-md bg-white px-2 py-1 text-[11px] text-muted">{date} · {duration} 分钟</span>
+            </div>
+
+            <div className="mt-3 grid grid-cols-4 gap-1.5 sm:grid-cols-6 xl:grid-cols-8">
+              {slots.map((slot) => {
+                const busy = slot.busyNames.length > 0;
+                const selected = start === slot.start;
+                return (
+                  <button
+                    key={slot.start}
+                    type="button"
+                    disabled={busy}
+                    onClick={() => setStart(slot.start)}
+                    title={busy ? `${slot.start}–${slot.end} · ${slot.busyNames.join("、")}忙碌` : `${slot.start}–${slot.end}${slot.work ? "" : " · 非工作时段"}`}
+                    className={cn(
+                      "rounded-lg border px-1.5 py-2 text-left transition-colors",
+                      selected ? "border-pine bg-pine text-white" : busy ? "cursor-not-allowed border-line bg-[#f0f0ed] text-[#a6ada7]" : slot.work ? "border-line bg-white text-ink-soft hover:border-pine/40 hover:bg-pine-soft/25" : "border-dashed border-line bg-transparent text-muted hover:border-amber/40"
+                    )}
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="num text-[11.5px] font-medium">{slot.start}</span>
+                      <span className={cn("size-1.5 shrink-0 rounded-full", selected ? "bg-white" : busy ? "bg-amber" : "bg-success")} />
+                    </div>
+                    <div className={cn("mt-0.5 truncate text-[10px]", selected ? "text-white/65" : busy ? "text-[#b08c5a]" : "text-muted")}>
+                      {busy ? `${slot.busyNames.length} 人忙` : slot.work ? "空闲" : "非工作"}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10.5px] text-muted">
+              <span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-success" /> 全部空闲</span>
+              <span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-amber" /> 有人忙碌，不可选</span>
+              <span className="flex items-center gap-1"><span className="size-2 rounded border border-dashed border-muted" /> 非工作时段（09:00–18:00 之外）</span>
+            </div>
+            {selectedSlot && !selectedSlot.work ? (
+              <div className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-amber-soft px-2.5 py-2 text-[11.5px] leading-4 text-amber-deep">
+                <CircleAlert className="mt-0.5 size-3 shrink-0" /> 当前选择的是非工作时段，发送邀约前请确认面试官是否接受。
+              </div>
+            ) : null}
           </div>
 
           <Field label="面试官" hint={`已选择 ${interviewerIds.length} 人`}>

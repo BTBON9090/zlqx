@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { CandidateStage, Employee, InterviewType, JobStatus, OfferStatus } from "./types";
+import type { CandidateStage, Employee, InterviewStatus, InterviewType, JobStatus, OfferStatus } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -20,6 +20,20 @@ export const candidateStageMeta: Record<CandidateStage, { label: string; short: 
   offer: { label: "Offer", short: "Offer", tone: "bg-amber-soft text-amber-deep", dot: "bg-amber" },
   hired: { label: "已入职", short: "入职", tone: "bg-pine-soft text-pine", dot: "bg-pine" },
   archived: { label: "已归档", short: "归档", tone: "bg-[#f0eeec] text-muted", dot: "bg-[#a9a39a]" },
+};
+
+export const interviewStatusMeta: Record<
+  InterviewStatus,
+  { label: string; short: string; tone: string; dot: string; description: string }
+> = {
+  pending: { label: "待候选人确认", short: "待确认", tone: "bg-amber-soft text-amber-deep", dot: "bg-amber", description: "邀约已发出，等待候选人接受或拒绝" },
+  confirmed: { label: "已确认 · 待开始", short: "已确认", tone: "bg-info-soft text-info-ink", dot: "bg-info-ink", description: "候选人已接受邀约，面试尚未开始" },
+  in_progress: { label: "进行中", short: "进行中", tone: "bg-pine-soft text-pine", dot: "bg-pine animate-pulse", description: "面试正在进行，面试官已进入" },
+  done: { label: "已完成", short: "已完成", tone: "bg-[#eef2ec] text-ink-soft", dot: "bg-[#8d9a90]", description: "面试已结束，反馈可能已提交或待提交" },
+  rescheduled: { label: "已改期", short: "已改期", tone: "bg-[#efe9fb] text-[#6d4bb5]", dot: "bg-[#8061c7]", description: "候选人申请改期，已进入新的时间确认" },
+  cancelled: { label: "已取消", short: "已取消", tone: "bg-[#f3eeeb] text-[#8a5e4e]", dot: "bg-[#a97664]", description: "面试取消，不再占用日历" },
+  no_show: { label: "候选人未出席", short: "未出席", tone: "bg-signal-soft text-danger", dot: "bg-danger", description: "面试时间已过，候选人未进入面试" },
+  expired: { label: "邀约已过期", short: "已过期", tone: "bg-[#f1f1ee] text-muted", dot: "bg-[#a7aca6]", description: "候选人在截止时间前未确认邀约" },
 };
 
 export const interviewTypeMeta: Record<InterviewType, { label: string; tone: string }> = {

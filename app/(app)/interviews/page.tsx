@@ -40,15 +40,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScheduleInterviewDialog } from "@/components/interviews/schedule-dialog";
 import { useApp } from "@/lib/store";
 import { useConfirm } from "@/components/ui/confirm";
-import { cn, formatDateWithWeek, interviewTypeMeta } from "@/lib/utils";
+import { cn, formatDateWithWeek, interviewStatusMeta, interviewTypeMeta } from "@/lib/utils";
 import type { Interview, InterviewType } from "@/lib/types";
 
-const statusMeta: Record<string, { label: string; tone: string; dot: string }> = {
-  pending: { label: "待确认", tone: "bg-amber-soft text-amber-deep", dot: "bg-amber" },
-  confirmed: { label: "已确认", tone: "bg-pine-soft text-pine", dot: "bg-pine" },
-  done: { label: "已完成", tone: "bg-[#eef1ec] text-muted", dot: "bg-[#9aa69e]" },
-  cancelled: { label: "已取消", tone: "bg-signal-soft text-signal", dot: "bg-signal" },
-};
+const statusMeta = interviewStatusMeta;
 
 const typeIcons: Record<InterviewType, React.ReactNode> = {
   video: <Video />,
@@ -497,10 +492,14 @@ function InterviewsContent() {
             <SelectTrigger className="w-[130px]"><SelectValue placeholder="全部状态" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">全部状态</SelectItem>
-              <SelectItem value="pending">待确认</SelectItem>
-              <SelectItem value="confirmed">已确认</SelectItem>
+              <SelectItem value="pending">待候选人确认</SelectItem>
+              <SelectItem value="confirmed">已确认 · 待开始</SelectItem>
+              <SelectItem value="in_progress">进行中</SelectItem>
               <SelectItem value="done">已完成</SelectItem>
+              <SelectItem value="rescheduled">已改期</SelectItem>
+              <SelectItem value="no_show">候选人未出席</SelectItem>
               <SelectItem value="cancelled">已取消</SelectItem>
+              <SelectItem value="expired">邀约已过期</SelectItem>
             </SelectContent>
           </Select>
           <span className="ml-auto text-[12.5px] text-muted">共 <span className="num font-medium text-ink">{filtered.length}</span> 场</span>

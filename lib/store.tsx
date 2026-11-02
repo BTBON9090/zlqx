@@ -18,6 +18,7 @@ import {
 } from "./data";
 import type {
   AiGeneration,
+  FlowTemplate,
   AppSettings,
   Candidate,
   CandidateStage,
@@ -30,10 +31,12 @@ import type {
   NotificationRecord,
   Offer,
   OfferStatus,
+  JobStage,
   Role,
   Task,
 } from "./types";
 import { nowStamp, uid } from "./utils";
+import { initialFlowTemplates } from "./flow";
 
 const STORAGE_KEY = "zhipin-qianxun-v1";
 
@@ -49,6 +52,7 @@ interface AppState {
   notifications: NotificationRecord[];
   tasks: Task[];
   generations: AiGeneration[];
+  flowTemplates: FlowTemplate[];
   settings: AppSettings;
 }
 
@@ -64,6 +68,7 @@ const initialState: AppState = {
   notifications: seedNotifications,
   tasks: seedTasks,
   generations: seedGenerations,
+  flowTemplates: initialFlowTemplates,
   settings: seedSettings,
 };
 
@@ -85,6 +90,8 @@ interface AppActions {
     status: Job["status"];
     ownerId: string;
     assistantIds?: string[];
+    flowTemplateId?: string;
+    stages?: JobStage[];
     priority: Job["priority"];
   }) => Job;
   updateJob: (id: string, patch: Partial<Job>) => void;
@@ -153,6 +160,10 @@ interface AppActions {
   retryNotification: (id: string) => void;
   addGeneration: (input: Omit<AiGeneration, "id" | "createdAt">) => AiGeneration;
   toggleTask: (id: string) => void;
+  addFlowTemplate: (input: { name: string; description: string; steps: FlowTemplate["steps"]; enabled: boolean }) => FlowTemplate;
+  updateFlowTemplate: (id: string, patch: Partial<FlowTemplate>) => void;
+  deleteFlowTemplate: (id: string) => void;
+  setDefaultFlowTemplate: (id: string) => void;
   updateSettings: (patch: Partial<AppSettings>) => void;
   updateCompany: (patch: Partial<AppSettings["company"]>) => void;
   resetDemo: () => void;
@@ -179,6 +190,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               ? Object.fromEntries(permissionModules.map((module) => [module.key, [...module.actions]]))
               : r.permissions,
           })),
+          flowTemplates: parsed.flowTemplates ?? prev.flowTemplates,
           settings: parsed.settings ?? prev.settings,
         }));
       }
@@ -209,6 +221,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       status: input.status,
       ownerId: input.ownerId,
       assistantIds: input.assistantIds ?? [],
+      flowTemplateId: input.flowTemplateId,
       createdAt: "2026-10-30",
       updatedAt: "2026-10-30",
       headcount: input.headcount,
@@ -220,7 +233,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       responsibilities: input.responsibilities,
       requirements: input.requirements,
       skills: input.skills,
-      stages: [
+      stages: input.stages ?? [
         { key: "screen", name: "简历筛选", type: "screen" },
         { key: "first", name: "初试", type: "interview", aiEnabled: true },
         { key: "second", name: "复试", type: "interview" },
@@ -705,6 +718,40 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const addFlowTemplate = useCallback<AppActions["addFlowTemplate"]>((input) => {
+    const newFlow: FlowTemplate = {
+      id: uid("flow"),
+      name: input.name,
+      description: input.description,
+      steps: input.steps,
+      enabled: input.enabled,
+      linkedJobs: 0,
+      updatedAt: new Date().toISOString().slice(0, 10),
+    };
+    setState((prev) => ({ ...prev, flowTemplates: [...prev.flowTemplates, newFlow] }));
+    return newFlow;
+  }, []);
+
+  const updateFlowTemplate = useCallback<AppActions["updateFlowTemplate"]>((id, patch) => {
+    setState((prev) => ({
+      ...prev,
+      flowTemplates: prev.flowTemplates.map((flow) =>
+        flow.id === id ? { ...flow, ...patch, updatedAt: new Date().toISOString().slice(0, 10) } : flow
+      ),
+    }));
+  }, []);
+
+  const deleteFlowTemplate = useCallback<AppActions["deleteFlowTemplate"]>((id) => {
+    setState((prev) => ({ ...prev, flowTemplates: prev.flowTemplates.filter((flow) => flow.id !== id) }));
+  }, []);
+
+  const setDefaultFlowTemplate = useCallback<AppActions["setDefaultFlowTemplate"]>((id) => {
+    setState((prev) => ({
+      ...prev,
+      flowTemplates: prev.flowTemplates.map((flow) => ({ ...flow, isDefault: flow.id === id })),
+    }));
+  }, []);
+
   const updateSettings = useCallback<AppActions["updateSettings"]>((patch) => {
     setState((prev) => ({
       ...prev,
@@ -760,6 +807,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       retryNotification,
       addGeneration,
       toggleTask,
+      addFlowTemplate,
+      updateFlowTemplate,
+      deleteFlowTemplate,
+      setDefaultFlowTemplate,
       updateSettings,
       updateCompany,
       resetDemo,
@@ -793,6 +844,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       retryNotification,
       addGeneration,
       toggleTask,
+      addFlowTemplate,
+      updateFlowTemplate,
+      deleteFlowTemplate,
+      setDefaultFlowTemplate,
       updateSettings,
       updateCompany,
       resetDemo,

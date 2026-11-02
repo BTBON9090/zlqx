@@ -1,7 +1,7 @@
 export type JobStatus = "draft" | "reviewing" | "active" | "closed" | "paused";
 export type CandidateStage = "screening" | "interview" | "offer" | "hired" | "archived";
 export type InterviewType = "video" | "onsite" | "phone" | "ai";
-export type InterviewStatus = "pending" | "confirmed" | "done" | "cancelled";
+export type InterviewStatus = "pending" | "confirmed" | "in_progress" | "done" | "rescheduled" | "cancelled" | "no_show" | "expired";
 export type OfferStatus = "draft" | "approving" | "sent" | "accepted" | "declined";
 export type NotificationStatus = "delivered" | "read" | "failed" | "queued";
 export type EmployeeStatus = "active" | "invited" | "disabled";
@@ -21,6 +21,27 @@ export interface JobStage {
   aiEnabled?: boolean;
 }
 
+export type FlowStepType = "screen" | "ai" | "business" | "cross" | "hr" | "offer";
+
+export interface FlowStep {
+  id: string;
+  type: FlowStepType;
+  name: string;
+  departmentId?: string;
+  interviewerId?: string;
+}
+
+export interface FlowTemplate {
+  id: string;
+  name: string;
+  description: string;
+  steps: FlowStep[];
+  enabled: boolean;
+  isDefault?: boolean;
+  linkedJobs: number;
+  updatedAt: string;
+}
+
 export interface Job {
   id: string;
   code: string;
@@ -32,6 +53,7 @@ export interface Job {
   status: JobStatus;
   ownerId: string;
   assistantIds?: string[];
+  flowTemplateId?: string;
   createdAt: string;
   updatedAt: string;
   headcount: number;

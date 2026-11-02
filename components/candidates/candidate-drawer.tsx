@@ -46,7 +46,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScheduleInterviewDialog } from "@/components/interviews/schedule-dialog";
 import { useApp } from "@/lib/store";
 import { useConfirm } from "@/components/ui/confirm";
-import { candidateStageMeta, cn, formatDateWithWeek, interviewTypeMeta, scoreTone } from "@/lib/utils";
+import { candidateStageMeta, cn, formatDateWithWeek, interviewStatusMeta, interviewTypeMeta, scoreTone } from "@/lib/utils";
+import { InfoTip } from "@/components/ui/info-tip";
 import type { Candidate, CandidateStage, Job } from "@/lib/types";
 
 const recommendationLabels: Record<string, string> = {
@@ -230,6 +231,18 @@ export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidat
     });
   }, [candidate, job]);
 
+  const scoreParts = useMemo(() => {
+    if (!candidate) return [];
+    const parts = [
+      { label: "技能匹配", weight: 35, offset: 4 },
+      { label: "经验年限", weight: 25, offset: 2 },
+      { label: "行业背景", weight: 20, offset: -3 },
+      { label: "稳定性", weight: 10, offset: 1 },
+      { label: "地点匹配", weight: 10, offset: -5 },
+    ];
+    return parts.map((part) => ({ ...part, value: Math.max(55, Math.min(99, candidate.score + part.offset)) }));
+  }, [candidate]);
+
   if (!candidate) {
     return <Sheet open={false} onOpenChange={onClose} title="候选人详情"><div /></Sheet>;
   }
@@ -285,7 +298,7 @@ export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidat
               </div>
               <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <div className="text-[12px] text-muted">岗位匹配度</div>
+                  <div className="flex items-center justify-end gap-1 text-[12px] text-muted">岗位匹配度 <InfoTip text="由 AI 根据岗位画像与简历计算：技能 35%、经验 25%、行业 20%、稳定性 10%、地点 10%。" /></div>
                   <div className={cn("num mt-0.5 text-[24px] font-semibold leading-none", tone.text)}>{candidate.score}<span className="text-[13px] text-muted">/100</span></div>
                 </div>
                 <div className="flex gap-1">
@@ -490,6 +503,24 @@ export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidat
                   </div>
                 </div>
 
+                <section className="surface p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-1.5 text-[13px] font-semibold text-ink">匹配度构成 <InfoTip text="五项权重加权后得到初始匹配度，AI 会再结合岗位紧急度与团队偏好做小幅校准。" /></div>
+                    <span className="num text-[12.5px] font-semibold text-pine">综合 {candidate.score} / 100</span>
+                  </div>
+                  <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                    {scoreParts.map((part) => (
+                      <div key={part.label} className="flex items-center gap-2.5 rounded-lg bg-[#fafbf8] px-3 py-2">
+                        <span className="w-[58px] shrink-0 text-[11.5px] text-muted">{part.label}</span>
+                        <span className="num w-8 shrink-0 text-[10.5px] text-muted">{part.weight}%</span>
+                        <Progress value={part.value} className="h-1.5 flex-1" barClassName={part.value >= 85 ? "bg-pine" : part.value >= 75 ? "bg-[#6b9b82]" : "bg-amber"} />
+                        <span className="num w-6 text-right text-[11.5px] font-medium text-ink">{part.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-2.5 text-[11.5px] leading-5 text-muted">匹配度来自 AI 简历解析与岗位画像，仅用于排序和辅助判断，不建议作为唯一筛选标准。</p>
+                </section>
+
                 <div className="grid gap-4 md:grid-cols-2">
                   <section className="surface p-5">
                     <div className="flex items-center gap-2 text-[13px] font-semibold text-pine"><Check className="size-3.5" /> 匹配亮点</div>
@@ -542,12 +573,24 @@ export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidat
 
             {tab === "interviews" ? (
               <div className="space-y-4 p-5 md:p-6">
-                <div className="flex items-center justify-between gap-3">
-                  <div><div className="text-[13.5px] font-semibold text-ink">面试记录</div><div className="mt-1 text-[12.5px] text-muted">共 {candidateInterviews.length} 场面试</div></div>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div><div className="text-[13.5px] font-semibold text-ink">面试记录</div><div className="mt-1 text-[12.5px] text-muted">共 {candidateInterviews.length} 场面试 · 状态随确认、进行与反馈自动流转</div></div>
                   <Button size="sm" onClick={() => setScheduleOpen(true)}><Plus /> 安排面试</Button>
                 </div>
+                <details className="rounded-xl border border-line bg-[#fafbf8] px-3.5 py-2.5">
+                  <summary className="cursor-pointer text-[12px] font-medium text-muted">查看面试状态说明</summary>
+                  <div className="mt-2 grid gap-1.5 sm:grid-cols-2">
+                    {Object.values(interviewStatusMeta).map((status) => (
+                      <div key={status.label} className="flex items-start gap-2">
+                        <span className={cn("mt-0.5 inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-0.5 text-[10.5px] font-medium", status.tone)}><span className={cn("size-1 rounded-full", status.dot)} />{status.label}</span>
+                        <span className="text-[11px] leading-4 text-muted">{status.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                </details>
                 {candidateInterviews.map((iv) => {
                   const type = interviewTypeMeta[iv.type];
+                  const status = interviewStatusMeta[iv.status];
                   const names = iv.interviewers.map((id) => (id.startsWith("AI") ? id : employees.find((e) => e.id === id)?.name ?? id));
                   return (
                     <div key={iv.id} className="surface overflow-hidden">
@@ -560,8 +603,8 @@ export function CandidateDrawer({ candidateId, onClose, onNavigate }: { candidat
                           <div className="flex flex-wrap items-center gap-1.5">
                             <span className="text-[13px] font-medium text-ink">{iv.round}</span>
                             <span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", type.tone)}>{type.label}</span>
-                            <span className={cn("rounded px-1.5 py-0.5 text-[11.5px]", iv.status === "done" ? "bg-pine-soft text-pine" : iv.status === "cancelled" ? "bg-signal-soft text-signal" : "bg-amber-soft text-amber-deep")}>
-                              {iv.status === "done" ? "已完成" : iv.status === "cancelled" ? "已取消" : iv.status === "confirmed" ? "已确认" : "待确认"}
+                            <span className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded px-1.5 py-0.5 text-[11px] font-medium", status.tone)}>
+                              <span className={cn("size-1.5 rounded-full", status.dot)} />{status.label}
                             </span>
                           </div>
                           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted">

@@ -132,7 +132,7 @@ function EditJobDialog({
 export default function JobDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { jobs, candidates, departments, employees, interviews } = useApp();
+  const { jobs, candidates, departments, employees, interviews, flowTemplates } = useApp();
   const job = jobs.find((j) => j.id === id);
   const [tab, setTab] = useState("overview");
   const [aiOn, setAiOn] = useState(true);
@@ -146,6 +146,7 @@ export default function JobDetailPage() {
   const dept = departments.find((d) => d.id === job?.departmentId);
   const owner = employees.find((e) => e.id === job?.ownerId);
   const assistants = (job?.assistantIds ?? []).map((employeeId) => employees.find((e) => e.id === employeeId)?.name).filter(Boolean) as string[];
+  const flowTemplate = flowTemplates.find((item) => item.id === job?.flowTemplateId);
   const jobInterviews = interviews.filter((i) => i.jobId === id);
 
   if (!job) {
@@ -343,6 +344,7 @@ export default function JobDetailPage() {
                       ["薪资范围", job.salary],
                       ["经验要求", job.experience],
                       ["学历要求", job.education],
+                      ["流程模板", flowTemplate?.name ?? "未指定"],
                     ].map(([k, v]) => (
                       <div key={k} className="flex items-center justify-between gap-3 py-2"><span className="text-muted">{k}</span><span className="font-medium text-ink">{v}</span></div>
                     ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -34,6 +34,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/toggle";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { countInterviewRounds, flowStepMeta, flowTemplateToStages, hasAiStep } from "@/lib/flow";
 
 const stepDefs = [
   { n: 1, title: "基本信息", desc: "职位、部门与用人信息" },
@@ -43,7 +44,7 @@ const stepDefs = [
 
 export default function NewJobPage() {
   const router = useRouter();
-  const { departments, employees, addJob } = useApp();
+  const { departments, employees, flowTemplates, addJob } = useApp();
   const confirm = useConfirm();
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState("");
@@ -57,6 +58,7 @@ export default function NewJobPage() {
   const [education, setEducation] = useState("本科及以上");
   const [ownerId, setOwnerId] = useState("emp-1");
   const [assistantIds, setAssistantIds] = useState<string[]>([]);
+  const [flowTemplateId, setFlowTemplateId] = useState("");
   const [priority, setPriority] = useState<"high" | "normal">("normal");
   const [summary, setSummary] = useState("");
   const [responsibilitiesText, setResponsibilitiesText] = useState("");
@@ -64,7 +66,6 @@ export default function NewJobPage() {
   const [skills, setSkills] = useState<string[]>(["B 端产品", "AI 产品", "数据分析"]);
   const [skillDraft, setSkillDraft] = useState("");
   const [aiScreen, setAiScreen] = useState(true);
-  const [digitalInterview, setDigitalInterview] = useState(true);
   const [autoMessage, setAutoMessage] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [publishing, setPublishing] = useState(false);
@@ -72,6 +73,14 @@ export default function NewJobPage() {
 
   const dept = departments.find((d) => d.id === departmentId);
   const owner = employees.find((e) => e.id === ownerId);
+  const selectedFlow = flowTemplates.find((flow) => flow.id === flowTemplateId) ?? flowTemplates.find((flow) => flow.enabled) ?? flowTemplates[0];
+  const availableFlows = flowTemplates.filter((flow) => flow.enabled).length ? flowTemplates.filter((flow) => flow.enabled) : flowTemplates;
+
+  useEffect(() => {
+    if (flowTemplateId) return;
+    const preferred = flowTemplates.find((flow) => flow.isDefault && flow.enabled) ?? flowTemplates.find((flow) => flow.enabled) ?? flowTemplates[0];
+    if (preferred) setFlowTemplateId(preferred.id);
+  }, [flowTemplates, flowTemplateId]);
   const responsibilities = responsibilitiesText.split("\n").map((s) => s.trim()).filter(Boolean);
   const requirements = requirementsText.split("\n").map((s) => s.trim()).filter(Boolean);
 
@@ -201,6 +210,8 @@ export default function NewJobPage() {
       status: "active",
       ownerId,
       assistantIds,
+      flowTemplateId: selectedFlow?.id,
+      stages: selectedFlow ? flowTemplateToStages(selectedFlow) : undefined,
       priority,
     });
     setPublishing(false);
@@ -232,6 +243,8 @@ export default function NewJobPage() {
       status: "draft",
       ownerId,
       assistantIds,
+      flowTemplateId: selectedFlow?.id,
+      stages: selectedFlow ? flowTemplateToStages(selectedFlow) : undefined,
       priority,
     });
     toast.success("职位草稿已保存");
@@ -445,22 +458,58 @@ export default function NewJobPage() {
           {step === 3 ? (
             <div className="space-y-5">
               <div className="surface p-5 md:p-6">
-                <SectionTitle title="招聘流程" description="职位发布后，候选人将按这个流程推进。" icon={<Users />} />
-                <div className="mt-5 flex flex-wrap items-center gap-1.5">
-                  {["简历筛选", "初试", "复试", "终面", "Offer"].map((s, i) => (
-                    <div key={s} className="flex items-center gap-1.5">
-                      <div className={cn("rounded-lg border px-3 py-2 text-[12.5px] font-medium", i === 0 ? "border-pine bg-pine-soft text-pine" : "border-line bg-[#fafbf8] text-ink-soft")}>
-                        <span className="mr-1.5 num text-[12px] text-muted">{String(i + 1).padStart(2, "0")}</span>
-                        {s}
-                      </div>
-                      {i < 4 ? <ChevronRight className="size-3 text-[#b9c3ba]" /> : null}
+                <SectionTitle title="面试流程" description="选择一个面试流程模板，职位发布后候选人将按该流程推进。Offer 审批流程不在此选择。" icon={<Users />} />
+                <div className="mt-5">
+                  <Field label="面试流程模板" required hint="Offer 审批流程在发放 Offer 时独立应用">
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {availableFlows.map((flow) => {
+                        const selected = selectedFlow?.id === flow.id;
+                        return (
+                          <button
+                            key={flow.id}
+                            type="button"
+                            onClick={() => setFlowTemplateId(flow.id)}
+                            className={cn(
+                              "rounded-xl border p-3 text-left transition-colors",
+                              selected ? "border-pine bg-pine-soft/35" : "border-line bg-surface hover:border-line-strong hover:bg-[#fafbf8]"
+                            )}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <span className={cn("text-[13px] font-medium", selected ? "text-pine" : "text-ink")}>{flow.name}</span>
+                                  {flow.isDefault ? <span className="rounded bg-pine-soft px-1.5 py-0.5 text-[10.5px] font-medium text-pine">默认</span> : null}
+                                </div>
+                                <div className="mt-1 text-[11.5px] text-muted">{countInterviewRounds(flow)} 轮面试 · {flow.steps.length} 个环节{hasAiStep(flow) ? " · 含数字人初试" : ""}</div>
+                              </div>
+                              <span className={cn("flex size-5 shrink-0 items-center justify-center rounded-full border", selected ? "border-pine bg-pine text-white" : "border-line bg-white text-transparent")}><Check className="size-3" /></span>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
-                  ))}
+                  </Field>
+                  {selectedFlow ? (
+                    <div className="mt-3 rounded-xl border border-line bg-[#fafbf8] p-3.5">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 text-[12.5px] font-medium text-ink"><Users className="size-3.5 text-pine" /> {selectedFlow.name}</div>
+                        <span className="text-[11.5px] text-muted">{countInterviewRounds(selectedFlow)} 轮面试 · {selectedFlow.steps.length} 个环节</span>
+                      </div>
+                      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                        {selectedFlow.steps.map((step, index) => (
+                          <div key={step.id} className="flex items-center gap-1.5">
+                            <span className={cn("rounded-md border px-2 py-1 text-[11.5px] font-medium", flowStepMeta[step.type].chipClass)}>{step.name}</span>
+                            {index < selectedFlow.steps.length - 1 ? <ChevronRight className="size-3 text-[#b9c3ba]" /> : null}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="mt-2 text-[11.5px] leading-5 text-muted">{selectedFlow.description}</p>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="mt-5 space-y-3 border-t border-line pt-4">
                   {[
                     { checked: aiScreen, set: setAiScreen, title: "AI 简历初筛", desc: "自动解析简历并给出岗位匹配度，低于 60 分进入待定区。" },
-                    { checked: digitalInterview, set: setDigitalInterview, title: "数字人初试", desc: "候选人可在 7×24 小时内完成 20 分钟结构化初试，自动生成纪要。" },
                     { checked: autoMessage, set: setAutoMessage, title: "自动发送消息", desc: "推进阶段时，自动使用对应模板向候选人发送邮件与短信。" },
                   ].map((item) => (
                     <div key={item.title} className="flex items-start justify-between gap-4 rounded-xl border border-line p-3.5">
@@ -482,7 +531,7 @@ export default function NewJobPage() {
                     ))}
                   </div>
                   <div className="space-y-0.5 divide-y divide-line">
-                    {[["薪资范围", salary], ["经验要求", experience], ["招聘人数", `${headcount} 人`], ["负责人", owner?.name ?? "—"]].map(([k, v]) => (
+                    {[["薪资范围", salary], ["经验要求", experience], ["招聘人数", `${headcount} 人`], ["负责人", owner?.name ?? "—"], ["面试流程模板", selectedFlow?.name ?? "—"]].map(([k, v]) => (
                       <div key={k} className="flex items-center justify-between gap-4 py-2.5 text-[13px]"><span className="text-muted">{k}</span><span className="font-medium text-ink">{v}</span></div>
                     ))}
                   </div>

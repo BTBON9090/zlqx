@@ -17,9 +17,7 @@ import {
   Plus,
   Rocket,
   Settings2,
-  Sparkles,
   Timer,
-  Users,
   Workflow,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -34,164 +32,71 @@ import { Field, Input, Textarea } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown";
 import { useApp } from "@/lib/store";
+import { FlowTemplateDialog } from "@/components/pipeline/flow-template-dialog";
+import { countInterviewRounds, flowStepMeta, hasAiStep, newFlowStep } from "@/lib/flow";
+import type { FlowTemplate } from "@/lib/types";
 import { useConfirm } from "@/components/ui/confirm";
-import { cn } from "@/lib/utils";
-
-interface FlowTemplate {
-  id: string;
-  name: string;
-  description: string;
-  steps: { name: string; type: "screen" | "interview" | "offer"; ai?: boolean }[];
-  aiEnabled: boolean;
-  rounds: number;
-  linkedJobs: number;
-  default?: boolean;
-  updatedAt: string;
-}
-
-const initialFlows: FlowTemplate[] = [
-  {
-    id: "flow-1",
-    name: "标准招聘流程",
-    description: "适用于大多数全职岗位：简历筛选 → 初试 → 复试 → 终面 → Offer。",
-    steps: [
-      { name: "简历筛选", type: "screen" },
-      { name: "初试", type: "interview", ai: true },
-      { name: "复试", type: "interview" },
-      { name: "终面", type: "interview" },
-      { name: "Offer", type: "offer" },
-    ],
-    aiEnabled: true,
-    rounds: 3,
-    linkedJobs: 7,
-    default: true,
-    updatedAt: "2026-10-28",
-  },
-  {
-    id: "flow-2",
-    name: "产品与设计流程",
-    description: "增加作品集评审与交叉面试，适合产品、设计类岗位。",
-    steps: [
-      { name: "简历筛选", type: "screen" },
-      { name: "作品集评审", type: "screen" },
-      { name: "初试", type: "interview", ai: true },
-      { name: "交叉面试", type: "interview" },
-      { name: "终面", type: "interview" },
-      { name: "Offer", type: "offer" },
-    ],
-    aiEnabled: true,
-    rounds: 4,
-    linkedJobs: 2,
-    updatedAt: "2026-10-26",
-  },
-  {
-    id: "flow-3",
-    name: "技术岗位流程",
-    description: "技术初筛 + 两轮技术面 + 交叉面，重点验证工程能力。",
-    steps: [
-      { name: "简历筛选", type: "screen" },
-      { name: "技术初筛", type: "interview", ai: true },
-      { name: "技术一面", type: "interview" },
-      { name: "技术二面", type: "interview" },
-      { name: "交叉面", type: "interview" },
-      { name: "Offer", type: "offer" },
-    ],
-    aiEnabled: true,
-    rounds: 4,
-    linkedJobs: 3,
-    updatedAt: "2026-10-24",
-  },
-  {
-    id: "flow-4",
-    name: "实习生快速流程",
-    description: "一轮业务面 + HR 面，适合实习与校招岗位。",
-    steps: [
-      { name: "简历筛选", type: "screen" },
-      { name: "业务面", type: "interview" },
-      { name: "HR 面", type: "interview" },
-      { name: "Offer", type: "offer" },
-    ],
-    aiEnabled: false,
-    rounds: 2,
-    linkedJobs: 0,
-    updatedAt: "2026-10-18",
-  },
-];
+import { cn, uid } from "@/lib/utils";
 
 const initialOfferFlows = [
   { id: "of-1", name: "标准 Offer 审批", description: "适用于大多数岗位，HRBP → 部门负责人 → 财务 → CEO。", steps: ["HRBP 发起", "部门负责人", "财务审批", "CEO 审批"], avg: "1.2 天", pending: 1, active: true },
   { id: "of-2", name: "高管特批流程", description: "适用于总监及以上岗位，增加 CEO 与董事会审批。", steps: ["HRBP 发起", "部门负责人", "财务审批", "CEO 审批", "董事会"], avg: "3.8 天", pending: 0, active: true },
 ];
 
-const jobTemplates = [
-  { title: "高级产品经理", dept: "产品设计部", skills: ["B 端产品", "AI 产品", "数据分析"], use: 8 },
-  { title: "前端工程师", dept: "前端研发组", skills: ["React", "TypeScript", "设计系统"], use: 6 },
-  { title: "大模型算法工程师", dept: "数据智能组", skills: ["LLM", "RAG", "PyTorch"], use: 4 },
-  { title: "客户成功经理", dept: "客户成功", skills: ["客户成功", "HR SaaS", "项目管理"], use: 5 },
-];
+
 
 type OfferFlow = (typeof initialOfferFlows)[number];
 
 export default function PipelinePage() {
-  const { jobs } = useApp();
+  const { jobs, departments, employees, flowTemplates, addFlowTemplate, updateFlowTemplate, deleteFlowTemplate, setDefaultFlowTemplate } = useApp();
   const confirm = useConfirm();
-  const [flows, setFlows] = useState(initialFlows);
   const [offerFlows, setOfferFlows] = useState(initialOfferFlows);
-  const [editFlow, setEditFlow] = useState<FlowTemplate | null>(null);
-  const [editFlowName, setEditFlowName] = useState("");
-  const [editFlowDesc, setEditFlowDesc] = useState("");
+  const [flowDialogOpen, setFlowDialogOpen] = useState(false);
+  const [editingFlow, setEditingFlow] = useState<FlowTemplate | null>(null);
   const [editOffer, setEditOffer] = useState<OfferFlow | null>(null);
   const [editOfferSteps, setEditOfferSteps] = useState<string[]>([]);
   const [newOfferOpen, setNewOfferOpen] = useState(false);
   const [newOfferName, setNewOfferName] = useState("");
   const [newOfferDesc, setNewOfferDesc] = useState("");
-  const [createOpen, setCreateOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
-  const [rounds, setRounds] = useState(3);
-  const [digital, setDigital] = useState(true);
-
-  const toggleFlow = (id: string) => {
-    setFlows((prev) => prev.map((f) => (f.id === id ? { ...f, aiEnabled: !f.aiEnabled } : f)));
-  };
-
-  const createFlow = () => {
-    if (!name.trim()) {
-      toast.error("请填写流程名称");
+  const toggleAi = (flow: FlowTemplate) => {
+    if (hasAiStep(flow)) {
+      updateFlowTemplate(flow.id, { steps: flow.steps.filter((step) => step.type !== "ai") });
       return;
     }
-    const newFlow: FlowTemplate = {
-      id: `flow-${Date.now()}`,
-      name,
-      description: desc || "自定义招聘流程。",
-      steps: [
-        { name: "简历筛选", type: "screen" },
-        ...Array.from({ length: rounds }, (_, i) => ({ name: i === 0 ? "初试" : i === rounds - 1 ? "终面" : `第 ${i + 1} 轮面试`, type: "interview" as const, ai: i === 0 && digital })),
-        { name: "Offer", type: "offer" },
-      ],
-      aiEnabled: digital,
-      rounds,
-      linkedJobs: 0,
-      updatedAt: "2026-10-30",
-    };
-    setFlows((prev) => [...prev, newFlow]);
-    setCreateOpen(false);
-    setName("");
-    setDesc("");
-    toast.success("流程模板已创建");
+    const next = [...flow.steps];
+    const offerIndex = next.findIndex((step) => step.type === "offer");
+    next.splice(offerIndex === -1 ? next.length : offerIndex, 0, newFlowStep("ai"));
+    updateFlowTemplate(flow.id, { steps: next });
+  };
+
+  const openCreateFlow = () => {
+    setEditingFlow(null);
+    setFlowDialogOpen(true);
+  };
+
+  const saveFlow = (input: { name: string; description: string; steps: FlowTemplate["steps"]; enabled: boolean }) => {
+    if (editingFlow) {
+      updateFlowTemplate(editingFlow.id, input);
+      toast.success("流程模板已更新");
+    } else {
+      addFlowTemplate(input);
+      toast.success("流程模板已创建");
+    }
+    setFlowDialogOpen(false);
+    setEditingFlow(null);
   };
 
   return (
     <div className="space-y-5">
       <PageHeader
-        title="招聘流程"
-        description="把招聘变成可复用的流程：面试轮次、数字人初试、Offer 审批与职位模板。"
-        actions={<Button onClick={() => setCreateOpen(true)}><Plus /> 新建流程模板</Button>}
+        title="招聘配置"
+        description="统一配置面试流程与 Offer 审批链。新建职位时选择面试流程模板，发放 Offer 时自动套用审批流程。"
+        actions={<Button onClick={openCreateFlow}><Plus /> 新建面试流程</Button>}
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <MetricCard label="流程模板" value={flows.length} suffix="个" icon={Workflow} tone="pine" tip="已创建的招聘流程模板，覆盖全部在招职位" />
-        <MetricCard label="数字人面试" value={flows.filter((f) => f.aiEnabled).length} suffix="个" icon={Bot} tone="blue" tip="已开启 AI 初试的流程模板数量" />
+        <MetricCard label="流程模板" value={flowTemplates.length} suffix="个" icon={Workflow} tone="pine" tip="已创建的招聘流程模板，覆盖全部在招职位" />
+        <MetricCard label="数字人面试" value={flowTemplates.filter(hasAiStep).length} suffix="个" icon={Bot} tone="blue" tip="已开启 AI 初试的流程模板数量" />
         <MetricCard label="在招职位" value={jobs.filter((j) => j.status === "active").length} suffix="个" icon={BriefcaseBusiness} tone="amber" tip="当前招聘中的职位，均使用流程模板" />
         <MetricCard label="Offer 审批" value={1} suffix="个" icon={FileCheck2} tone="signal" tip="等待审批的 Offer，平均 1.2 天完成" />
       </div>
@@ -199,16 +104,19 @@ export default function PipelinePage() {
       <Tabs defaultValue="interview">
         <TabsList>
           <TabsTrigger value="interview">面试流程</TabsTrigger>
-          <TabsTrigger value="offer">Offer 流程</TabsTrigger>
-          <TabsTrigger value="templates">职位模板</TabsTrigger>
+          <TabsTrigger value="offer">Offer 审批</TabsTrigger>
         </TabsList>
 
         <TabsContent value="interview" className="mt-4 space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-            <p className="text-[12.5px] text-muted">共 {flows.length} 个流程模板 · 默认流程会自动应用到新职位</p>
-            <button onClick={() => setCreateOpen(true)} className="flex items-center gap-1 text-[12.5px] font-medium text-pine hover:underline"><Plus className="size-3" /> 新建模板</button>
+          <div className="flex items-start gap-2 rounded-xl border border-line bg-[#fafbf8] px-3.5 py-3 text-[12px] leading-5 text-muted">
+            <Workflow className="mt-0.5 size-3.5 shrink-0 text-pine" />
+            <span>这里配置的是<strong className="font-medium text-ink">面试推进流程</strong>。新建职位时只需选择一个面试流程模板；Offer 审批流程在发放 Offer 时独立应用，不会出现在职位创建表单中。</span>
           </div>
-          {flows.map((flow) => (
+          <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+            <p className="text-[12.5px] text-muted">共 {flowTemplates.length} 个流程模板 · 默认流程会自动应用到新职位</p>
+            <button onClick={openCreateFlow} className="flex items-center gap-1 text-[12.5px] font-medium text-pine hover:underline"><Plus className="size-3" /> 新建模板</button>
+          </div>
+          {flowTemplates.map((flow) => (
             <div key={flow.id} className="surface overflow-hidden">
               <div className="flex flex-col gap-4 p-5 lg:flex-row lg:items-start">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -216,16 +124,15 @@ export default function PipelinePage() {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="text-[14px] font-semibold text-ink">{flow.name}</h3>
-                      {flow.default ? <Badge tone="pine" dot>默认流程</Badge> : null}
-                      {flow.aiEnabled ? <Badge tone="blue"><Sparkles className="size-2.5" /> 数字人初试</Badge> : null}
+                      {flow.isDefault ? <Badge tone="pine" dot>默认流程</Badge> : null}
+                      {!flow.enabled ? <Badge tone="neutral">已停用</Badge> : null}
                     </div>
                     <p className="mt-1.5 max-w-[520px] text-[12.5px] leading-5 text-muted">{flow.description}</p>
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {flow.steps.map((s, i) => (
-                        <div key={`${flow.id}-${s.name}`} className="flex items-center gap-1.5">
-                          <span className={cn("rounded-md border px-2 py-1 text-[12px] font-medium", s.type === "screen" ? "border-line bg-[#fafbf8] text-muted" : s.type === "offer" ? "border-amber/20 bg-amber-soft/60 text-amber-deep" : "border-pine/15 bg-pine-soft/50 text-pine")}>
+                        <div key={`${flow.id}-${s.id}`} className="flex items-center gap-1.5">
+                          <span className={cn("rounded-md border px-2 py-1 text-[12px] font-medium", flowStepMeta[s.type].chipClass)}>
                             {s.name}
-                            {s.ai ? <span className="ml-1 text-[11.5px] text-pine/70">AI</span> : null}
                           </span>
                           {i < flow.steps.length - 1 ? <ChevronRight className="size-2.5 text-[#b9c3ba]" /> : null}
                         </div>
@@ -235,18 +142,18 @@ export default function PipelinePage() {
                 </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-4 lg:flex-col lg:items-end">
                   <div className="flex items-center gap-2 text-[12.5px] text-muted">
-                    <span>{flow.rounds} 轮面试</span><span className="size-0.5 rounded-full bg-muted" /><span>{flow.linkedJobs} 个职位</span><span className="size-0.5 rounded-full bg-muted" /><span>更新 {flow.updatedAt.slice(5)}</span>
+                    <span>{countInterviewRounds(flow)} 轮面试</span><span className="size-0.5 rounded-full bg-muted" /><span>{flow.linkedJobs} 个职位</span><span className="size-0.5 rounded-full bg-muted" /><span>更新 {flow.updatedAt.slice(5)}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-1.5 text-[12px] text-muted">数字人初试 <Switch checked={flow.aiEnabled} onCheckedChange={() => toggleFlow(flow.id)} /></label>
+                    <label className="flex items-center gap-1.5 text-[12px] text-muted">数字人初试 <Switch checked={hasAiStep(flow)} onCheckedChange={() => toggleAi(flow)} /></label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><button className="flex size-7 items-center justify-center rounded-lg border border-line text-muted hover:bg-[#eef1ec] hover:text-ink" aria-label="更多"><MoreHorizontal className="size-3.5" /></button></DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => { setEditFlow(flow); setEditFlowName(flow.name); setEditFlowDesc(flow.description); }}><Settings2 /> 编辑流程</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => { const copy = { ...flow, id: `flow-${Date.now()}`, name: `${flow.name} 副本`, default: false }; setFlows((prev) => [...prev, copy]); toast.success("流程模板已复制"); }}><Copy /> 复制模板</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => { setFlows((prev) => prev.map((f) => ({ ...f, default: f.id === flow.id }))); toast.success("已设为默认流程"); }}><Check /> 设为默认</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { setEditingFlow(flow); setFlowDialogOpen(true); }}><Settings2 /> 编辑流程</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { addFlowTemplate({ name: `${flow.name} 副本`, description: flow.description, enabled: flow.enabled, steps: flow.steps.map((step) => ({ ...step, id: uid("step") })) }); toast.success("流程模板已复制"); }}><Copy /> 复制模板</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { setDefaultFlowTemplate(flow.id); toast.success("已设为默认流程"); }}><Check /> 设为默认</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem danger onClick={async () => { const ok = await confirm({ title: "删除该流程模板？", description: `删除「${flow.name}」不会影响已经使用该流程的在途候选人，但新职位将无法再选择它。`, confirmText: "删除模板", tone: "danger" }); if (!ok) return; setFlows((prev) => prev.filter((f) => f.id !== flow.id)); toast.success("流程模板已删除"); }}><XIcon /> 删除模板</DropdownMenuItem>
+                        <DropdownMenuItem danger onClick={async () => { const ok = await confirm({ title: "删除该流程模板？", description: `删除「${flow.name}」不会影响已经使用该流程的在途候选人，但新职位将无法再选择它。`, confirmText: "删除模板", tone: "danger" }); if (!ok) return; deleteFlowTemplate(flow.id); toast.success("流程模板已删除"); }}><XIcon /> 删除模板</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -258,7 +165,7 @@ export default function PipelinePage() {
 
         <TabsContent value="offer" className="mt-4 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-            <p className="text-[12.5px] text-muted">Offer 审批流程与候选人 Offer 状态实时联动</p>
+            <p className="text-[12.5px] text-muted">Offer 审批流程与候选人 Offer 状态实时联动 · 创建 Offer 时自动匹配，不需要在职位表单中选择</p>
             <Link href="/offers" className="flex items-center gap-1 text-[12.5px] font-medium text-pine hover:underline">查看 Offer 管理 <ArrowUpRight className="size-3" /></Link>
           </div>
           {offerFlows.map((flow) => (
@@ -296,64 +203,16 @@ export default function PipelinePage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="templates" className="mt-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            {jobTemplates.map((t) => (
-              <div key={t.title} className="surface group p-5 transition-all hover:-translate-y-0.5 hover:shadow-lift">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-[12.5px] text-muted">{t.dept}</div>
-                    <h3 className="mt-1 text-[14px] font-semibold text-ink">{t.title}</h3>
-                  </div>
-                  <span className="rounded bg-[#f0f3ee] px-1.5 py-0.5 text-[12px] text-muted">已用 {t.use} 次</span>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {t.skills.map((s) => <span key={s} className="rounded-md border border-line bg-[#fafbf8] px-2 py-1 text-[12px] text-ink-soft">{s}</span>)}
-                </div>
-                <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
-                  <span className="text-[12px] text-muted">包含职位描述与筛选标准</span>
-                  <Button variant="ghost" size="sm" asChild><Link href={`/jobs/new?template=${encodeURIComponent(t.title)}`}>使用模板 <ArrowUpRight /></Link></Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
       </Tabs>
 
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent size="md" className="p-0">
-          <DialogHeader title="新建流程模板" description="定义面试轮次与数字人初试设置。" icon={<Workflow />} />
-          <DialogBody className="space-y-4">
-            <Field label="流程名称" required><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="例如：销售岗位快速流程" /></Field>
-            <Field label="流程说明"><Textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="说明这个流程适用于哪些岗位…" className="min-h-[72px]" /></Field>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="面试轮次">
-                <Select value={String(rounds)} onValueChange={(v) => setRounds(Number(v))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{[2, 3, 4].map((n) => <SelectItem key={n} value={String(n)}>{n} 轮</SelectItem>)}</SelectContent>
-                </Select>
-              </Field>
-              <Field label="数字人初试">
-                <div className="flex h-10 items-center justify-between rounded-[10px] border border-line px-3"><span className="text-[12.5px] text-muted">首轮使用数字人</span><Switch checked={digital} onCheckedChange={setDigital} /></div>
-              </Field>
-            </div>
-            <div className="rounded-xl bg-[#fafbf8] p-3.5 text-[12px] leading-5 text-muted">新建流程后，可将其设为默认流程，或在发布职位时选择。数字人初试可随时在流程中开启或关闭。</div>
-          </DialogBody>
-          <DialogFooter><Button variant="secondary" onClick={() => setCreateOpen(false)}>取消</Button><Button onClick={createFlow}><Check /> 创建流程</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={!!editFlow} onOpenChange={(v) => !v && setEditFlow(null)}>
-        <DialogContent size="sm" className="p-0">
-          <DialogHeader title="编辑流程模板" description="调整模板名称与适用范围说明。" icon={<Workflow />} />
-          <DialogBody className="space-y-4">
-            <Field label="流程名称" required><Input value={editFlowName} onChange={(e) => setEditFlowName(e.target.value)} /></Field>
-            <Field label="流程说明"><Textarea value={editFlowDesc} onChange={(e) => setEditFlowDesc(e.target.value)} className="min-h-[88px]" /></Field>
-            {editFlow ? <div className="flex flex-wrap gap-1.5">{editFlow.steps.map((s) => <span key={s.name} className="rounded-md border border-line bg-[#fafbf8] px-2 py-1 text-[12px] text-ink-soft">{s.name}</span>)}</div> : null}
-          </DialogBody>
-          <DialogFooter><Button variant="secondary" onClick={() => setEditFlow(null)}>取消</Button><Button onClick={() => { if (!editFlow) return; if (!editFlowName.trim()) { toast.error("流程名称不能为空"); return; } setFlows((prev) => prev.map((f) => f.id === editFlow.id ? { ...f, name: editFlowName, description: editFlowDesc } : f)); setEditFlow(null); toast.success("流程已更新"); }}><Check /> 保存修改</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <FlowTemplateDialog
+        open={flowDialogOpen}
+        onOpenChange={(open) => { setFlowDialogOpen(open); if (!open) setEditingFlow(null); }}
+        template={editingFlow}
+        departments={departments}
+        employees={employees}
+        onSave={saveFlow}
+      />
 
       <Dialog open={!!editOffer} onOpenChange={(v) => !v && setEditOffer(null)}>
         <DialogContent size="md" className="p-0">

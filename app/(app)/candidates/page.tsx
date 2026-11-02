@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, EmptyState, ScoreRing } from "@/components/ui/misc";
+import { InfoTip } from "@/components/ui/info-tip";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -211,7 +212,7 @@ function CandidatesContent() {
                 <th className="min-w-[240px] py-2.5 pr-4 font-medium">候选人</th>
                 <th className="w-[180px] py-2.5 pr-4 font-medium">应聘职位</th>
                 <th className="w-[90px] py-2.5 pr-4 font-medium">阶段</th>
-                <th className="w-[82px] py-2.5 pr-4 font-medium">匹配度</th>
+                <th className="w-[82px] py-2.5 pr-4 font-medium"><span className="inline-flex items-center gap-1">匹配度 <InfoTip text="由 AI 根据岗位画像与简历计算：技能 35%、经验 25%、行业 20%、稳定性 10%、地点 10%，再结合岗位紧急度微调。可在候选人详情的 AI 评估中查看构成。" /></span></th>
                 <th className="w-[142px] py-2.5 pr-4 font-medium">最近面试</th>
                 <th className="w-[96px] py-2.5 pr-4 font-medium">负责人</th>
                 <th className="w-[84px] py-2.5 pr-4 font-medium">投递</th>

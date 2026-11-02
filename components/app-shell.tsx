@@ -21,6 +21,8 @@ import {
   LayoutDashboard,
   ListTodo,
   LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
   Menu,
   MessageSquare,
   Plus,
@@ -61,7 +63,7 @@ const navGroups: { label: string | null; items: { href: string; label: string; i
       { href: "/jobs", label: "职位管理", icon: BriefcaseBusiness },
       { href: "/candidates", label: "候选人", icon: Users },
       { href: "/interviews", label: "面试", icon: CalendarClock, live: true },
-      { href: "/pipeline", label: "招聘流程", icon: GitBranch },
+      { href: "/pipeline", label: "招聘配置", icon: GitBranch },
       { href: "/offers", label: "Offer 管理", icon: FileText },
     ],
   },
@@ -88,7 +90,7 @@ const pageMeta: Record<string, { group: string; title: string }> = {
   "/jobs/new": { group: "招聘业务", title: "发布新职位" },
   "/candidates": { group: "招聘业务", title: "候选人" },
   "/interviews": { group: "招聘业务", title: "面试安排" },
-  "/pipeline": { group: "招聘业务", title: "招聘流程" },
+  "/pipeline": { group: "招聘业务", title: "招聘配置" },
   "/offers": { group: "招聘业务", title: "Offer 管理" },
   "/organization": { group: "组织与权限", title: "员工与部门" },
   "/roles": { group: "组织与权限", title: "角色权限" },
@@ -102,23 +104,23 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => void; collapsed?: boolean }) {
   const pathname = usePathname();
   const { interviews } = useApp();
   const todayCount = interviews.filter((i) => i.date === "2026-10-30" && i.status !== "done" && i.status !== "cancelled").length;
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-[64px] items-center px-5">
+      <div className={cn("flex h-[64px] items-center", collapsed ? "justify-center px-0" : "px-5")}>
         <Link href="/" onClick={onNavigate} aria-label="智聘千寻首页">
-          <BrandLockup light />
+          {collapsed ? <BrandLockup light compact /> : <BrandLockup light />}
         </Link>
       </div>
 
-      <nav className="mt-5 flex-1 overflow-y-auto px-3 pb-2 scroll-none">
+      <nav className={cn("mt-5 flex-1 overflow-y-auto pb-2 scroll-none", collapsed ? "px-2" : "px-3")}>
         {navGroups.map((group, gi) => (
-          <div key={group.label ?? "main"} className={cn(gi > 0 && "mt-4")}>
-            {group.label ? (
+          <div key={group.label ?? "main"} className={cn(gi > 0 && (collapsed ? "mt-3 border-t border-white/8 pt-3" : "mt-4"))}>
+            {group.label && !collapsed ? (
               <div className="mb-1 px-2.5 text-[12.5px] font-medium tracking-[0.06em] text-[var(--rail-icon)]">{group.label}</div>
             ) : null}
             <div className="space-y-0.5">
@@ -130,20 +132,24 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     key={item.href}
                     href={item.href}
                     onClick={onNavigate}
+                    title={collapsed ? item.label : undefined}
+                    aria-label={collapsed ? item.label : undefined}
                     className={cn(
-                      "group relative flex h-[35px] items-center gap-2.5 rounded-[9px] px-2.5 text-[13.5px] font-medium transition-colors",
+                      "group relative flex h-[35px] items-center rounded-[9px] text-[13.5px] font-medium transition-colors",
+                      collapsed ? "justify-center px-0" : "gap-2.5 px-2.5",
                       active ? "bg-white/[0.09] text-white" : "text-[var(--rail-muted)] hover:bg-white/[0.05] hover:text-[var(--rail-text)]"
                     )}
                   >
                     {active ? <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-signal" /> : null}
                     <Icon className={cn("size-[15px] shrink-0", active ? "text-[var(--rail-accent)]" : "text-[var(--rail-icon)] group-hover:text-[var(--rail-text)]")} strokeWidth={1.8} />
-                    <span className="flex-1">{item.label}</span>
-                    {item.ai ? (
+                    {!collapsed ? <span className="flex-1">{item.label}</span> : null}
+                    {!collapsed && item.ai ? (
                       <span className="rounded bg-signal/18 px-1.5 py-0.5 text-[12px] font-semibold tracking-[0.04em] text-[var(--rail-accent)]">AI</span>
                     ) : null}
-                    {item.live && todayCount > 0 ? (
+                    {!collapsed && item.live && todayCount > 0 ? (
                       <span className="rounded-md bg-white/10 px-1.5 py-0.5 text-[12px] num text-[var(--rail-text)]">{todayCount}</span>
                     ) : null}
+                    {collapsed && item.live && todayCount > 0 ? <span className="absolute right-2 top-2 size-1.5 rounded-full bg-signal" /> : null}
                   </Link>
                 );
               })}
@@ -152,18 +158,26 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="rail-ai-card mx-3 mb-3 rounded-xl border border-white/8 p-2.5">
-        <div className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--rail-text)]">
-          <Sparkles className="size-3.5 text-[var(--rail-accent)]" />
-          小聘 · AI 助手
-        </div>
-        <p className="mt-1.5 text-[12.5px] leading-[1.6] text-[var(--rail-muted)]">今天的 3 个招聘信号，已经整理好了。</p>
-        <button
-          onClick={() => window.dispatchEvent(new CustomEvent("open-copilot"))}
-          className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-medium text-[var(--rail-accent)] transition-colors hover:text-white"
-        >
-          查看简报 <ArrowRight className="size-3" />
-        </button>
+      <div className={cn("rail-ai-card mb-3 rounded-xl border border-white/8", collapsed ? "mx-2 flex size-10 items-center justify-center self-center p-0" : "mx-3 p-2.5")}>
+        {collapsed ? (
+          <button onClick={() => window.dispatchEvent(new CustomEvent("open-copilot"))} aria-label="打开小聘" title="小聘 · AI 助手" className="flex size-full items-center justify-center rounded-xl text-[var(--rail-accent)] hover:bg-white/8">
+            <Sparkles className="size-4" />
+          </button>
+        ) : (
+          <>
+            <div className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--rail-text)]">
+              <Sparkles className="size-3.5 text-[var(--rail-accent)]" />
+              小聘 · AI 助手
+            </div>
+            <p className="mt-1.5 text-[12.5px] leading-[1.6] text-[var(--rail-muted)]">今天的 3 个招聘信号，已经整理好了。</p>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("open-copilot"))}
+              className="mt-2.5 inline-flex items-center gap-1 text-[12.5px] font-medium text-[var(--rail-accent)] transition-colors hover:text-white"
+            >
+              查看简报 <ArrowRight className="size-3" />
+            </button>
+          </>
+        )}
       </div>
 
     </div>
@@ -418,6 +432,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { tasks, toggleTask, notifications, resetDemo } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarHydrated, setSidebarHydrated] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [copilotOpen, setCopilotOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -427,6 +443,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (pathname.startsWith("/candidates/")) return { group: "招聘业务", title: "候选人详情" };
     return pageMeta[pathname] ?? { group: "智聘千寻", title: "工作台" };
   }, [pathname]);
+
+  useEffect(() => {
+    try {
+      setSidebarCollapsed(window.localStorage.getItem("zhipin-qianxun-sidebar") === "collapsed");
+    } catch {
+      // Ignore storage access errors.
+    }
+    setSidebarHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!sidebarHydrated) return;
+    try {
+      window.localStorage.setItem("zhipin-qianxun-sidebar", sidebarCollapsed ? "collapsed" : "expanded");
+    } catch {
+      // Ignore storage access errors.
+    }
+  }, [sidebarCollapsed, sidebarHydrated]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -450,8 +484,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <TooltipProvider delayDuration={300}>
       <div className="min-h-screen bg-paper">
-        <aside className="fixed inset-y-0 left-0 z-40 hidden w-[236px] bg-pine-deep lg:block">
-          <SidebarContent />
+        <aside className={cn("fixed inset-y-0 left-0 z-40 hidden bg-pine-deep transition-[width] duration-200 lg:block", sidebarCollapsed ? "w-[76px]" : "w-[236px]")}>
+          <SidebarContent collapsed={sidebarCollapsed} />
         </aside>
 
         {mobileOpen ? (
@@ -466,10 +500,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         ) : null}
 
-        <div className="lg:pl-[236px]">
+        <div className={cn("transition-[padding] duration-200", sidebarCollapsed ? "lg:pl-[76px]" : "lg:pl-[236px]")}>
           <header className="sticky top-0 z-30 flex h-[60px] items-center gap-3 border-b border-line bg-surface/85 px-4 backdrop-blur-xl md:px-6">
             <button className="flex size-9 items-center justify-center rounded-lg text-ink-soft hover:bg-[#eef0ec] lg:hidden" onClick={() => setMobileOpen(true)} aria-label="打开菜单">
               <Menu className="size-4.5" />
+            </button>
+            <button
+              onClick={() => setSidebarCollapsed((prev) => !prev)}
+              aria-label={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
+              title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
+              className="hidden size-9 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-[#eef0ec] lg:flex"
+            >
+              {sidebarCollapsed ? <PanelLeftOpen className="size-4" /> : <PanelLeftClose className="size-4" />}
             </button>
             <div className="flex min-w-0 items-center gap-2 text-[13.5px]">
               <span className="hidden text-muted sm:block">{meta.group}</span>
