@@ -277,7 +277,7 @@ export default function OrganizationPage() {
             </div>
             <div className="relative mt-3">
               <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted" />
-              <input value={deptQuery} onChange={(e) => setDeptQuery(e.target.value)} placeholder="搜索部门" className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12.5px] outline-none focus:border-pine/50" />
+              <input value={deptQuery} onChange={(e) => setDeptQuery(e.target.value)} placeholder="搜索部门" className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12.5px] outline-none focus:border-line-strong" />
             </div>
           </div>
           <div className="max-h-[calc(100vh-250px)] flex-1 overflow-y-auto p-2.5">

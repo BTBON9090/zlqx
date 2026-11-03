@@ -6,6 +6,7 @@ dist
 !.env.example
 .DS_Store
 *.log
+*.tsbuildinfo
 .shots
 .figma
 AGENTS.md

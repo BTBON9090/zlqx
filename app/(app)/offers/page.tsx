@@ -208,7 +208,7 @@ export default function OffersPage() {
             </TabsList>
           </Tabs>
           <div className="flex items-center gap-2 pb-2">
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索候选人" className="h-8 w-[180px] rounded-lg border border-line bg-[#fafbf8] px-2.5 text-[12.5px] outline-none focus:border-pine/50" />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索候选人" className="h-8 w-[180px] rounded-lg border border-line bg-[#fafbf8] px-2.5 text-[12.5px] outline-none focus:border-line-strong" />
             <Button size="sm" variant="secondary" asChild><Link href="/messages">Offer 模板</Link></Button>
           </div>
         </div>

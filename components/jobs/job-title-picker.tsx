@@ -85,7 +85,7 @@ export function JobTitlePicker({
             }}
             placeholder={placeholder}
             className={cn(
-              "flex h-11 w-full rounded-[10px] border border-line bg-surface pl-9 pr-9 text-[14px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8",
+              "flex h-11 w-full rounded-[10px] border border-line bg-surface pl-9 pr-9 text-[14px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6]",
               invalid && "border-signal/60 focus:border-signal/70 focus:ring-signal/10"
             )}
           />
@@ -124,7 +124,7 @@ export function JobTitlePicker({
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="搜索职位、职能或类别，例如：Java、产品经理、招聘"
-                className="h-9 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-8 text-[12.5px] outline-none transition-colors focus:border-pine/50"
+                className="h-9 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-8 text-[12.5px] outline-none transition-colors focus:border-line-strong"
               />
               {query ? (
                 <button type="button" aria-label="清空搜索" onClick={() => setQuery("")} className="absolute right-2 top-1/2 flex size-5 -translate-y-1/2 items-center justify-center rounded text-muted hover:text-ink">

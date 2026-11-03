@@ -18,7 +18,7 @@ export function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "flex w-full items-center justify-between gap-2 rounded-[10px] border border-line bg-surface px-3 text-left text-[14px] text-ink outline-none transition-colors hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8 data-[placeholder]:text-[#9ba69f] [&_svg]:size-3.5 [&_svg]:shrink-0 [&_svg]:text-muted",
+        "flex w-full items-center justify-between gap-2 rounded-[10px] border border-line bg-surface px-3 text-left text-[14px] text-ink outline-none transition-colors hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6] data-[placeholder]:text-[#9ba69f] [&_svg]:size-3.5 [&_svg]:shrink-0 [&_svg]:text-muted",
         size === "sm" ? "h-9" : "h-10",
         className
       )}

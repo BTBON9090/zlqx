@@ -141,8 +141,10 @@
   --brand-dot: color-mix(in srgb, var(--custom-color) 34%, #fff);
 }
 
-* {
-  border-color: var(--line);
+@layer base {
+  * {
+    border-color: var(--line);
+  }
 }
 
 html {
@@ -177,8 +179,15 @@ button:not(:disabled),
 }
 
 :focus-visible {
-  outline: 2px solid var(--signal);
+  outline: 2px solid color-mix(in srgb, var(--signal) 34%, transparent);
   outline-offset: 2px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="combobox"]:focus-visible {
+  outline: none;
 }
 
 ::-webkit-scrollbar {
@@ -385,6 +394,183 @@ button:not(:disabled),
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   AI Agent workspace — a Codex-style, full-height workspace. Scoped tokens so
+   the rest of the product keeps the Signal design language.
+--------------------------------------------------------------------------- */
+.agent-app {
+  --a-primary: var(--pine);
+  --a-primary-hover: var(--pine-deep);
+  --a-primary-1: var(--pine-soft);
+  --a-primary-2: color-mix(in srgb, var(--pine) 22%, white);
+  --a-primary-3: color-mix(in srgb, var(--pine) 48%, white);
+  --a-text-1: var(--ink);
+  --a-text-2: var(--ink-soft);
+  --a-text-3: var(--muted);
+  --a-text-4: #a6afa7;
+  --a-border-1: var(--line);
+  --a-border-2: var(--line-strong);
+  --a-border-3: #c9d1c8;
+  --a-fill-1: #fafbf8;
+  --a-fill-2: #f2f4ef;
+  --a-bg: var(--paper);
+  --a-green: var(--success);
+  --a-green-1: #eef6f0;
+  --a-green-2: #cfe5d6;
+  --a-orange: var(--amber);
+  --a-orange-1: var(--amber-soft);
+  --a-red: var(--danger);
+  --a-red-1: #fbe9e4;
+  --a-purple: var(--info-ink);
+  --a-purple-1: var(--info-soft);
+
+  height: 100%;
+  overflow: hidden;
+  background: var(--a-bg);
+  color: var(--a-text-1);
+  font-family: "Sora Variable", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-feature-settings: "ss01" on, "cv02" on;
+}
+.agent-app button,
+.agent-app a,
+.agent-app input,
+.agent-app textarea,
+.agent-app select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.agent-app ::selection {
+  background: var(--a-primary-2);
+  color: var(--a-text-1);
+}
+
+.agent-app ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.agent-app ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.agent-app ::-webkit-scrollbar-thumb {
+  background: #d5d8de;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.agent-app ::-webkit-scrollbar-thumb:hover {
+  background: #b8bdc6;
+  background-clip: content-box;
+}
+
+.agent-app :focus-visible {
+  outline: 2px solid var(--a-primary);
+  outline-offset: 2px;
+}
+
+.agent-app input:focus-visible,
+.agent-app textarea:focus-visible,
+.agent-app select:focus-visible,
+.agent-app [role="combobox"]:focus-visible {
+  outline: none;
+}
+
+.agent-shadow-pop {
+  box-shadow:
+    0 12px 32px -12px rgba(29, 33, 41, 0.22),
+    0 2px 8px rgba(29, 33, 41, 0.06);
+}
+
+.agent-fade {
+  animation: agentFade 0.24s ease-out both;
+}
+
+.agent-rise {
+  animation: agentRise 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.agent-pop {
+  animation: agentPop 0.16s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: bottom left;
+}
+
+.agent-typing-dot {
+  animation: agentTyping 1.15s ease-in-out infinite;
+}
+
+.agent-pulse {
+  animation: agentPulse 1.8s ease-out infinite;
+}
+
+.agent-scan-line {
+  background: linear-gradient(90deg, transparent, rgba(22, 93, 255, 0.55), transparent);
+  animation: agentScan 1.4s ease-in-out infinite;
+}
+
+@keyframes agentFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes agentRise {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agentPop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes agentTyping {
+  0%,
+  60%,
+  100% {
+    opacity: 0.28;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes agentPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(22, 93, 255, 0.22);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(22, 93, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 93, 255, 0);
+  }
+}
+
+@keyframes agentScan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }
 

@@ -86,6 +86,7 @@ const navGroups: { label: string | null; items: { href: string; label: string; i
 const pageMeta: Record<string, { group: string; title: string }> = {
   "/": { group: "概览", title: "工作台" },
   "/ai": { group: "智能", title: "AI 中心" },
+  "/ai/agent": { group: "智能", title: "Agent 对话" },
   "/jobs": { group: "招聘业务", title: "职位管理" },
   "/jobs/new": { group: "招聘业务", title: "发布新职位" },
   "/candidates": { group: "招聘业务", title: "候选人" },
@@ -164,6 +165,7 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
         ))}
       </nav>
 
+      {pathname !== "/ai/agent" ? (
       <div className={cn("rail-ai-card mb-3 rounded-xl border border-white/8", collapsed ? "mx-2 flex size-10 items-center justify-center self-center p-0" : "mx-3 p-2.5")}>
         {collapsed ? (
           <button onClick={() => window.dispatchEvent(new CustomEvent("open-copilot"))} aria-label="打开小聘" title="小聘 · AI 助手" className="flex size-full items-center justify-center rounded-xl text-[var(--rail-accent)] hover:bg-white/8">
@@ -185,6 +187,7 @@ function SidebarContent({ onNavigate, collapsed = false }: { onNavigate?: () => 
           </>
         )}
       </div>
+      ) : null}
 
     </div>
   );
@@ -421,7 +424,7 @@ function CopilotPanel({ open, onClose }: { open: boolean; onClose: () => void })
                 }
               }}
               placeholder="让小聘帮你处理招聘工作…"
-              className="h-9 flex-1 rounded-[10px] border border-line bg-[#fafbf8] px-3 text-[13.5px] outline-none placeholder:text-[#9ba69f] focus:border-pine/50"
+              className="h-9 flex-1 rounded-[10px] border border-line bg-[#fafbf8] px-3 text-[13.5px] outline-none placeholder:text-[#9ba69f] focus:border-line-strong"
             />
             <button onClick={() => send()} className="flex size-9 items-center justify-center rounded-[10px] bg-pine text-white transition-colors hover:bg-pine-deep" aria-label="发送">
               <Send className="size-3.5" />
@@ -444,6 +447,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [copilotOpen, setCopilotOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
 
+  const isAgentRoute = pathname === "/ai/agent";
   const meta = useMemo(() => {
     if (pathname.startsWith("/jobs/") && pathname !== "/jobs/new") return { group: "招聘业务", title: "职位详情" };
     if (pathname.startsWith("/candidates/")) return { group: "招聘业务", title: "候选人详情" };
@@ -539,9 +543,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button onClick={() => setCommandOpen(true)} aria-label="搜索" className="flex size-9 items-center justify-center rounded-lg text-ink-soft hover:bg-[#eef0ec] md:hidden">
                 <Search className="size-4" />
               </button>
-              <button onClick={() => setCopilotOpen(true)} aria-label="AI 助手" className="flex size-9 items-center justify-center rounded-lg text-ink-soft hover:bg-[#eef0ec] sm:hidden">
-                <Sparkles className="size-4 text-signal" />
-              </button>
+              {!isAgentRoute ? (
+                <button onClick={() => setCopilotOpen(true)} aria-label="AI 助手" className="flex size-9 items-center justify-center rounded-lg text-ink-soft hover:bg-[#eef0ec] sm:hidden">
+                  <Sparkles className="size-4 text-signal" />
+                </button>
+              ) : null}
 
               <ThemeSwitcher />
 
@@ -688,13 +694,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </header>
 
-          <main className="mx-auto w-full max-w-[1520px] px-4 pb-20 pt-6 md:px-7 md:pt-7">{children}</main>
+          <main
+            className={
+              isAgentRoute
+                ? "h-[calc(100dvh-60px)] w-full overflow-hidden"
+                : "mx-auto w-full max-w-[1520px] px-4 pb-20 pt-6 md:px-7 md:pt-7"
+            }
+          >
+            {children}
+          </main>
         </div>
 
         <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
         <CopilotPanel open={copilotOpen} onClose={() => setCopilotOpen(false)} />
 
-        {!copilotOpen ? (
+        {!copilotOpen && !isAgentRoute ? (
           <button
             onClick={() => setCopilotOpen(true)}
             className="group fixed bottom-5 right-5 z-40 hidden items-center gap-2 rounded-full bg-pine py-3 pl-3 pr-3 text-white shadow-[0_14px_34px_-12px_rgba(0,0,0,.35)] transition-all hover:bg-pine-deep hover:pr-5 sm:bottom-6 sm:right-6 sm:flex sm:pr-4"

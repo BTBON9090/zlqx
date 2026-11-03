@@ -51,6 +51,13 @@ const toolIcons: Record<Mode, React.ReactNode> = {
 
 const steps = ["读取岗位与团队信息", "检索相似岗位与人才样本", "生成结构化内容", "校准语气与合规表达"];
 
+const agentPromptDefaults: Record<Mode, string> = {
+  jd: "帮我为「高级产品经理」写一份有吸引力的 JD",
+  profile: "为高级产品经理生成岗位画像",
+  report: "为周予安生成高级产品经理岗位的推荐报告",
+  interview: "为周予安安排一场高级产品经理面试",
+};
+
 function JdDocument({ job }: { job: Job }) {
   return (
     <div className="space-y-5 text-[13.5px] leading-6 text-ink-soft">
@@ -398,6 +405,11 @@ export default function AiCenterPage() {
         description="把重复的招聘工作交给 AI，把判断留给人。所有生成内容可追溯、可编辑，并在发布前由你确认。"
         actions={
           <>
+            <Button asChild variant="secondary">
+              <Link href="/ai/agent">
+                <Sparkles /> Agent 对话
+              </Link>
+            </Button>
             <Button variant="secondary" onClick={() => openStudio("report", "为周予安生成高级产品经理岗位的推荐报告")}>
               <FileText /> 生成推荐报告
             </Button>
@@ -470,9 +482,12 @@ export default function AiCenterPage() {
               <Button
                 size="sm"
                 className="bg-[var(--surface)] text-pine hover:bg-white"
-                onClick={() => openStudio(mode, prompt || undefined)}
+                onClick={() => {
+                  const nextPrompt = prompt.trim() || agentPromptDefaults[mode];
+                  router.push(`/ai/agent?prompt=${encodeURIComponent(nextPrompt)}`);
+                }}
               >
-                <Wand2 /> 开始生成
+                <Wand2 /> 交给 Agent
               </Button>
             </div>
           </div>

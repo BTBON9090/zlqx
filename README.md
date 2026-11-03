@@ -91,7 +91,8 @@ npm run dev
 | --- | --- | --- |
 | `/login` | 登录 | 品牌叙事、演示登录、SSO 占位 |
 | `/` | 工作台 | AI 简报、招聘漏斗、KPI、今日面试、待办、最新候选人、职位健康度 |
-| `/ai` | AI 中心 | 统一指令入口、四类工具、AI 工作台弹窗、生成记录、使用概览、数字人面试监控 |
+| `/ai` | AI 中心 | 原 AI 中心首页：统一指令入口、四类工具、生成记录、使用概览、数字人面试监控 |
+| `/ai/agent` | Agent 对话 | Codex 式多标签对话、可扩展技能面板、任务序列、对话历史，以及真正写入职位 / 画像 / 候选人 / 面试 / Offer 的工作面板 |
 | `/jobs` | 职位管理 | 状态分组、筛选、批量选择、新建/暂停/结束、复制 |
 | `/jobs/new` | 发布职位 | 三步向导、标准职位三级库搜索、AI 填入/润色、协助人多选、流程与 AI 开关、预览、发布/草稿 |
 | `/jobs/[id]` | 职位详情 | 概览、候选人看板、AI 岗位画像、流程、动态 |
@@ -130,7 +131,8 @@ npm run dev
 当前 AI 输出为**按真实业务结构编排的模拟内容**，优势是交互、信息架构与可追溯形态已经完整。接入真实服务时建议替换以下边界：
 
 1. `app/(app)/ai/page.tsx` 的 `run()`：替换为流式 LLM 调用（SSE / WebSocket），保留 4 步进度与结果确认。
-2. 简历解析：`components/candidates/upload-dialog.tsx` 的 `start()`，接入文档解析 + LLM 结构化抽取，返回姓名/联系方式/经历/技能/匹配度。
+2. `components/agent/workspace.tsx` 的 `runSkill` 与面板提交处理器：替换为真实 Agent 服务与业务 API；当前已直接读写职位、候选人、面试与 Offer 的本地 store。
+3. 简历解析：`components/candidates/upload-dialog.tsx` 的 `start()`，接入文档解析 + LLM 结构化抽取，返回姓名/联系方式/经历/技能/匹配度。
 3. 数字人面试：`app/interviews/live/[id]/page.tsx`，接入 RTC（声网/腾讯云）与数字人驱动、ASR/TTS、结构化评分。
 4. 岗位画像与推荐报告：将 `Job.aiProfile`、`Candidate.ai` 替换为服务端生成的版本，并保留人工校准入口。
 5. 消息发送：`lib/store.tsx` 中新增通知记录的位置接入邮件/短信服务商，补充发送回执与重试队列。

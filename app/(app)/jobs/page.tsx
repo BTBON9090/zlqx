@@ -13,6 +13,7 @@ import {
   MoreHorizontal,
   Pause,
   Play,
+  SlidersHorizontal,
   Plus,
   Sparkles,
   Trash2,
@@ -30,6 +31,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { useApp } from "@/lib/store";
 import { useConfirm } from "@/components/ui/confirm";
+import { MatchThresholdDialog } from "@/components/jobs/match-threshold-dialog";
 import { cn, jobStatusMeta } from "@/lib/utils";
 import type { JobStatus } from "@/lib/types";
 
@@ -50,6 +52,7 @@ export default function JobsPage() {
   const [dept, setDept] = useState("all");
   const [owner, setOwner] = useState("all");
   const [selected, setSelected] = useState<string[]>([]);
+  const [thresholdJob, setThresholdJob] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     return jobs.filter((j) => {
@@ -241,6 +244,9 @@ export default function JobsPage() {
                             <DropdownMenuItem onClick={() => router.push(`/jobs/${job.id}?edit=1`)}>
                               <Edit3 /> 编辑职位
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setThresholdJob(job.id)}>
+                              <SlidersHorizontal /> 匹配基线
+                            </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {
                                 updateJob(job.id, { status: job.status === "active" ? "paused" : "active" });
@@ -323,6 +329,18 @@ export default function JobsPage() {
           管理招聘流程 <ArrowUpRight className="size-3" />
         </Link>
       </div>
+
+      <MatchThresholdDialog
+        open={Boolean(thresholdJob)}
+        onOpenChange={(open) => { if (!open) setThresholdJob(null); }}
+        jobs={jobs}
+        initialJobId={thresholdJob ?? undefined}
+        lockJob
+        onSave={(jobId, thresholds) => {
+          updateJob(jobId, { matchThresholds: thresholds });
+          toast.success("匹配基线已更新");
+        }}
+      />
     </div>
   );
 }

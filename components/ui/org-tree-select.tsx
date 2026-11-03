@@ -96,7 +96,7 @@ export function OrgTreeSelect({
         <button
           type="button"
           className={cn(
-            "flex min-h-10 w-full items-center gap-1.5 rounded-[10px] border border-line bg-surface px-2.5 py-1.5 text-left text-[13px] outline-none transition-colors hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8",
+            "flex min-h-10 w-full items-center gap-1.5 rounded-[10px] border border-line bg-surface px-2.5 py-1.5 text-left text-[13px] outline-none transition-colors hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6]",
             selectedDepartments.length === 0 && "text-[#9ba69f]"
           )}
         >
@@ -118,7 +118,7 @@ export function OrgTreeSelect({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="搜索部门"
-              className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12px] outline-none focus:border-pine/50"
+              className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12px] outline-none focus:border-line-strong"
             />
           </div>
         </div>

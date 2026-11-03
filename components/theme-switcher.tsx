@@ -108,7 +108,7 @@ export function ThemeSwitcher() {
                   if (e.key === "Enter") applyHex();
                 }}
                 placeholder="#6366f1"
-                className="h-8 min-w-0 flex-1 rounded-lg border border-line bg-white px-2.5 font-mono text-[11.5px] text-ink outline-none focus:border-pine/50"
+                className="h-8 min-w-0 flex-1 rounded-lg border border-line bg-white px-2.5 font-mono text-[11.5px] text-ink outline-none focus:border-line-strong"
                 aria-label="主题色 HEX 色值"
               />
               <button onClick={applyHex} className="h-8 shrink-0 rounded-lg bg-pine px-2.5 text-[10.5px] font-medium text-white transition-opacity hover:opacity-90">应用</button>

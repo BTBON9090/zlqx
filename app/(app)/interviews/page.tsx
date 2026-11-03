@@ -153,8 +153,8 @@ function RescheduleDialog({
       <DialogContent size="sm" className="p-0">
         <DialogHeader title="改期面试" description="候选人会收到新的面试邀约。" icon={<RotateCcw />} />
         <DialogBody className="space-y-4">
-          <Field label="新的面试日期" required><input type="date" min="2026-10-30" value={date} onChange={(e) => setDate(e.target.value)} className="flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 text-[14px] outline-none focus:border-pine/60" /></Field>
-          <Field label="开始时间" required><input type="time" value={start} onChange={(e) => setStart(e.target.value)} className="flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 text-[14px] outline-none focus:border-pine/60" /></Field>
+          <Field label="新的面试日期" required><input type="date" min="2026-10-30" value={date} onChange={(e) => setDate(e.target.value)} className="flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 text-[14px] outline-none focus:border-line-strong" /></Field>
+          <Field label="开始时间" required><input type="time" value={start} onChange={(e) => setStart(e.target.value)} className="flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 text-[14px] outline-none focus:border-line-strong" /></Field>
           <label className="flex items-center gap-2 text-[12.5px] text-muted"><input type="checkbox" defaultChecked className="accent-[var(--pine)]" /> 自动发送改期通知给候选人与面试官</label>
         </DialogBody>
         <DialogFooter>

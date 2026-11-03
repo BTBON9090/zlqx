@@ -436,7 +436,7 @@ export default function RolesPage() {
         <div className="surface col-span-12 self-start overflow-hidden xl:sticky xl:top-[76px] xl:col-span-3">
           <div className="border-b border-line p-3.5">
             <SectionTitle title="角色" />
-            <div className="relative mt-3"><Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索角色" className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12.5px] outline-none focus:border-pine/50" /></div>
+            <div className="relative mt-3"><Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索角色" className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12.5px] outline-none focus:border-line-strong" /></div>
           </div>
           <div className="max-h-[520px] overflow-y-auto p-2">
             {filteredRoles.map((r) => (

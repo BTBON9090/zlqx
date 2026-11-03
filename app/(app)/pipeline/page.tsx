@@ -119,7 +119,6 @@ export default function PipelinePage() {
                 <button type="button" aria-label="列表视图" onClick={() => setFlowView("list")} className={cn("flex size-7 items-center justify-center rounded-md transition-colors", flowView === "list" ? "bg-pine-soft text-pine" : "text-muted hover:text-ink")}><List className="size-3.5" /></button>
                 <button type="button" aria-label="宫格视图" onClick={() => setFlowView("grid")} className={cn("flex size-7 items-center justify-center rounded-md transition-colors", flowView === "grid" ? "bg-pine-soft text-pine" : "text-muted hover:text-ink")}><LayoutGrid className="size-3.5" /></button>
               </div>
-              <button onClick={openCreateFlow} className="flex items-center gap-1 text-[12.5px] font-medium text-pine hover:underline"><Plus className="size-3" /> 新建模板</button>
             </div>
           </div>
           <div className={flowView === "grid" ? "grid gap-3 md:grid-cols-2 2xl:grid-cols-3" : "space-y-3"}>

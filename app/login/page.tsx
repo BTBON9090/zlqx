@@ -117,14 +117,14 @@ export default function LoginPage() {
               <label htmlFor="email" className="mb-2 block text-[13px] font-medium text-ink-soft">企业邮箱</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted" />
-                <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@company.com" className="h-11 w-full rounded-[11px] border border-line bg-white pl-10 pr-3 text-[13.5px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8" />
+                <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@company.com" className="h-11 w-full rounded-[11px] border border-line bg-white pl-10 pr-3 text-[13.5px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6]" />
               </div>
             </div>
             <div>
               <div className="mb-2 flex items-center justify-between"><label htmlFor="password" className="text-[13px] font-medium text-ink-soft">密码</label><button type="button" onClick={() => toast.info("请联系企业管理员重置密码")} className="text-[12.5px] text-pine hover:underline">忘记密码？</button></div>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted" />
-                <input id="password" type={show ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="输入密码" className="h-11 w-full rounded-[11px] border border-line bg-white pl-10 pr-10 text-[13.5px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8" />
+                <input id="password" type={show ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="输入密码" className="h-11 w-full rounded-[11px] border border-line bg-white pl-10 pr-10 text-[13.5px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6]" />
                 <button type="button" onClick={() => setShow((v) => !v)} aria-label={show ? "隐藏密码" : "显示密码"} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink">{show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}</button>
               </div>
             </div>

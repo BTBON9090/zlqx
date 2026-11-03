@@ -37,7 +37,7 @@ export function PersonSelect({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className={cn("flex h-10 w-full items-center gap-2 rounded-[10px] border border-line bg-surface px-2.5 text-left text-[13px] outline-none transition-colors hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8", !selected && "text-[#9ba69f]")}
+          className={cn("flex h-10 w-full items-center gap-2 rounded-[10px] border border-line bg-surface px-2.5 text-left text-[13px] outline-none transition-colors hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6]", !selected && "text-[#9ba69f]")}
         >
           {selected ? (
             <>
@@ -58,7 +58,7 @@ export function PersonSelect({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="搜索姓名、邮箱或部门"
-              className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12px] outline-none focus:border-pine/50"
+              className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12px] outline-none focus:border-line-strong"
             />
           </div>
         </div>

@@ -6,7 +6,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
     <input
       type={type}
       className={cn(
-        "flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 text-[14px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8 disabled:cursor-not-allowed disabled:bg-[#f4f6f2] disabled:text-muted",
+        "flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 text-[14px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6] disabled:cursor-not-allowed disabled:bg-[#f4f6f2] disabled:text-muted",
         className
       )}
       ref={ref}
@@ -20,7 +20,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTML
   ({ className, ...props }, ref) => (
     <textarea
       className={cn(
-        "flex min-h-[96px] w-full resize-y rounded-[10px] border border-line bg-surface px-3.5 py-3 text-[14px] leading-6 text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8 disabled:cursor-not-allowed disabled:bg-[#f4f6f2]",
+        "flex min-h-[96px] w-full resize-y rounded-[10px] border border-line bg-surface px-3.5 py-3 text-[14px] leading-6 text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6] disabled:cursor-not-allowed disabled:bg-[#f4f6f2]",
         className
       )}
       ref={ref}
@@ -90,7 +90,7 @@ export function SearchInput({
         <path d="m20 20-3.2-3.2" />
       </svg>
       <input
-        className="h-10 w-full rounded-[10px] border border-line bg-surface pl-9 pr-3 text-[14px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8"
+        className="h-10 w-full rounded-[10px] border border-line bg-surface pl-9 pr-3 text-[14px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6]"
         {...props}
       />
     </div>

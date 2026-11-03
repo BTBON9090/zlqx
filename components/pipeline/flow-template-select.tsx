@@ -34,7 +34,7 @@ export function FlowTemplateSelect({
         <button
           type="button"
           className={cn(
-            "flex min-h-10 w-full items-center gap-2 rounded-[10px] border border-line bg-surface px-3 py-1.5 text-left text-[13px] outline-none transition-colors hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8",
+            "flex min-h-10 w-full items-center gap-2 rounded-[10px] border border-line bg-surface px-3 py-1.5 text-left text-[13px] outline-none transition-colors hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6]",
             !selected && "text-[#9ba69f]",
             invalid && "border-signal/60"
           )}
@@ -61,7 +61,7 @@ export function FlowTemplateSelect({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="搜索流程模板"
-              className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12px] outline-none focus:border-pine/50"
+              className="h-8 w-full rounded-lg border border-line bg-[#fafbf8] pl-8 pr-2.5 text-[12px] outline-none focus:border-line-strong"
             />
           </div>
         </div>

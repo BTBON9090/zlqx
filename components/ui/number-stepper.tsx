@@ -79,7 +79,7 @@ export function ComboInput({
             if (e.key === "Escape" || e.key === "Enter") setOpen(false);
           }}
           placeholder={placeholder}
-          className="flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 pr-10 text-[13.5px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-pine/60 focus:ring-4 focus:ring-pine/8"
+          className="flex h-10 w-full rounded-[10px] border border-line bg-surface px-3 pr-10 text-[13.5px] text-ink outline-none transition-colors placeholder:text-[#9ba69f] hover:border-line-strong focus:border-line-strong focus:ring-4 focus:ring-[#e9ede6]"
           aria-expanded={open}
           aria-haspopup="listbox"
         />
